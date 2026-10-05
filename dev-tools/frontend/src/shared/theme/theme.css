@@ -1,0 +1,52 @@
+/* Claro é o padrão. "Sistema" (e o instante antes do bootstrap) segue prefers-color-scheme. */
+:root {
+  color-scheme: light;
+  font-family: system-ui, sans-serif;
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --text: #1c1f24;
+  --text-muted: #5b6370;
+  --border: #d3d8df;
+  --accent: #1f6feb;
+  --accent-text: #ffffff;
+  --selected-bg: #e3edfd;
+  --warning: #8a4b00;
+  --warning-bg: #fff3d6;
+  --danger: #b3261e;
+  --danger-bg: #fde8e6;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #16181d;
+  --surface: #1f2329;
+  --text: #e6e8eb;
+  --text-muted: #9aa3af;
+  --border: #353b45;
+  --accent: #4c8dff;
+  --accent-text: #0b0d10;
+  --selected-bg: #263654;
+  --warning: #f2c26b;
+  --warning-bg: #3a2e14;
+  --danger: #ff8a80;
+  --danger-bg: #40201e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'],
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --bg: #16181d;
+    --surface: #1f2329;
+    --text: #e6e8eb;
+    --text-muted: #9aa3af;
+    --border: #353b45;
+    --accent: #4c8dff;
+    --accent-text: #0b0d10;
+    --selected-bg: #263654;
+    --warning: #f2c26b;
+    --warning-bg: #3a2e14;
+    --danger: #ff8a80;
+    --danger-bg: #40201e;
+  }
+}

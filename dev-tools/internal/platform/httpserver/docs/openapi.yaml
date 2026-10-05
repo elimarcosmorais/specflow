@@ -1,0 +1,504 @@
+openapi: 3.1.0
+info:
+  title: Dev Tools API
+  version: 0.1.0
+  description: |
+    API local do Dev Tools, consumida pelo próprio app. Escuta só em `127.0.0.1` (porta padrão 41790).
+
+    **Autenticação.** Toda operação exige `Authorization: Bearer <token>`, em que o token é gerado a
+    cada execução e entregue ao front pelo bootstrap do Wails. Só `GET /api/health` é pública. Sem
+    token, ou com token diferente, a resposta é `401 auth.token_invalid`.
+
+    **Erros.** Todo erro (status 400 ou maior) tem o corpo `{"error": {"code", "message", "field"}}`.
+    `code` é estável e é o que o front usa para decidir o que fazer; `message` já vem traduzida
+    para o idioma salvo nas preferências no momento da requisição; `field` só aparece quando o erro
+    é de um campo da entrada.
+
+    **Corpo.** Até 1 MiB. JSON malformado, campo desconhecido ou corpo maior que o limite respondem
+    `400 request.invalid_body`. Campo ausente vale como string vazia e cai na validação de
+    obrigatório.
+
+    **Rotas fora deste contrato** (ex.: `GET /api/inexistente`) ficam com a resposta padrão do
+    servidor (`404` ou `405` em texto).
+servers:
+  - url: http://127.0.0.1:41790
+    description: Porta padrão (muda com a variável de ambiente `DEV_TOOLS_API_PORT`)
+security:
+  - bearer: []
+tags:
+  - name: Sistema
+  - name: Projetos
+  - name: Preferências
+
+paths:
+  /api/health:
+    get:
+      operationId: getHealth
+      tags: [Sistema]
+      summary: Saúde do motor
+      description: "Responde `200` mesmo com o banco fora do ar (`database: unavailable`)."
+      security: []
+      responses:
+        "200":
+          description: Versão do app e estado do banco.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+
+  /api/projects:
+    get:
+      operationId: listProjects
+      tags: [Projetos]
+      summary: Listar projetos
+      description: Ordenados por nome, sem diferenciar maiúsculas.
+      responses:
+        "200":
+          description: Lista de projetos.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Project"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/DatabaseUnavailable"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+    post:
+      operationId: createProject
+      tags: [Projetos]
+      summary: Criar projeto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectInput"
+      responses:
+        "201":
+          description: Projeto criado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "400":
+          $ref: "#/components/responses/InvalidBody"
+        "422":
+          $ref: "#/components/responses/ProjectInvalid"
+        "409":
+          $ref: "#/components/responses/ProjectConflict"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/DatabaseUnavailable"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+
+  /api/projects/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador do projeto. Um valor que não é inteiro positivo responde `404 project.not_found`.
+        schema:
+          type: integer
+          minimum: 1
+    put:
+      operationId: updateProject
+      tags: [Projetos]
+      summary: Editar projeto
+      description: Substitui o projeto. `name`, `path` e `type` são obrigatórios, como no `POST`; não é atualização parcial.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectInput"
+      responses:
+        "200":
+          description: Projeto atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "400":
+          $ref: "#/components/responses/InvalidBody"
+        "404":
+          $ref: "#/components/responses/ProjectNotFound"
+        "422":
+          $ref: "#/components/responses/ProjectInvalid"
+        "409":
+          $ref: "#/components/responses/ProjectConflict"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/DatabaseUnavailable"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+    delete:
+      operationId: deleteProject
+      tags: [Projetos]
+      summary: Remover projeto
+      description: Remove só o cadastro; a pasta do projeto no disco nunca é apagada.
+      responses:
+        "204":
+          description: Projeto removido.
+        "404":
+          $ref: "#/components/responses/ProjectNotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/DatabaseUnavailable"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+
+  /api/preferences:
+    put:
+      operationId: savePreferences
+      tags: [Preferências]
+      summary: Salvar preferências
+      description: Substitui as preferências. `theme` e `language` são obrigatórios.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Preferences"
+      responses:
+        "200":
+          description: Preferências salvas.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Preferences"
+        "400":
+          $ref: "#/components/responses/InvalidBody"
+        "422":
+          description: |
+            Valor inválido. Códigos: `preferences.theme_invalid` (`field: theme`) e
+            `preferences.language_invalid` (`field: language`).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                theme_invalid:
+                  value:
+                    error:
+                      code: preferences.theme_invalid
+                      message: Tema inválido. Escolha Claro, Escuro ou Sistema.
+                      field: theme
+                language_invalid:
+                  value:
+                    error:
+                      code: preferences.language_invalid
+                      message: Idioma inválido. Escolha pt-br ou en.
+                      field: language
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          description: |
+            Falha ao gravar o arquivo de preferências (`preferences.save_failed`) ou erro
+            inesperado (`internal.unexpected`).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                save_failed:
+                  value:
+                    error:
+                      code: preferences.save_failed
+                      message: Não foi possível salvar as preferências. Veja os logs para mais detalhes.
+                unexpected:
+                  value:
+                    error:
+                      code: internal.unexpected
+                      message: Ocorreu um erro inesperado. Veja os logs para mais detalhes.
+
+  /api/system/open-logs-folder:
+    post:
+      operationId: openLogsFolder
+      tags: [Sistema]
+      summary: Abrir a pasta de logs
+      description: Abre a pasta de logs no Explorer do Windows.
+      responses:
+        "204":
+          description: Explorer iniciado.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          description: |
+            Falha ao iniciar o Explorer (`system.open_logs_failed`) ou erro inesperado
+            (`internal.unexpected`).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                open_logs_failed:
+                  value:
+                    error:
+                      code: system.open_logs_failed
+                      message: Não foi possível abrir a pasta de logs.
+                unexpected:
+                  value:
+                    error:
+                      code: internal.unexpected
+                      message: Ocorreu um erro inesperado. Veja os logs para mais detalhes.
+
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      description: Token da execução, entregue ao front pelo bootstrap do Wails.
+
+  schemas:
+    Project:
+      type: object
+      required: [id, name, path, type, folderExists, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+          examples: [1]
+        name:
+          type: string
+          examples: [loja-api]
+        path:
+          type: string
+          description: Caminho absoluto da pasta do projeto.
+          examples: ['C:\dev-tools\projects\web\loja-api']
+        type:
+          $ref: "#/components/schemas/ProjectType"
+        folderExists:
+          type: boolean
+          description: Se a pasta existe no disco; calculado a cada leitura.
+        createdAt:
+          type: string
+          format: date-time
+          examples: ["2026-10-05T13:00:00Z"]
+        updatedAt:
+          type: string
+          format: date-time
+          examples: ["2026-10-05T13:00:00Z"]
+
+    ProjectInput:
+      type: object
+      required: [name, path, type]
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: Nome do projeto; único sem diferenciar maiúsculas.
+          examples: [loja-api]
+        path:
+          type: string
+          description: Caminho absoluto de uma pasta existente; único sem diferenciar maiúsculas.
+          examples: ['C:\dev-tools\projects\web\loja-api']
+        type:
+          $ref: "#/components/schemas/ProjectType"
+
+    ProjectType:
+      type: string
+      enum: [web, android, windows]
+
+    Health:
+      type: object
+      required: [version, database]
+      properties:
+        version:
+          type: string
+          examples: [0.1.0]
+        database:
+          type: string
+          enum: [available, unavailable]
+
+    Preferences:
+      type: object
+      required: [theme, language]
+      additionalProperties: false
+      properties:
+        theme:
+          type: string
+          enum: [light, dark, system]
+        language:
+          type: string
+          enum: [pt-br, en]
+
+    ErrorCode:
+      type: string
+      description: Código estável do erro. O front decide o que fazer por ele, não pela mensagem.
+      enum:
+        - auth.token_invalid
+        - request.invalid_body
+        - project.name_required
+        - project.path_required
+        - project.type_required
+        - project.type_invalid
+        - project.path_invalid
+        - project.path_not_found
+        - project.name_taken
+        - project.path_taken
+        - project.not_found
+        - preferences.theme_invalid
+        - preferences.language_invalid
+        - preferences.save_failed
+        - system.open_logs_failed
+        - database.unavailable
+        - internal.unexpected
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              $ref: "#/components/schemas/ErrorCode"
+            message:
+              type: string
+              description: Mensagem no idioma salvo nas preferências no momento da requisição.
+            field:
+              type: string
+              description: Campo da entrada a que o erro se refere (`name`, `path`, `type`, `theme` ou `language`). Só aparece nos erros de campo.
+
+  responses:
+    Unauthorized:
+      description: |
+        `auth.token_invalid`: o cabeçalho `Authorization` está ausente ou o token é diferente do
+        da execução.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: auth.token_invalid
+              message: "Operação recusada: a requisição não veio do Dev Tools."
+
+    InvalidBody:
+      description: |
+        `request.invalid_body`: JSON malformado, campo desconhecido ou corpo maior que 1 MiB.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: request.invalid_body
+              message: Os dados enviados estão em um formato inválido.
+
+    ProjectInvalid:
+      description: |
+        Dados do projeto inválidos. Códigos: `project.name_required` (`field: name`),
+        `project.path_required` (`field: path`), `project.type_required` (`field: type`),
+        `project.type_invalid` (`field: type`), `project.path_invalid` (`field: path`) e
+        `project.path_not_found` (`field: path`).
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            name_required:
+              value:
+                error:
+                  code: project.name_required
+                  message: Informe o nome do projeto.
+                  field: name
+            path_required:
+              value:
+                error:
+                  code: project.path_required
+                  message: Informe a pasta do projeto.
+                  field: path
+            type_required:
+              value:
+                error:
+                  code: project.type_required
+                  message: Escolha o tipo do projeto.
+                  field: type
+            type_invalid:
+              value:
+                error:
+                  code: project.type_invalid
+                  message: Tipo inválido. Escolha web, android ou windows.
+                  field: type
+            path_invalid:
+              value:
+                error:
+                  code: project.path_invalid
+                  message: 'Informe o caminho completo da pasta (ex.: C:\dev-tools\projects\web\loja-api).'
+                  field: path
+            path_not_found:
+              value:
+                error:
+                  code: project.path_not_found
+                  message: A pasta informada não existe.
+                  field: path
+
+    ProjectConflict:
+      description: |
+        Conflito com outro projeto. Códigos: `project.name_taken` (`field: name`) e
+        `project.path_taken` (`field: path`).
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            name_taken:
+              value:
+                error:
+                  code: project.name_taken
+                  message: Já existe um projeto com esse nome.
+                  field: name
+            path_taken:
+              value:
+                error:
+                  code: project.path_taken
+                  message: Essa pasta já está cadastrada em outro projeto.
+                  field: path
+
+    ProjectNotFound:
+      description: "`project.not_found`: `{id}` inválido ou sem projeto."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: project.not_found
+              message: Projeto não encontrado. Atualize a lista e tente de novo.
+
+    DatabaseUnavailable:
+      description: |
+        `database.unavailable`: o banco não abriu na inicialização, a conexão foi fechada ou o
+        SQLite falhou por outro motivo que não seja unicidade.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: database.unavailable
+              message: O banco de dados está indisponível. Reinicie o Dev Tools; se o problema continuar, veja os logs.
+
+    Unexpected:
+      description: "`internal.unexpected`: erro inesperado (a causa só vai para o log)."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: internal.unexpected
+              message: Ocorreu um erro inesperado. Veja os logs para mais detalhes.
