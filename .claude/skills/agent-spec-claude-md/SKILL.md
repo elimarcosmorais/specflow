@@ -1,6 +1,6 @@
 ---
 name: agent-spec-claude-md
-description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e, se já existe CLAUDE.md, enxuga e complementa com edições pontuais, mostrando o diff antes de gravar. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md) nem settings, hooks ou permissões.
+description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e, se já existe CLAUDE.md, enxuga e complementa com edições pontuais, mostrando o diff antes de gravar. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md), convenções de um tema inteiro (agent-spec-rule-create), decidir se um item solto vira regra (agent-spec-rule-curate) nem settings, hooks ou permissões.
 argument-hint: "[pasta do projeto (opcional; padrão: raiz do repositório)]"
 ---
 
@@ -25,6 +25,10 @@ Fronteiras:
 - **Regras de comportamento** (não chutar, escopo, evidência, confirmação) ficam em
   `.claude/rules/behavior.md`, que vem com o framework e vale em qualquer projeto. O `CLAUDE.md`
   **não as repete**: ele só traz o que é específico deste projeto.
+- **Rules por área** (`.claude/rules/<tema>.md`, com `paths`) guardam as convenções de uma área só
+  (banco, HTTP, um módulo) e só carregam ao tocar os arquivos dela. O `CLAUDE.md` carrega sempre,
+  então fica com o transversal. Tema inteiro → `/agent-spec-rule-create`; um item novo, depois que
+  o `CLAUDE.md` existe → `/agent-spec-rule-curate`.
 - **ADRs e design system** se apontam, não se copiam (`docs/adr/`, `docs/specs/design-system.md`).
 
 # Regras
@@ -60,7 +64,9 @@ A pasta do projeto é `$ARGUMENTS`; vazio → a raiz do repositório. Procure `C
   como **checklist**:
   - prosa, história da empresa, "código limpo", agradecimentos → corte;
   - regra frouxa → reescreva objetiva (Regra 3);
-  - regra de comportamento genérica que já está no `behavior.md` → corte (não duplique);
+  - regra que já está em `.claude/rules/` (`behavior.md` ou rule por área) → corte (não duplique);
+  - bloco de convenções de uma área só, sem rule → corte e liste o tema na Etapa 6 (não crie a
+    rule: é da `/agent-spec-rule-create`);
   - comando ou versão que não bate com o repo → corrija;
   - seção que falta → acrescente;
   - o que é factual e específico do projeto → mantenha, inclusive a ordem e o idioma.
@@ -109,7 +115,8 @@ identificadores nunca se traduzem.
 3. **Preencha** cada `{{PLACEHOLDER}}` só com fatos que têm fonte (Regra 1), em bullets curtos.
 4. **Apague todos os comentários-guia** `<!-- -->`: são instrução para você, não para o agente.
 5. **Conte as linhas.** Passou de ~80 → corte prosa, regra óbvia da linguagem e seção fraca antes
-   de mostrar.
+   de mostrar. Convenções de uma área só também saem (vão para uma rule por área; liste o tema na
+   Etapa 6).
 
 ## Etapa 5 — Mostrar e gravar
 
@@ -132,6 +139,7 @@ Idioma: <pt-BR | English>
 Comandos extraídos de: <arquivos> (não executados)
 Varredura de {{ }} e <!-- -->: limpa
 behavior.md: <presente | ausente — copie a .claude/ do framework para o projeto>
+Convenções de área fora do CLAUDE.md: <tema → /agent-spec-rule-create "<tema>"> (ou: nenhuma)
 Próximo passo: revisar o CLAUDE.md e commitar → /agent-spec-semantic-commit
 ```
 

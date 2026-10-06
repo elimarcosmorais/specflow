@@ -23,7 +23,8 @@ Só os que existem: sem script de lint no repo, sem linha de lint. -->
 ## Convenções
 <!-- [quase sempre] Regras objetivas, que dá para conferir olhando um diff. Nunca "escreva código
 limpo". Prefira negativos ("NÃO edite os arquivos gerados em db/gen/") e cite um arquivo
-exemplar em vez de copiar código ("handler novo segue src/users/handler.go"). -->
+exemplar em vez de copiar código ("handler novo segue src/users/handler.go"). Só as
+transversais: as de uma área só (banco, HTTP, um módulo) vão para .claude/rules/<tema>.md. -->
 - {{CONVENCAO}}
 
 ## Onde coisas novas vão

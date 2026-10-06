@@ -47,7 +47,8 @@ Este arquivo é o **mapa do framework** (seções 1 a 9 abaixo): responda a part
 | Como uma skill trabalha (etapas, regras)         | corpo do `SKILL.md`                                           |
 | Formato do documento que uma skill gera          | `template*.md` na pasta da skill                              |
 | Executor e revisores da Execução                 | `.claude/agents/agent-spec-*.md`                              |
-| Regras de comportamento                          | `.claude/rules/*.md`                                          |
+| Regras de comportamento                          | `.claude/rules/behavior.md`                                   |
+| Convenções do projeto (stack, comandos, temas)   | `CLAUDE.md` e `.claude/rules/<tema>.md` (frontmatter `paths`) |
 | Como criar ou evoluir uma skill do framework     | `CLAUDE.md`, seção "Como trabalhamos"                         |
 | Estado de uma feature                            | `docs/specs/features/NNN-*/vN/` (ver "Responder › Roteamento") |
 | Decisões de arquitetura já registradas           | `docs/adr/`                                                   |
@@ -264,13 +265,21 @@ cli, app, service), comandos reais extraídos do repo, pergunta só o que o repo
 (sempre o idioma). README existente é complementado com edições pontuais, com o diff aprovado
 antes de gravar. Não cria `LICENSE` nem arquivos de suporte: só avisa que faltam.
 
+- **Quando usar:** projeto sem README, ou com README defasado depois de mudanças na stack ou nos
+  comandos.
+
 **CLAUDE.md (`agent-spec-claude-md`).** Gera ou audita o `CLAUDE.md` de um projeto, o contrato do
 agente (visão, stack, comandos reais, convenções, onde coisas novas vão), em até ~80 linhas, com
 regras objetivas e negativas. Todo fato tem fonte (arquivo do repo ou usuário); sem fonte, pergunta
 ou deixa de fora. Pergunta sempre o idioma e os anti-padrões que o time mais corrige. Não repete as
 regras de comportamento (`.claude/rules/behavior.md`; avisa se faltar) e aponta para ADRs e design
-system em vez de copiá-los. CLAUDE.md existente é enxugado e complementado com edições pontuais,
-com o diff e a fonte de cada fato aprovados antes de gravar.
+system em vez de copiá-los. Só traz convenções transversais: as de uma área só (banco, HTTP, um
+módulo) ficam fora e são indicadas para uma rule por área. CLAUDE.md existente é enxugado e
+complementado com edições pontuais, com o diff e a fonte de cada fato aprovados antes de gravar.
+
+- **Quando usar:** projeto sem `CLAUDE.md` (em projeto novo, depois que o repo já tem manifest e
+  comandos: sem fonte, a seção fica de fora), ou quando o arquivo inchou ou ficou defasado. Para
+  acrescentar **um** item depois, é a `agent-spec-rule-curate`.
 
 **Rules do projeto (`agent-spec-rule-create` e `agent-spec-rule-curate`).** Além do `CLAUDE.md`, um
 projeto pode ter rules por área em `.claude/rules/<tema>.md`, com `paths` no frontmatter: só
@@ -287,7 +296,12 @@ Cada regra: uma linha, o porquê e um micro-exemplo ✅/❌ escrito nela.
   errado sem ela? dá para descobrir em 1 minuto? fica velha em 3 meses? tem o porquê?) e onde fica
   (`CLAUDE.md`, rule global ou por área); audita as rules e promove a `estável` a provisória cujo
   tema já tem código.
-- **Limites:** só rules e `CLAUDE.md`; não tocam código; diff aprovado antes de gravar.
+- **Quando usar:** `rule-create` antes da primeira feature que toca o tema (greenfield) ou para
+  fixar um tema que o código já pratica (brownfield); `rule-curate` quando surge um item
+  ("documenta isso", um erro que se repete) e, para auditar, quando o tema de uma rule
+  `provisória` ganha código.
+- **Limites:** só rules e `CLAUDE.md`; não tocam código; não criam ADR (apontam); diff aprovado
+  antes de gravar.
 
 **Guia (`agent-spec-guide`).** Esta skill.
 
@@ -334,17 +348,26 @@ Cada regra: uma linha, o porquê e um micro-exemplo ✅/❌ escrito nela.
   a rule diz ao agente como aplicá-la (uma linha + exemplo) e carrega.
 - **rule-create × rule-curate:** a primeira define um tema inteiro, eixo por eixo; a segunda
   julga um item solto e audita as rules existentes.
+- **`CLAUDE.md` × rule por área:** o `CLAUDE.md` carrega sempre e traz o transversal (stack,
+  comandos, convenções globais); a rule por área só carrega ao tocar os `paths` dela e traz os
+  detalhes de um tema.
+- **README × `CLAUDE.md`:** o README é para pessoas (o que é, como rodar); o `CLAUDE.md` é para o
+  agente (como trabalhar aqui).
 
 # 8. Estrutura de diretórios e convenções
 
 ```
+CLAUDE.md                 contrato do agente com o projeto (agent-spec-claude-md)
+README.md                 documentação para pessoas (agent-spec-readme)
+
 .claude/
 ├── skills/agent-spec-<fase>/
 │   ├── SKILL.md          instruções da skill
 │   └── template.md       modelo do documento que a skill gera
 │                         (Task Plan: template-tasks.md + template-task.md; Debt: esses dois +
 │                         template-debts.md; Execução e utilitários não têm template, exceto
-│                         o design-system)
+│                         design-system, readme e claude-md; o template da rule fica dentro do
+│                         SKILL.md da rule-create)
 ├── agents/               agent-spec-executor.md, agent-spec-reviewer.md,
 │                         agent-spec-security-reviewer.md (chamados pela Execução)
 └── rules/                carregadas automaticamente: behavior.md (sempre) e <tema>.md
@@ -402,11 +425,13 @@ docs/
   | ADR                                       | `proposto` → `aceito` → `substituído`   |
   | task (`T*.md`)                            | `pendente` → `em andamento` → `concluída` |
   | débito (no `debts.md`)                    | `aberto` → `pago`                       |
+  | rule por área (`.claude/rules/<tema>.md`) | `provisória` → `estável` (abaixo do título) |
 
 - **Próximo passo:** todo documento de fase termina com a seção "Próximo passo", com o comando
   pronto para copiar da próxima fase e de cada ADR a registrar antes dela. A ADR é a exceção.
 - **Nomes de skills e agents** em inglês, com prefixo `agent-spec-` (fase em kebab-case, ou o que
-  o utilitário faz; agents: o papel). O conteúdo é em português.
+  o utilitário faz; agents: o papel). **Rules** em inglês, kebab-case, pelo tema
+  (`database-access.md`). O conteúdo é em português.
 - **Idioma** dos documentos: português, com acentuação correta; nomes de código como no código.
 
 # 9. O que ficou de fora (de propósito)
@@ -456,7 +481,9 @@ descubra onde ela está:
    Alignment.
 5. `tasks.md` aprovado → olhe o status das tasks: alguma `pendente` ou `em andamento` → Execução;
    todas `concluída` → commit, se houver algo em stage (`git diff --staged --stat`), e, se algum
-   `debts.md` da feature tiver débito `aberto`, mencione o Debt como opcional.
+   `debts.md` da feature tiver débito `aberto`, mencione o Debt como opcional. Se alguma rule em
+   `.claude/rules/` está `provisória` e a feature criou código do tema dela, mencione
+   `/agent-spec-rule-curate auditar <rule>` para conferir os exemplos e promovê-la a `estável`.
 
 **Formato:**
 
