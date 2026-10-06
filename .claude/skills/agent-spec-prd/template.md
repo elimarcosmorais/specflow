@@ -93,8 +93,9 @@ status: rascunho   # rascunho | aprovado
 ## 12. Próximo passo
 
 - **Próxima fase:** Tech Alignment → `/agent-spec-tech-alignment docs/specs/features/NNN-<feature>/vN/prd.md`
+- **Antes, se a feature tem telas (opcional):** Design → `/agent-spec-design docs/specs/features/NNN-<feature>/vN/prd.md`
 - **ADR a registrar antes:**
   - `/agent-spec-adr "<título da decisão>"` — <o que ela decide, em poucas palavras>
 
-<!-- LLM-ONLY: os comandos ficam prontos para copiar, com o caminho real deste arquivo. ADR aqui = recomendada pelo pre-refinement e ainda ausente em docs/adr/; sem nenhuma → "**ADR a registrar antes:** nenhuma". -->
+<!-- LLM-ONLY: os comandos ficam prontos para copiar, com o caminho real deste arquivo. ADR aqui = recomendada pelo pre-refinement e ainda ausente em docs/adr/; sem nenhuma → "**ADR a registrar antes:** nenhuma". A linha do Design só existe se a feature tem interface. -->
 

@@ -51,13 +51,14 @@ Este arquivo é o **mapa do framework** (seções 1 a 9 abaixo): responda a part
 | Como criar ou evoluir uma skill do framework     | `CLAUDE.md`, seção "Como trabalhamos"                         |
 | Estado de uma feature                            | `docs/specs/features/NNN-*/vN/` (ver "Responder › Roteamento") |
 | Decisões de arquitetura já registradas           | `docs/adr/`                                                   |
+| Prompts e anexos do usuário (prints, logo, fontes) | `docs/references/`                                          |
 
 ---
 
 # 1. O fluxo
 
 ```
-  ideia / pedido
+  ideia / pedido           texto livre ou prompt em docs/references/prompts/
        │
        ▼
   [1] Pre-Refinement ─────► pre-refinement.md   entender o problema
@@ -65,6 +66,7 @@ Este arquivo é o **mapa do framework** (seções 1 a 9 abaixo): responda a part
        ▼
   [3] PRD ────────────────► prd.md              O QUÊ construir e POR QUÊ
        │
+       ├┄┄ (opcional) design ──► design.md   o que o usuário vê (só feature com telas)
        ▼
   [4] Tech Alignment ─────► tech-alignment.md   COMO, em alto nível
        │
@@ -82,25 +84,30 @@ Este arquivo é o **mapa do framework** (seções 1 a 9 abaixo): responda a part
   Transversais (podem acontecer em qualquer momento):
   [2] ADR  ──► docs/adr/     registra uma decisão importante de arquitetura
   [7] Debt ──► nova versão   lê os debts.md e abre a próxima versão (só tasks) para pagá-los
+  (opcional) design-system ──► docs/specs/design-system.md   identidade visual do produto
 ```
 
 As fases 1, 3, 4, 5, 6 e 8 são uma **sequência**: cada uma usa o documento da anterior como
-entrada. ADR e Debt são **transversais**: são disparadas quando surge uma decisão de arquitetura
+entrada. O Design (`agent-spec-design`) entra na sequência, entre o PRD e o Tech Alignment, só
+quando a feature tem telas. ADR e Debt são **transversais**: são disparadas quando surge uma decisão de arquitetura
 ou quando se decide pagar débitos acumulados.
 
 | # | Fase           | Skill                       | Pergunta que responde          | Entrada                        | Saída (dentro de `vN/`)             |
 |---|----------------|-----------------------------|--------------------------------|--------------------------------|-------------------------------------|
-| 1 | Pre-Refinement | `agent-spec-pre-refinement` | Qual é o problema, de verdade? | ideia ou pedido bruto          | `pre-refinement.md`                 |
+| 1 | Pre-Refinement | `agent-spec-pre-refinement` | Qual é o problema, de verdade? | ideia ou prompt (+ anexos)     | `pre-refinement.md`                 |
 | 2 | ADR            | `agent-spec-adr`            | Por que decidimos assim?       | uma decisão a registrar        | `docs/adr/NNN-<titulo>.md`          |
 | 3 | PRD            | `agent-spec-prd`            | O que construir e para quem?   | `pre-refinement.md`            | `prd.md`                            |
-| 4 | Tech Alignment | `agent-spec-tech-alignment` | Qual a abordagem técnica?      | `prd.md`                       | `tech-alignment.md`                 |
+| — | Design (opcional) | `agent-spec-design`      | O que o usuário vê?            | `prd.md` + `design-system.md`  | `design.md`                         |
+| 4 | Tech Alignment | `agent-spec-tech-alignment` | Qual a abordagem técnica?      | `prd.md` (+ `design.md`)       | `tech-alignment.md`                 |
 | 5 | Tech Spec      | `agent-spec-tech-spec`      | Como exatamente vai funcionar? | `prd.md` + `tech-alignment.md` | `spec.md`                           |
 | 6 | Task Plan      | `agent-spec-task-plan`      | Em que passos implementar?     | `spec.md`                      | `tasks.md` + `tasks/T*.md`          |
 | 7 | Debt           | `agent-spec-debt`           | Quais débitos pagar agora?     | `debts.md` da feature          | nova versão (`tasks.md` + `tasks/`) |
 | 8 | Execução       | `agent-spec-run-tasks`      | Está implementado e revisado?  | `tasks.md` + `tasks/T*.md`     | código + `debts.md`                 |
 
 Utilitários (não geram documento de fase): `agent-spec-challenge-spec`,
-`agent-spec-adr-review`, `agent-spec-semantic-commit` e este guia (seção 6).
+`agent-spec-adr-review`, `agent-spec-design-system`, `agent-spec-semantic-commit`,
+`agent-spec-readme`, `agent-spec-claude-md`, `agent-spec-rule-create`, `agent-spec-rule-curate`
+e este guia (seção 6).
 
 **Regra de ouro: aprovação entre fases.** Cada documento nasce `rascunho`. A próxima fase só
 começa depois que **o humano revisa e aprova** o documento anterior (muda para `aprovado`). É
@@ -120,7 +127,7 @@ posterior **não edita a versão já implementada**: abre uma nova versão.
 | Mudança  | Exemplo                                      | Entra em       | A versão contém                                         |
 |----------|----------------------------------------------|----------------|---------------------------------------------------------|
 | Grande   | nova capacidade, mudança de regra de negócio | Pre-Refinement | todos os documentos                                     |
-| Pequena  | um campo a mais, ajuste de validação         | Tech Spec      | `pre-refinement.md` + `spec.md` + `tasks.md` + `tasks/` |
+| Pequena  | um campo a mais, ajuste de validação         | Tech Spec      | `pre-refinement.md` + `spec.md` + `tasks.md` + `tasks/` (+ `design.md`, se muda telas) |
 | Débitos  | remover duplicação, renomear, código morto   | Debt           | `tasks.md` + `tasks/`                                   |
 | Trivial  | texto, cor, typo                             | —              | nenhuma versão; implementa direto                       |
 
@@ -222,11 +229,65 @@ inexistente, substituída ou ainda proposta.
   feature nova.
 - **Limites:** só lê; não corrige nada e não roda outra skill (sugere o comando).
 
+**Design system (`agent-spec-design-system`, opcional — só projetos com interface).** Cria ou
+atualiza `docs/specs/design-system.md`, a identidade visual do produto inteiro: cores, tipografia,
+espaçamento, ícones, layout, tema, componentes reutilizáveis (com o import real), padrões de
+feedback e acessibilidade visual. Deriva do código, do Figma e dos documentos do time o que já
+existe e só pergunta o resto; em projeto novo, propõe o design system inicial com perguntas de
+direção (biblioteca de UI, estilo, cor da marca, tema), sempre com recomendação. Global como as
+ADRs: fica fora das features e não tem versão. Status `rascunho` → `aprovado`; ao atualizar,
+volta para `rascunho`.
+
+- **Quando usar:** projeto novo com interface, antes da primeira feature com telas; projeto com
+  interface que nunca registrou o design system; ou quando ele ficou defasado.
+- **Limites:** só o global (as telas de uma feature não entram); não cria ADR (recomenda); não
+  escreve código; atualizar só completa o que está vazio, defasado ou novo, com confirmação.
+
+**Design da feature (`agent-spec-design`, fase opcional).** Não é utilitário, mas fica aqui
+junto do design system. Entre o PRD e o Tech Alignment, só em feature com telas, gera o
+`design.md`: telas, layout, componentes (reusados do design system ou novos com justificativa),
+estados visuais concretos, mensagens literais, tamanhos de tela, interações, acessibilidade
+visual e assets. Sem `design-system.md`, recomenda criá-lo antes. Consumido pelo Tech Alignment,
+pela Tech Spec (a §7 aponta para ele), pelo Task Plan (linha **Design** das tasks de tela) e pela
+Execução (o executor segue, o revisor confere). Promove ao design system, com confirmação, token e
+padrão de feedback; componente novo entra no design system só depois de existir no código.
+
 **Commit (`agent-spec-semantic-commit`).** O commit é sempre do usuário. Depois da Execução (ou de
-qualquer mudança fora do fluxo), a skill lê o que está em stage, propõe a mensagem em Conventional
-Commits, em português, e, aprovada, commita e faz push (o usuário pode escolher só commitar).
+qualquer mudança fora do fluxo), a skill coloca em stage todas as mudanças do projeto (`git add -A`,
+respeitando o `.gitignore`), propõe a mensagem em Conventional Commits, em português, e, aprovada, commita e faz push (o usuário pode escolher só commitar).
 Quando o commit fecha tasks, o rodapé `Refs: 001-<feature>/v1 T1, T2` liga o git aos documentos
 da feature. Nunca usa `--amend` nem `push --force`; se o push falhar, mostra o erro e para.
+
+**README (`agent-spec-readme`).** Gera ou atualiza o `README.md` de um projeto, a documentação
+para pessoas (`CLAUDE.md` e rules são para o agente). Template único com seções por tipo (lib,
+cli, app, service), comandos reais extraídos do repo, pergunta só o que o repo não responde
+(sempre o idioma). README existente é complementado com edições pontuais, com o diff aprovado
+antes de gravar. Não cria `LICENSE` nem arquivos de suporte: só avisa que faltam.
+
+**CLAUDE.md (`agent-spec-claude-md`).** Gera ou audita o `CLAUDE.md` de um projeto, o contrato do
+agente (visão, stack, comandos reais, convenções, onde coisas novas vão), em até ~80 linhas, com
+regras objetivas e negativas. Todo fato tem fonte (arquivo do repo ou usuário); sem fonte, pergunta
+ou deixa de fora. Pergunta sempre o idioma e os anti-padrões que o time mais corrige. Não repete as
+regras de comportamento (`.claude/rules/behavior.md`; avisa se faltar) e aponta para ADRs e design
+system em vez de copiá-los. CLAUDE.md existente é enxugado e complementado com edições pontuais,
+com o diff e a fonte de cada fato aprovados antes de gravar.
+
+**Rules do projeto (`agent-spec-rule-create` e `agent-spec-rule-curate`).** Além do `CLAUDE.md`, um
+projeto pode ter rules por área em `.claude/rules/<tema>.md`, com `paths` no frontmatter: só
+carregam quando o agente lê ou edita um arquivo que casa com eles. Rule sem `paths` é global (o
+`behavior.md` é do framework e não recebe convenção de projeto). Rule que guia como o código é
+escrito inclui `docs/specs/**` nos `paths`, para carregar também na geração da spec e das tasks.
+Cada regra: uma linha, o porquê e um micro-exemplo ✅/❌ escrito nela.
+
+- **`agent-spec-rule-create`** — convenções de **um tema inteiro** (banco, erros HTTP, DI…):
+  divide em 3 a 5 eixos, 3 alternativas por eixo com recomendação; deriva do código (brownfield)
+  ou propõe (greenfield, rule `provisória`); completa a rule que já existe; aponta as decisões que
+  valem ADR (não a cria).
+- **`agent-spec-rule-curate`** — decide se **um item** vira regra (teste de fricção: alguém faria
+  errado sem ela? dá para descobrir em 1 minuto? fica velha em 3 meses? tem o porquê?) e onde fica
+  (`CLAUDE.md`, rule global ou por área); audita as rules e promove a `estável` a provisória cujo
+  tema já tem código.
+- **Limites:** só rules e `CLAUDE.md`; não tocam código; diff aprovado antes de gravar.
 
 **Guia (`agent-spec-guide`).** Esta skill.
 
@@ -239,13 +300,20 @@ da feature. Nunca usa `--amend` nem `push --force`; se o push falhar, mostra o e
 | Ver as ADRs que os documentos mandam registrar e ainda faltam  | `/agent-spec-adr` (vazio)                                      |
 | Conferir se as ADRs estão consistentes entre si e com as features | `/agent-spec-adr-review`                                    |
 | Gerar o PRD                                                    | `/agent-spec-prd <pre-refinement.md ou vN/>`                   |
+| Especificar as telas de uma feature (depois do PRD)            | `/agent-spec-design <prd.md ou vN/> [Figma, mockups ou descrição]` |
 | Escolher a abordagem técnica                                   | `/agent-spec-tech-alignment <prd.md ou vN/>`                   |
 | Gerar a spec (inclusive de uma mudança pequena)                | `/agent-spec-tech-spec <prd.md, tech-alignment.md, pre-refinement.md ou vN/>` |
 | Caçar furos na spec antes das tasks                            | `/agent-spec-challenge-spec <spec.md ou vN/>`                  |
 | Quebrar a spec em tasks                                        | `/agent-spec-task-plan <spec.md ou vN/>`                       |
 | Implementar as tasks (todas, ou só uma)                        | `/agent-spec-run-tasks <tasks.md ou vN/> [TN]`                 |
 | Pagar débitos anotados                                         | `/agent-spec-debt <feature, vN/ ou debts.md>`                  |
-| Commitar o que está em stage                                   | `/agent-spec-semantic-commit`                                  |
+| Criar, consolidar ou atualizar o design system do produto      | `/agent-spec-design-system [Figma, docs ou descrição]`         |
+| Commitar todas as mudanças do projeto                          | `/agent-spec-semantic-commit`                                  |
+| Criar ou atualizar o README de um projeto                      | `/agent-spec-readme [pasta do projeto]`                        |
+| Criar, auditar ou enxugar o CLAUDE.md de um projeto            | `/agent-spec-claude-md [pasta do projeto]`                     |
+| Definir as convenções de um tema (banco, erros HTTP, DI…)      | `/agent-spec-rule-create "<tema>"`                             |
+| Decidir se algo vira regra ("documenta isso")                  | `/agent-spec-rule-curate "<item>"`                             |
+| Auditar ou limpar as rules do projeto                          | `/agent-spec-rule-curate auditar [arquivo de rule]`            |
 | Mudança trivial (texto, cor, typo)                             | nenhuma skill: implementa direto e commita                     |
 
 **Fronteiras que mais confundem:**
@@ -256,8 +324,16 @@ da feature. Nunca usa `--amend` nem `push --force`; se o push falhar, mostra o e
   todo e vai sobreviver à feature.
 - **Challenge da spec × Tech Spec:** o challenge não gera documento; procura furos e corrige o
   `spec.md` que já existe.
+- **Design system × Design:** o design system vale para o produto inteiro (tokens,
+  componentes, padrões); o `design.md` vale para as telas de uma feature e de uma versão.
+- **Design × Tech Spec:** o design diz o que o usuário vê ("banner com Tentar novamente"); a spec
+  diz como a máquina faz (rota, retry, de onde vêm os dados).
 - **Debt × mudança pequena:** débito não muda comportamento (sem `spec.md` novo). Se a correção
   muda API, erros, dados ou regras, é mudança pequena (ou grande) e segue o fluxo normal.
+- **Rule × ADR:** a ADR registra a decisão, as alternativas e o porquê, e não carrega no contexto;
+  a rule diz ao agente como aplicá-la (uma linha + exemplo) e carrega.
+- **rule-create × rule-curate:** a primeira define um tema inteiro, eixo por eixo; a segunda
+  julga um item solto e audita as rules existentes.
 
 # 8. Estrutura de diretórios e convenções
 
@@ -267,15 +343,23 @@ da feature. Nunca usa `--amend` nem `push --force`; se o push falhar, mostra o e
 │   ├── SKILL.md          instruções da skill
 │   └── template.md       modelo do documento que a skill gera
 │                         (Task Plan: template-tasks.md + template-task.md; Debt: esses dois +
-│                         template-debts.md; Execução e utilitários não têm template)
+│                         template-debts.md; Execução e utilitários não têm template, exceto
+│                         o design-system)
 ├── agents/               agent-spec-executor.md, agent-spec-reviewer.md,
 │                         agent-spec-security-reviewer.md (chamados pela Execução)
-└── rules/                regras que valem sempre, carregadas automaticamente (ex.: behavior.md)
+└── rules/                carregadas automaticamente: behavior.md (sempre) e <tema>.md
+                          (convenções de uma área, só ao tocar os paths dela)
 
 docs/
+├── references/           entrada do fluxo, escrita pelo usuário antes do Pre-Refinement
+│   ├── prompts/AAAA-MM-DD-<assunto>.md   pedido para o Pre-Refinement
+│   ├── screens/          prints de telas de outros sistemas
+│   └── brand/            logo/, fonts/, paleta
+├── specs/design-system.md   só em projeto com interface: identidade visual do produto (global)
 ├── specs/features/001-<nome-da-feature>/
 │   ├── v1/               primeira entrega: todos os documentos
 │   │   ├── pre-refinement.md, prd.md, tech-alignment.md, spec.md
+│   │   ├── design.md     só em feature com telas
 │   │   ├── tasks.md
 │   │   ├── tasks/T1.md, T2.md…
 │   │   └── debts.md      só existe se a execução deixou débitos
@@ -289,6 +373,10 @@ docs/
   dizer "leia `.../001-<feature>/v1/`" para ter o contexto inteiro daquela versão.
 - **ADR fica fora das features:** uma decisão de arquitetura costuma valer para o projeto todo e
   sobreviver à feature que a criou.
+- **`references/` separa a entrada da saída:** o prompt e os anexos nascem antes da pasta da
+  feature (é o Pre-Refinement que define o `NNN`), então ficam num lugar só, sem duplicar
+  arquivos. O prompt leva data no nome; a ponte para a feature é a "Fonte da ideia" do
+  `pre-refinement.md`. Logo e fontes que o app usa vão para os assets do código.
 - **Débito fica dentro da versão:** nasce da execução daquela versão e é pago na próxima.
 - **O template mora dentro da skill:** cada skill é autocontida.
 - **Regras de comportamento em `.claude/rules/`, não no `CLAUDE.md`:** fazem parte do framework;
@@ -310,6 +398,7 @@ docs/
   | Documento                                 | Status                                  |
   |-------------------------------------------|-----------------------------------------|
   | documentos de fase (`pre-refinement.md`…) | `rascunho` → `aprovado`                 |
+  | `design-system.md`                        | `rascunho` → `aprovado`                 |
   | ADR                                       | `proposto` → `aceito` → `substituído`   |
   | task (`T*.md`)                            | `pendente` → `em andamento` → `concluída` |
   | débito (no `debts.md`)                    | `aberto` → `pago`                       |
@@ -328,11 +417,10 @@ fizer falta):
 
 - **Outros fluxos de feature:** miniSpec e TaskCard. Aqui há um fluxo só; o tamanho da mudança
   (seção 2) define onde ele começa.
-- **Design de UI** e design system.
 - **Skills extras de ADR** (listar, mostrar, depreciar, reindexar, bootstrap): a
   `agent-spec-adr` cria e substitui, a `agent-spec-adr-review` confere o conjunto; o resto se faz
   lendo `docs/adr/`. Também não há `INDEX.md`, tags nem status `deprecated` nas ADRs.
-- **Skills de rules** (criar, curar, minerar candidatos) e de testes (doutrina com antipadrões,
+- **Mineração de regras** a partir das revisões, e skills de testes (doutrina com antipadrões,
   descoberta da stack de testes).
 - **Na Execução:** tasks em paralelo; escolha de modelo por task e escalonamento por área
   sensível (ficou só "a última correção roda em Opus"); uma segunda revisão separada (QA + Tech
@@ -363,7 +451,9 @@ descubra onde ela está:
 3. Algum documento em `rascunho` (ADR em `proposto`) → o próximo passo é **o usuário revisar e
    aprovar** esse documento, não rodar a fase seguinte (regra de ouro).
 4. Tudo aprovado → o comando está na seção "Próximo passo" do último documento. Confira se as
-   ADRs que ela manda registrar antes já existem em `docs/adr/`.
+   ADRs que ela manda registrar antes já existem em `docs/adr/`. Último documento é o `prd.md`
+   de uma feature com telas, sem `design.md` → mencione o Design como opcional antes do Tech
+   Alignment.
 5. `tasks.md` aprovado → olhe o status das tasks: alguma `pendente` ou `em andamento` → Execução;
    todas `concluída` → commit, se houver algo em stage (`git diff --staged --stat`), e, se algum
    `debts.md` da feature tiver débito `aberto`, mencione o Debt como opcional.

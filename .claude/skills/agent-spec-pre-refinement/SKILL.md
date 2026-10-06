@@ -39,10 +39,13 @@ Saída: `docs/specs/features/NNN-<feature>/vN/pre-refinement.md`, seguindo o
 
 ## Etapa 0 — Entrada
 
-`$ARGUMENTS` pode ser texto livre ou o caminho de um `.md`/`.txt`.
+`$ARGUMENTS` pode ser texto livre ou o caminho de um `.md`/`.txt`, em geral um prompt de
+`docs/references/prompts/`.
 
 - Caminho de arquivo que existe → leia com `Read`; o conteúdo é a ideia. Registre o caminho em
   "Fonte da ideia".
+- O texto cita arquivos (prints, logo, PDFs, em geral de `docs/references/`) → leia cada um
+  com `Read` (ele lê imagens) e liste-os em "Anexos". Citado e não existe → avise o usuário.
 - Parece caminho, mas não existe → pergunte se é o texto da ideia ou um arquivo errado.
 - Vazio → peça a ideia.
 

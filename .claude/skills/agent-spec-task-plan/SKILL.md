@@ -137,6 +137,8 @@ Uma task é `alto` quando cria ou altera:
   (`README.md`, `package.json`, `Makefile`, ADRs). Eles entram no "Pronta quando" das tasks.
 - Leia a seção Decisão das ADRs de §12 da spec: cada task vai citar só as que governam os
   arquivos dela.
+- Se a versão tem `design.md`, as tasks de tela citam na linha **Design** as seções dele (e do
+  `design-system.md`) que o executor precisa seguir.
 
 ## Etapa 3 — Montar o plano
 

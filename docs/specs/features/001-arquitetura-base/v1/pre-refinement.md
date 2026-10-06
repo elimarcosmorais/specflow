@@ -9,7 +9,7 @@ status: aprovado # rascunho | aprovado
 > `[fora do escopo do projeto]` = rumo que extrapola o que o projeto se propõe a ser.
 
 - **Feature:** `001-arquitetura-base` · **Versão:** v1 · **Data:** 2026-10-05
-- **Fonte da ideia:** `docs/prompt-pre-refinement.md`
+- **Fonte da ideia:** `docs/references/prompts/2026-10-05-arquitetura-base.md`
 
 ---
 

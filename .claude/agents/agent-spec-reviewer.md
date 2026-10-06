@@ -67,6 +67,10 @@ Leia a task inteira antes. Depois, nesta ordem:
 5. **Corretude.** Cada passo da seção 2 foi feito como descrito? Erros tratados nos pontos de
    falha, entradas validadas, recursos fechados? Os nomes, códigos de erro e contratos batem com
    a seção 2 e com a spec?
+   - **Design** (só se a task tem `Design:` no cabeçalho): leia as seções citadas. Tela sem um
+     estado especificado ou com estado diferente do descrito → `alta`; componente do design
+     system recriado em vez de importado pela referência → `alta`; mensagem diferente da literal
+     ou cor/espaçamento fora dos tokens → `média`.
 6. **ADRs.** Leia o texto das ADRs da seção 5 e confronte com o diff. Confira também em
    `docs/adr/` se alguma ADR `aceito` não citada governa os arquivos tocados. **Contradição direta
    a uma decisão explícita** (diretório, biblioteca, padrão, nome) → no mínimo `alta`, mesmo que

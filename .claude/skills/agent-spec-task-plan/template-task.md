@@ -9,9 +9,10 @@ status: pendente   # pendente | em andamento | concluída
 - **Entrega para outras tasks:** `<tipo, função ou tabela que outras tasks usam>` | nada
 - **Histórias:** US-01 · **Critérios de aceite:** CA-01, CA-02
 - **Spec:** [spec.md](../spec.md) §3.1, §5, §6.1
+- **Design:** [design.md](../design.md) §3.1, §4 · [design-system.md](../../../../design-system.md) §7, §8 | —
 - **Risco:** baixo | alto — <áreas: autenticação, autorização, pagamentos…>
 
-<!-- LLM-ONLY: "Depende de" e "Entrega para outras tasks" são o que prova a ordem (regra 5): todo símbolo que esta task usa de outra task aparece em "Depende de", com a task que o cria. "Spec" lista só as seções que o executor precisa consultar para esta task. "Risco" segue as "Regras de risco" do SKILL.md: `baixo` fica sozinho; `alto` traz as áreas que o justificam. -->
+<!-- LLM-ONLY: "Depende de" e "Entrega para outras tasks" são o que prova a ordem (regra 5): todo símbolo que esta task usa de outra task aparece em "Depende de", com a task que o cria. "Spec" lista só as seções que o executor precisa consultar para esta task; "Design" idem, só em task que cria ou altera tela ou componente visual (as outras: "—"). "Risco" segue as "Regras de risco" do SKILL.md: `baixo` fica sozinho; `alto` traz as áreas que o justificam. -->
 
 ---
 

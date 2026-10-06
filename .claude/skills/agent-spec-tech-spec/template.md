@@ -113,7 +113,7 @@ Formato de cada uma.>
 |--------|--------|--------------------|
 | <tela> | carregando \| vazio \| erro \| <outro> | <descrição> |
 
-<!-- LLM-ONLY: feature sem interface → "N/A — <motivo>" nas duas subseções. -->
+<!-- LLM-ONLY: feature sem interface → "N/A — <motivo>" nas duas subseções. Feature com design.md → a 7.1 ganha a coluna "Design" (ex.: design.md §3.2) e a 7.2 vira "Conforme design.md §4", sem repetir o visual; aqui fica só o que ele não diz (de onde vêm os dados de cada estado, o que dispara cada um). -->
 
 ## 8. Aspectos transversais
 

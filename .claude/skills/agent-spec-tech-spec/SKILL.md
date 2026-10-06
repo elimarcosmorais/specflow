@@ -78,7 +78,8 @@ Fluxo e convenções completos: `WORKFLOW.md`.
 ## Etapa 1 — Ler e verificar
 
 1. Leia o `prd.md`, o `tech-alignment.md` e o `pre-refinement.md` (no modo mudança pequena,
-   também o `spec.md` da versão anterior).
+   também o `spec.md` da versão anterior). Se a versão tem `design.md` (ou, na mudança pequena,
+   uma versão anterior tem), leia-o também, e o `docs/specs/design-system.md`.
 2. **Status.** Se o documento de entrada (`tech-alignment.md`, ou o pre-refinement no modo
    mudança pequena) for `rascunho`, lembre a regra de ouro do `WORKFLOW.md` e pergunte:
    "marcar como `aprovado` e seguir" ou "parar para revisar".
@@ -141,6 +142,9 @@ Preencha o template seção a seção. Pontos que costumam ficar fracos:
   "irreversível" e o plano. Mudança de schema é sempre migração nova, nunca edição de uma que já
   existe.
 - **Fluxos (§6):** camada por camada, incluindo os alternativos do PRD.
+- **Interface (§7):** com `design.md`, não redefina o visual: a §7 traz o técnico de cada tela
+  (rota, dados que mostra, ações e o que elas chamam) e aponta para a seção do `design.md` com o
+  layout e os estados. Arquivos de tela e de componentes novos do design entram em §11.
 - **Testes (§10):** monte primeiro a tabela CA → testes; todo CA tem pelo menos um CT. Cada CT
   tem uma camada só (unitário, integração, e2e ou manual) e segue o padrão de testes do projeto
   (ADR, testes existentes). Para cada caminho feliz que tem um modo de falha no PRD, inclua

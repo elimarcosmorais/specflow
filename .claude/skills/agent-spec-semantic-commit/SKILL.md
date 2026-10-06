@@ -1,6 +1,6 @@
 ---
 name: agent-spec-semantic-commit
-description: Utilitário do framework (transversal). Gera a mensagem de commit em português seguindo o Conventional Commits (tipo, escopo, assunto no imperativo em até 72 caracteres, corpo e rodapé quando fazem falta) a partir do que está em stage, propõe ao usuário e, depois de aprovado, commita e faz push para o remoto. Usar quando o usuário pedir para commitar ("commita isso", "gera o commit", "qual seria o commit?"), inclusive depois da Execução (agent-spec-run-tasks), que deixa o código em stage. Não faz amend nem push --force.
+description: Utilitário do framework (transversal). Commita TODAS as mudanças do projeto (modificados, novos e apagados, respeitando o .gitignore) - coloca tudo em stage, gera a mensagem em português seguindo o Conventional Commits (tipo, escopo, assunto no imperativo em até 72 caracteres, corpo e rodapé quando fazem falta), propõe ao usuário e, depois de aprovado, commita e faz push para o remoto. Nenhum arquivo fica sem commit no final. Usar quando o usuário pedir para commitar ("commita isso", "gera o commit", "qual seria o commit?"), inclusive depois da Execução (agent-spec-run-tasks), que deixa o código em stage. Não faz amend nem push --force.
 argument-hint: "[o que mudou, em poucas palavras (opcional)]"
 ---
 
@@ -12,17 +12,20 @@ diz **por quê**.
 
 # Objetivo
 
-Transformar o que está em **stage** em um commit (ou mais de um, se misturar assuntos) no padrão
-[Conventional Commits](https://www.conventionalcommits.org/), com a mensagem em português, e
-enviá-lo ao remoto (`push`).
+Transformar **todas as mudanças do projeto** em um commit (ou mais de um, se misturar assuntos) no
+padrão [Conventional Commits](https://www.conventionalcommits.org/), com a mensagem em português,
+e enviá-lo ao remoto (`push`). Ao terminar, o `git status` fica limpo.
 
 No nosso fluxo, a Execução (`agent-spec-run-tasks`) deixa as tasks aprovadas em stage e **não
 commita**: o commit é do usuário, e esta skill é a forma de fazê-lo.
 
 # Regras
 
-1. **Só o que está em stage.** Não faça `git add` por conta própria. Exceções: os arquivos que o
-   usuário escolher quando o stage estiver vazio (Etapa 1) e a divisão aprovada (Etapa 4).
+1. **Tudo do projeto entra.** Comece com `git add -A`: modificados, novos e apagados, em stage ou
+   não. O `.gitignore` decide o que fica de fora; você não escolhe arquivos. Única exceção: arquivo
+   que parece segredo e não está no `.gitignore` (`.env`, `*.pem`, `*.key`, credenciais) → tire de
+   stage e pergunte ao usuário antes (Etapa 1). Dividir em mais de um commit pode, mas a soma das
+   partes cobre todos os arquivos.
 2. **Proponha antes de commitar.** O commit e o push só acontecem depois que o usuário aprovar
    a mensagem. A aprovação vale para os dois.
 3. **Um commit = um assunto.** Se o stage mistura assuntos (ex.: uma feature e um fix em outro
@@ -41,12 +44,15 @@ commita**: o commit é do usuário, e esta skill é a forma de fazê-lo.
 ## Etapa 1 — Ler o que vai ser commitado
 
 ```bash
+git add -A                 # tudo do projeto em stage (respeita o .gitignore)
 git diff --staged --stat   # visão geral: arquivos e tamanho da mudança
 git diff --staged          # o conteúdo
 ```
 
-- **Stage vazio** → mostre `git status --short` e pergunte o que entra no commit. Faça
-  `git add -- <arquivos>` só do que o usuário escolher. Nada a commitar → diga e pare.
+- **Nada em stage** depois do `git add -A` → não há o que commitar: diga e pare.
+- **Arquivo que parece segredo** (Regra 1) → `git restore --staged -- <arquivo>` e pergunte com
+  `AskUserQuestion`: commitar mesmo assim, ou deixar de fora e sugerir colocá-lo no `.gitignore`.
+  É o único caso em que um arquivo pode ficar sem commit, e só com a decisão do usuário.
 - **Diff grande** → leia por arquivo (`git diff --staged -- <arquivo>`), priorizando o código de
   produção; testes e docs costumam confirmar o que o código já disse.
 - Se o usuário descreveu a mudança (`$ARGUMENTS` ou na conversa), use isso para entender a
@@ -166,10 +172,8 @@ Commit 2 — chore(deps): atualiza dependências do go.sum
 Aprovada, faça um commit de cada vez: tire de stage os arquivos das outras partes
 (`git restore --staged -- <arquivos>`: só tira de stage, não perde nada), commite, e devolva a
 stage os arquivos da próxima parte (`git add -- <arquivos>`). O push é um só, depois do último
-commit. Só divida **por arquivo inteiro**.
-Se um mesmo arquivo tem mudanças de dois assuntos, ou tem também mudanças fora de stage
-(`git diff --name-only`), não automatize: explique e deixe o usuário montar o stage (ex.:
-`git add -p`).
+commit. Só divida **por arquivo inteiro**: todo arquivo entra em exatamente uma parte. Se um mesmo
+arquivo tem mudanças de dois assuntos, ele vai inteiro para a parte do assunto principal dele.
 
 ## Etapa 5 — Commitar
 
@@ -207,13 +211,16 @@ git rev-parse --abbrev-ref --symbolic-full-name @{u}   # a branch tem upstream?
   commit continua local, intacto. Explique a causa provável (ex.: remoto à frente → integrar com
   `git pull --rebase` e enviar de novo) e deixe o usuário decidir; não rode nada por conta própria.
 
+Antes do resumo, confira com `git status --short` que não sobrou nada. Sobrou arquivo (fora o
+segredo que o usuário decidiu deixar de fora) → algo deu errado: diga quais e por quê; não
+esconda.
+
 Depois, mostre **apenas**:
 
 ```
-Commit criado: <saída de git log --oneline -1>
+Commit criado: <saída de git log --oneline do(s) commit(s) criado(s)>
 Push: <branch> → <remoto>/<branch> | não feito (só commit) | falhou: <erro>
-Ainda em stage: <git diff --staged --stat | nada>
-Fora de stage: <git status --short, só os modificados | nada>
+Sem commit: nada | <arquivos e o motivo>
 ```
 
 # Entrada

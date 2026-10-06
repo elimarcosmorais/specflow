@@ -10,6 +10,7 @@ status: rascunho   # rascunho | aprovado
 
 - **Feature:** `NNN-<nome-da-feature>` · **Versão:** vN · **Data:** AAAA-MM-DD
 - **Fonte da ideia:** texto livre | `<path do arquivo lido>`
+- **Anexos:** nenhum | `<path de cada arquivo citado na ideia>`
 
 ---
 

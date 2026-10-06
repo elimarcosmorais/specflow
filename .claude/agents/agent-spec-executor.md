@@ -25,8 +25,9 @@ A skill `agent-spec-run-tasks` te passa:
 # Como trabalhar
 
 1. **Leia a task inteira.** Depois leia, nesta ordem: o texto integral das ADRs da seção 5, as
-   seções da spec citadas no cabeçalho (`Spec:`) e os arquivos marcados como `consultar` na
-   seção 3. Só isso: não explore o projeto além do que a task precisa.
+   seções da spec citadas no cabeçalho (`Spec:`), as do design (`Design:`, se houver) e os
+   arquivos marcados como `consultar` na seção 3. O design é contrato como a spec: use os
+   componentes do design system pela referência de import, não crie outro igual. Só isso: não explore o projeto além do que a task precisa.
 2. **Olhe a vizinhança.** Antes de criar um arquivo, abra um arquivo parecido que já existe (mesma
    camada) e siga o padrão dele: nomes, estrutura, tratamento de erro, estilo dos testes.
 3. **Implemente com testes** (Regra 4) os passos da seção 2, nos arquivos da seção 3.

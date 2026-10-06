@@ -80,9 +80,10 @@ Zero pontos é uma resposta válida (ex.: mais um CRUD igual aos outros). Invent
 
 ## Etapa 1 — Ler e verificar
 
-1. Leia o `prd.md` e o `pre-refinement.md` da mesma pasta.
-2. **Status.** Se o `prd.md` for `rascunho`, lembre a regra de ouro do `WORKFLOW.md` e pergunte:
-   "marcar como `aprovado` e seguir" ou "parar para revisar".
+1. Leia o `prd.md` e o `pre-refinement.md` da mesma pasta, e o `design.md`, se existir: o que
+   o usuário vê já está decidido nele, e as soluções técnicas precisam viabilizá-lo.
+2. **Status.** Se o `prd.md` (ou o `design.md`) for `rascunho`, lembre a regra de ouro do
+   `WORKFLOW.md` e pergunte: "marcar como `aprovado` e seguir" ou "parar para revisar".
 3. **ADR pendente.** Se o pre-refinement ou o PRD recomendaram uma ADR que não existe em
    `docs/adr/`, avise (sem bloquear).
 4. Se já existir `tech-alignment.md` na pasta, pergunte se deve sobrescrevê-lo. Se a versão já
