@@ -35,8 +35,7 @@ Este arquivo é o **mapa do framework** (seções 1 a 9 abaixo): responda a part
    principalmente ao apontar onde algo deve ser alterado.
 4. **Extraia, não despeje.** Traga o trecho que responde à pergunta, não o arquivo inteiro.
 5. **Só o que existe.** Se perguntarem por algo que o framework não tem, diga isso. Se estiver na
-   seção 9 (o que ficou de fora), diga que ficou de fora de propósito. Não recomende skills do
-   framework do professor.
+   seção 9 (o que ficou de fora), diga que ficou de fora de propósito.
 
 ## Onde confirmar os detalhes
 
@@ -449,7 +448,7 @@ docs/
 
 # 9. O que ficou de fora (de propósito)
 
-O framework é uma versão menor do framework do professor. Se perguntarem por algo abaixo, diga
+O framework é enxuto de propósito. Se perguntarem por algo abaixo, diga
 que não existe aqui e que foi deixado de fora para manter o fluxo simples (pode ser trazido se
 fizer falta):
 

@@ -242,7 +242,7 @@ do SQLite.
   de `docs/`. Por quê: specs, skills e código no mesmo workspace e histórico, o que simplifica a
   fase de Execução; se o produto crescer, dá para extrair depois preservando o histórico.
 - **Viabilidade:** nada novo.
-- **Trade-off aceito:** o histórico do repositório mistura framework de estudo e produto.
+- **Trade-off aceito:** o histórico do repositório mistura framework e produto.
 - **Atende:** US-15, US-16
 - **ADR:** não
 

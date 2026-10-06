@@ -182,8 +182,8 @@ Ao final, existe um Dev Tools **instalável no Windows** que:
 
 ## 7. Ancoramento no projeto
 
-- **O que o projeto é** (CLAUDE.md / README): ambiente de estudo para construir um framework
-  próprio de skills e agents no fluxo SDD. O Dev Tools é o produto especificado com esse
+- **O que o projeto é** (CLAUDE.md / README): framework enxuto de skills e agents do Claude
+  Code no fluxo SDD. O Dev Tools é o produto especificado com esse
   framework.
 - **Features relacionadas** (`docs/specs/features/`): nenhuma (esta é a primeira).
 - **Capacidades reutilizáveis:** nenhuma ainda; o código do Dev Tools começa do zero.
