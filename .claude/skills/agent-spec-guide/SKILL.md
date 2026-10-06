@@ -107,8 +107,8 @@ ou quando se decide pagar débitos acumulados.
 
 Utilitários (não geram documento de fase): `agent-spec-challenge-spec`,
 `agent-spec-adr-review`, `agent-spec-design-system`, `agent-spec-semantic-commit`,
-`agent-spec-readme`, `agent-spec-claude-md`, `agent-spec-rule-create`, `agent-spec-rule-curate`
-e este guia (seção 6).
+`agent-spec-readme`, `agent-spec-claude-md`, `agent-spec-rule-create`, `agent-spec-rule-curate`,
+`agent-spec-visual-guide` e este guia (seção 6).
 
 **Regra de ouro: aprovação entre fases.** Cada documento nasce `rascunho`. A próxima fase só
 começa depois que **o humano revisa e aprova** o documento anterior (muda para `aprovado`). É
@@ -303,6 +303,17 @@ Cada regra: uma linha, o porquê e um micro-exemplo ✅/❌ escrito nela.
 - **Limites:** só rules e `CLAUDE.md`; não tocam código; não criam ADR (apontam); diff aprovado
   antes de gravar.
 
+**Guia visual (`agent-spec-visual-guide`).** Mantém o `docs/visual-guide.html` — a versão visual
+deste mapa, com diagramas Mermaid clicáveis do fluxo, da Execução, das versões, das rules e de
+todas as peças — em dia com o que existe em `.claude/skills`, `.claude/agents`, `.claude/rules`
+e neste guia. Mostra um relatório das divergências, o usuário escolhe o que aplicar, e ela edita
+a página e confere no navegador headless que todos os diagramas ainda desenham.
+
+- **Quando usar:** depois de criar, alterar ou remover uma skill, um agent ou uma rule do
+  framework, ou quando este guia mudar o fluxo.
+- **Limites:** só edita o `visual-guide.html`; divergência entre este guia e um `SKILL.md` é
+  apontada, não corrigida; não commita.
+
 **Guia (`agent-spec-guide`).** Esta skill.
 
 # 7. Mapa de roteamento — necessidade → skill
@@ -328,6 +339,7 @@ Cada regra: uma linha, o porquê e um micro-exemplo ✅/❌ escrito nela.
 | Definir as convenções de um tema (banco, erros HTTP, DI…)      | `/agent-spec-rule-create "<tema>"`                             |
 | Decidir se algo vira regra ("documenta isso")                  | `/agent-spec-rule-curate "<item>"`                             |
 | Auditar ou limpar as rules do projeto                          | `/agent-spec-rule-curate auditar [arquivo de rule]`            |
+| Atualizar o guia visual depois de mudar skills, agents ou rules | `/agent-spec-visual-guide`                                    |
 | Mudança trivial (texto, cor, typo)                             | nenhuma skill: implementa direto e commita                     |
 
 **Fronteiras que mais confundem:**
@@ -374,6 +386,7 @@ README.md                 documentação para pessoas (agent-spec-readme)
                           (convenções de uma área, só ao tocar os paths dela)
 
 docs/
+├── visual-guide.html     guia visual do framework: diagramas clicáveis (agent-spec-visual-guide)
 ├── references/           entrada do fluxo, escrita pelo usuário antes do Pre-Refinement
 │   ├── prompts/AAAA-MM-DD-<assunto>.md   pedido para o Pre-Refinement
 │   ├── screens/          prints de telas de outros sistemas

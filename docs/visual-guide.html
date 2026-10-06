@@ -1,0 +1,1578 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia visual do framework</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2338BDF8'/%3E%3Cstop offset='.5' stop-color='%232563EB'/%3E%3Cstop offset='1' stop-color='%233B1EFF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='40' height='40' rx='10' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='13.5,14 7.5,20 13.5,26'/%3E%3Cpolyline points='26.5,14 32.5,20 26.5,26'/%3E%3Cline x1='22.6' y1='10.5' x2='17.4' y2='29.5'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F4FA;
+    --surface: #FFFFFF;
+    --ink: #1E1B2E;
+    --muted: #5E5A72;
+    --line: #E3E0EE;
+    --accent: #6D4AE0;
+    --accent-soft: #EEE9FF;
+    --grid-dot: #D6D2E6;
+    --canvas: #FCFCFE;
+
+    --phase: #ECECFF;   --phase-b: #9370DB;
+    --util: #FFF3DC;    --util-b: #D99A2B;
+    --agent: #DFF5E8;   --agent-b: #2F9E66;
+    --rule: #EEF2F6;    --rule-b: #64748B;
+    --doc: #FFFFFF;     --doc-b: #8D93A8;
+    --guide: #E0F2FE;   --guide-b: #0284C7;
+    --stop: #FFE1E1;    --stop-b: #D64545;
+    --cluster: #FFFFDE; --cluster-b: #AAAA33;
+
+    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.6 var(--sans);
+  }
+  code, pre, .mono { font-family: var(--mono); font-size: .88em; }
+  code { background: var(--accent-soft); color: #4B2FB8; padding: 1px 5px; border-radius: 4px; }
+  a { color: var(--accent); }
+
+  /* ---------- topo ---------- */
+  header.top {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 20px 16px 0;
+  }
+  .wrap { max-width: 1440px; margin: 0 auto; }
+  .brand { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .logo { width: 40px; height: 40px; flex: none; display: block; }
+  h1 { font-size: 22px; margin: 0; line-height: 1.2; }
+  .subtitle { color: var(--muted); margin: 2px 0 0; font-size: 14px; }
+  nav.tabs {
+    display: flex; gap: 4px; margin-top: 16px; overflow-x: auto; scrollbar-width: thin;
+  }
+  nav.tabs button {
+    font: 500 14px var(--sans); color: var(--muted);
+    background: none; border: 0; border-bottom: 3px solid transparent;
+    padding: 10px 12px; cursor: pointer; white-space: nowrap;
+  }
+  nav.tabs button .n {
+    display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--line); color: var(--muted); font-size: 11px; margin-right: 6px;
+  }
+  nav.tabs button[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+  nav.tabs button[aria-selected="true"] .n { background: var(--accent); color: #fff; }
+
+  /* ---------- layout ---------- */
+  .layout {
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px;
+    padding: 20px 16px 80px;
+  }
+  @media (min-width: 1100px) {
+    .layout { grid-template-columns: minmax(0, 1fr) 360px; }
+  }
+  section.tab > h2 { font-size: 20px; margin: 0 0 4px; }
+  section.tab > .intro { color: var(--muted); margin: 0 0 16px; max-width: 900px; }
+  h3 { font-size: 16px; margin: 0 0 6px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px; margin-bottom: 16px;
+  }
+  .grid-2 { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 900px) { .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .callout {
+    border-left: 4px solid var(--accent); background: var(--accent-soft);
+    padding: 12px 14px; border-radius: 0 10px 10px 0; margin-bottom: 16px;
+  }
+  .callout strong { color: #4B2FB8; }
+  .callout.warn { border-color: var(--util-b); background: var(--util); }
+  .callout.warn strong { color: #8A5A08; }
+
+  ol.steps { margin: 0; padding-left: 20px; }
+  ol.steps li { margin-bottom: 6px; }
+
+  /* ---------- diagrama ---------- */
+  .diagram {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    margin-bottom: 16px; overflow: hidden;
+  }
+  .dg-bar {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 10px 12px; border-bottom: 1px solid var(--line);
+  }
+  .dg-title { font-weight: 600; font-size: 14px; flex: 1 1 200px; }
+  .dg-tools { display: flex; gap: 4px; align-items: center; }
+  .dg-tools button, .btn {
+    font: 500 12px var(--sans); color: var(--ink);
+    border: 1px solid var(--line); background: var(--surface); border-radius: 8px;
+    height: 30px; min-width: 30px; padding: 0 9px; cursor: pointer;
+  }
+  .dg-tools button:hover, .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .dg-zoom { font: 500 12px var(--mono); color: var(--muted); width: 44px; text-align: center; }
+  .canvas {
+    position: relative; overflow: hidden; height: 360px; cursor: grab;
+    background-color: var(--canvas);
+    background-image: radial-gradient(var(--grid-dot) 1px, transparent 1.2px);
+    background-size: 18px 18px;
+    touch-action: pan-y;
+  }
+  .canvas.dragging { cursor: grabbing; }
+  .canvas .inner { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .canvas .inner svg { display: block; max-width: none !important; }
+  .canvas .state {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    color: var(--muted); font-size: 14px; padding: 16px; text-align: center;
+  }
+  .dg-hint { font-size: 12px; color: var(--muted); padding: 8px 12px; border-top: 1px solid var(--line); }
+  .dg-code { display: none; border-top: 1px solid var(--line); background: #1E1B2E; position: relative; }
+  .dg-code.open { display: block; }
+  .dg-code pre { margin: 0; padding: 14px; color: #E7E3F7; overflow: auto; max-height: 360px; font-size: 12.5px; }
+  .dg-code .btn { position: absolute; top: 8px; right: 8px; }
+
+  /* nós clicáveis */
+  .canvas .node.clickable { cursor: pointer; }
+  .canvas .node.clickable:hover > rect,
+  .canvas .node.clickable:hover > polygon,
+  .canvas .node.clickable:hover > path,
+  .canvas .node.clickable:hover > circle { filter: drop-shadow(0 2px 6px rgba(109, 74, 224, .45)); }
+
+  /* ---------- legenda ---------- */
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--muted); }
+  .legend .it { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 26px; height: 16px; border-radius: 4px; border: 1.5px solid; flex: none; }
+  .sw.phase { background: var(--phase); border-color: var(--phase-b); }
+  .sw.phase-opt { background: var(--phase); border-color: var(--phase-b); border-style: dashed; }
+  .sw.util { background: var(--util); border-color: var(--util-b); }
+  .sw.agent { background: var(--agent); border-color: var(--agent-b); }
+  .sw.rule { background: var(--rule); border-color: var(--rule-b); }
+  .sw.doc { background: var(--doc); border-color: var(--doc-b); }
+  .sw.guide { background: var(--guide); border-color: var(--guide-b); }
+  .sw.cluster { background: var(--cluster); border-color: var(--cluster-b); }
+  .sw.diamond { width: 14px; height: 14px; transform: rotate(45deg); background: var(--phase); border-color: var(--phase-b); border-radius: 2px; margin: 0 6px; }
+  .sw.line { border: 0; height: 2px; background: #333; border-radius: 0; }
+  .sw.dash { border: 0; height: 0; border-top: 2px dashed #333; border-radius: 0; }
+
+  /* ---------- painel lateral ---------- */
+  aside.panel {
+    position: fixed; left: 8px; right: 8px; bottom: 8px; max-height: 72vh; overflow: auto;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(30, 27, 46, .25); padding: 18px;
+    transform: translateY(110%); transition: transform .25s ease; z-index: 20;
+  }
+  aside.panel.open { transform: none; }
+  @media (min-width: 1100px) {
+    aside.panel {
+      position: sticky; top: 16px; left: auto; right: auto; bottom: auto;
+      max-height: calc(100vh - 32px); transform: none; box-shadow: none; align-self: start;
+    }
+  }
+  .panel .close { float: right; }
+  @media (min-width: 1100px) { .panel .close { display: none; } }
+  .panel .empty { color: var(--muted); font-size: 14px; }
+  .panel .empty .big { font-size: 34px; display: block; margin-bottom: 6px; }
+  .panel h3 { font-size: 17px; margin: 8px 0 4px; word-break: break-word; }
+  .panel .q { color: var(--accent); font-weight: 600; font-size: 14px; margin: 0 0 8px; }
+  .panel p { margin: 0 0 12px; font-size: 14px; }
+  .panel dl { margin: 0; font-size: 13.5px; }
+  .panel dt { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; margin-top: 12px; }
+  .panel dd { margin: 2px 0 0; }
+  .cmdbox {
+    display: flex; align-items: flex-start; gap: 8px; background: #1E1B2E; color: #E7E3F7;
+    border-radius: 10px; padding: 10px 10px 10px 12px; margin: 4px 0 4px;
+  }
+  .cmdbox code { background: none; color: inherit; padding: 0; flex: 1; white-space: pre-wrap; word-break: break-word; font-size: 12.5px; }
+  .cmdbox .btn { background: #2E2A44; color: #E7E3F7; border-color: #3E3958; height: 26px; flex: none; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .chip {
+    font: 500 12px var(--sans); border: 1.5px solid; border-radius: 999px; padding: 3px 10px;
+    cursor: pointer; background: var(--surface);
+  }
+  .pill {
+    display: inline-block; font: 600 11px var(--sans); text-transform: uppercase; letter-spacing: .05em;
+    padding: 3px 9px; border-radius: 999px; border: 1.5px solid;
+  }
+  .k-phase { background: var(--phase); border-color: var(--phase-b); color: #4B2FB8; }
+  .k-util { background: var(--util); border-color: var(--util-b); color: #8A5A08; }
+  .k-agent { background: var(--agent); border-color: var(--agent-b); color: #1C6B44; }
+  .k-rule { background: var(--rule); border-color: var(--rule-b); color: #334155; }
+  .k-doc { background: var(--doc); border-color: var(--doc-b); color: #475069; }
+  .k-guide { background: var(--guide); border-color: var(--guide-b); color: #075985; }
+  .panel .src { display: inline-block; margin-top: 14px; font-size: 13px; }
+
+  /* ---------- cards do mapa ---------- */
+  .group-title { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 18px 0 8px; }
+  .cards { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+  .scard {
+    text-align: left; font: inherit; color: inherit; cursor: pointer;
+    background: var(--surface); border: 1.5px solid var(--line); border-left-width: 5px;
+    border-radius: 12px; padding: 10px 12px;
+  }
+  .scard:hover { box-shadow: 0 4px 14px rgba(30, 27, 46, .08); }
+  .scard .nm { font: 600 13px var(--mono); display: block; word-break: break-word; }
+  .scard .ds { font-size: 13px; color: var(--muted); display: block; margin-top: 2px; }
+  .scard.k-phase { border-left-color: var(--phase-b); background: var(--surface); }
+  .scard.k-util { border-left-color: var(--util-b); background: var(--surface); }
+  .scard.k-agent { border-left-color: var(--agent-b); background: var(--surface); }
+  .scard.k-rule { border-left-color: var(--rule-b); background: var(--surface); }
+  .scard.k-doc { border-left-color: var(--doc-b); background: var(--surface); }
+  .scard.k-guide { border-left-color: var(--guide-b); background: var(--surface); }
+
+  /* ---------- tabelas ---------- */
+  .tbl-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
+  td .cmd { display: flex; gap: 6px; align-items: flex-start; }
+  td .cmd code { white-space: pre-wrap; word-break: break-word; }
+  td .cmd .btn { height: 24px; font-size: 11px; flex: none; }
+
+  /* grade de versões */
+  .vgrid th, .vgrid td { text-align: center; }
+  .vgrid th:first-child, .vgrid td:first-child { text-align: left; }
+  .cell { display: inline-block; min-width: 76px; padding: 3px 8px; border-radius: 6px; font: 500 12px var(--mono); }
+  .cell.has { background: var(--phase); border: 1.5px solid var(--phase-b); color: #4B2FB8; }
+  .cell.cur { background: #DDF4E4; border: 1.5px solid var(--agent-b); color: #1C6B44; font-weight: 700; }
+  .cell.none { color: #B8B4C8; }
+
+  /* status */
+  .status-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .status-row:last-child { border-bottom: 0; }
+  .status-row .who { flex: 0 0 230px; font-size: 14px; font-weight: 500; }
+  .st { font: 500 12px var(--mono); padding: 3px 10px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); }
+  .st.a { background: #FFF7E0; border-color: #E2B53E; }
+  .st.b { background: #DDF4E4; border-color: var(--agent-b); }
+  .st.c { background: #F1F1F4; border-color: #A3A0B5; color: #6B6880; }
+  .arrow { color: var(--muted); }
+
+  /* árvore */
+  pre.tree {
+    background: #1E1B2E; color: #E7E3F7; border-radius: 12px; padding: 16px; overflow: auto;
+    font-size: 12.5px; line-height: 1.55; margin: 0;
+  }
+  pre.tree .c { color: #9E98B8; }
+  pre.tree .d { color: #B9A6FF; font-weight: 500; }
+
+  /* fronteiras */
+  .bounds { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .bound { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 14px; }
+  .bound b { display: block; margin-bottom: 4px; color: var(--accent); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%) translateY(80px);
+    background: #1E1B2E; color: #fff; padding: 8px 14px; border-radius: 999px; font-size: 13px;
+    transition: transform .2s ease; z-index: 30;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 40 40" role="img" aria-label="Código">
+        <defs>
+          <linearGradient id="logo-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#38BDF8"/>
+            <stop offset=".5" stop-color="#2563EB"/>
+            <stop offset="1" stop-color="#3B1EFF"/>
+          </linearGradient>
+        </defs>
+        <rect width="40" height="40" rx="10" fill="url(#logo-grad)"/>
+        <g fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="13.5,14 7.5,20 13.5,26"/>
+          <polyline points="26.5,14 32.5,20 26.5,26"/>
+          <line x1="22.6" y1="10.5" x2="17.4" y2="29.5"/>
+        </g>
+      </svg>
+      <div>
+        <h1>Guia visual do framework <span class="mono" style="color:var(--accent)">agent-spec</span></h1>
+        <p class="subtitle">Como usar as skills, os agents, as rules e os utilitários do fluxo SDD. Clique em qualquer caixa de um diagrama para ver os detalhes.</p>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="comecar"><span class="n">1</span>Por onde começar</button>
+      <button role="tab" data-tab="fluxo"><span class="n">2</span>Fluxo da feature</button>
+      <button role="tab" data-tab="execucao"><span class="n">3</span>Execução por dentro</button>
+      <button role="tab" data-tab="versoes"><span class="n">4</span>Versões e mudanças</button>
+      <button role="tab" data-tab="contexto"><span class="n">5</span>Rules e contexto</button>
+      <button role="tab" data-tab="mapa"><span class="n">6</span>Mapa de tudo</button>
+      <button role="tab" data-tab="documentos"><span class="n">7</span>Documentos e status</button>
+      <button role="tab" data-tab="comandos"><span class="n">8</span>Comandos</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap layout">
+<main>
+
+  <!-- 1. COMEÇAR -->
+  <section class="tab" id="comecar" hidden>
+    <h2>Por onde começar</h2>
+    <p class="intro">O framework tem duas portas de entrada: <b>preparar o projeto</b> (uma vez só) e
+      <b>começar uma mudança</b> (toda vez que surge uma ideia). Os dois diagramas abaixo mostram cada uma.</p>
+
+    <div class="card"><div class="legend" data-legend></div></div>
+
+    <div class="diagram" data-diagram="start" data-title="Toda mudança começa aqui: qual é o tamanho dela?"></div>
+
+    <div class="callout">
+      <strong>Regra de ouro: aprovação entre fases.</strong> Cada documento nasce <code>rascunho</code>. A próxima
+      fase só começa depois que <b>você revisa e aprova</b> o documento anterior (muda para <code>aprovado</code>). É isso
+      que impede a IA de construir em cima de um entendimento errado.
+    </div>
+
+    <div class="diagram" data-diagram="setup" data-title="Preparar o projeto (uma vez só)"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Primeiro uso, em 4 passos</h3>
+        <ol class="steps">
+          <li>Copie a pasta <code>.claude/</code> para o projeto. Ela leva as skills, os agents e o <code>rules/behavior.md</code>.</li>
+          <li>Escreva o pedido em <code>docs/references/prompts/AAAA-MM-DD-assunto.md</code>, ou use texto livre.</li>
+          <li>Rode <code>/agent-spec-pre-refinement</code> com o pedido. O documento gerado termina com a seção
+            <b>Próximo passo</b>, com o comando pronto para copiar.</li>
+          <li>A cada fase: leia, ajuste, aprove e rode o comando do <b>Próximo passo</b>.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Perdeu o fio?</h3>
+        <p style="margin:0 0 8px">O <code>/agent-spec-guide</code> lê o estado da feature (versão, documentos, status) e diz qual é o próximo passo:</p>
+        <div class="cmdbox"><code>/agent-spec-guide "qual o próximo passo da 001?"</code><button class="btn" data-copy='/agent-spec-guide "qual o próximo passo da 001?"'>copiar</button></div>
+        <p style="margin:8px 0 0;color:var(--muted);font-size:13px">O guia só consulta: ele nunca cria arquivos nem roda a skill que recomenda.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. FLUXO -->
+  <section class="tab" id="fluxo" hidden>
+    <h2>Fluxo completo de uma feature</h2>
+    <p class="intro">A espinha do framework é uma <b>sequência</b>: cada fase usa como entrada o documento aprovado da fase
+      anterior. Em volta dela ficam as <b>transversais</b> (ADR, Debt, design system), que entram quando aparece uma
+      decisão de arquitetura ou quando se decide pagar débitos.</p>
+
+    <div class="card"><div class="legend" data-legend></div></div>
+
+    <div class="diagram" data-diagram="flow" data-title="Ideia → código: as 8 fases e as opcionais"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>A pergunta que cada fase responde</h3>
+        <div class="tbl-wrap"><table>
+          <tr><th>Fase</th><th>Pergunta</th><th>Gera</th></tr>
+          <tr><td>1 Pre-Refinement</td><td>Qual é o problema, de verdade?</td><td><code>pre-refinement.md</code></td></tr>
+          <tr><td>3 PRD</td><td>O que construir e para quem?</td><td><code>prd.md</code></td></tr>
+          <tr><td>— Design</td><td>O que o usuário vê?</td><td><code>design.md</code></td></tr>
+          <tr><td>4 Tech Alignment</td><td>Qual a abordagem técnica?</td><td><code>tech-alignment.md</code></td></tr>
+          <tr><td>5 Tech Spec</td><td>Como exatamente vai funcionar?</td><td><code>spec.md</code></td></tr>
+          <tr><td>6 Task Plan</td><td>Em que passos implementar?</td><td><code>tasks.md</code> + <code>tasks/</code></td></tr>
+          <tr><td>8 Execução</td><td>Está implementado e revisado?</td><td>código + <code>debts.md</code></td></tr>
+          <tr><td>2 ADR</td><td>Por que decidimos assim?</td><td><code>docs/adr/NNN.md</code></td></tr>
+          <tr><td>7 Debt</td><td>Quais débitos pagar agora?</td><td>nova versão (só tasks)</td></tr>
+        </table></div>
+      </div>
+      <div class="card">
+        <h3>Quando registrar uma ADR</h3>
+        <p style="margin:0 0 10px">A ADR não tem lugar fixo na fila: ela é registrada <b>quando a decisão aparece</b> e precisa existir
+          <b>antes da fase que depende dela</b>.</p>
+        <ul style="margin:0;padding-left:20px">
+          <li><b>Recomendada pelo Pre-Refinement</b> (fundação: stack, arquitetura) → registre antes do PRD.
+            Prazo limite: antes do Tech Alignment, que trata as ADRs <code>aceito</code> como restrições.</li>
+          <li><b>Candidata do Tech Alignment</b> (uma <code>D-NN</code> que vale para o projeto todo) → registre antes da Spec.</li>
+          <li>Decisão nova que contradiz uma ADR aceita <b>não edita</b> a antiga: cria outra, e a antiga vira <code>substituído</code>.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. EXECUÇÃO -->
+  <section class="tab" id="execucao" hidden>
+    <h2>Execução por dentro</h2>
+    <p class="intro">A skill <code>agent-spec-run-tasks</code> <b>não escreve código</b>: ela coordena três agents, uma task de
+      cada vez, na ordem das dependências. As caixas verdes são os agents.</p>
+
+    <div class="diagram" data-diagram="exec" data-title="O ciclo de cada task: implementar → revisar → corrigir ou aprovar"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Gravidade dos problemas</h3>
+        <div class="tbl-wrap"><table>
+          <tr><th>Gravidade</th><th>O que acontece</th></tr>
+          <tr><td><b style="color:var(--stop-b)">crítica / alta</b></td><td>Bloqueia. A task volta para o executor corrigir (até 2 correções).</td></tr>
+          <tr><td><b style="color:#8A5A08">média / baixa</b></td><td>Não bloqueia. Vira débito no <code>debts.md</code> da versão e a task é concluída.</td></tr>
+        </table></div>
+      </div>
+      <div class="card">
+        <h3>Por que fica em stage e não é commitado</h3>
+        <p style="margin:0">A task aprovada recebe <code>git add</code>, mas não é commitada. Como o trabalho das tasks anteriores já está em
+          stage, <code>git diff</code> mostra <b>só o que a task da vez mudou</b>. É assim que a revisão isola cada task.
+          No fim, o commit é seu: <code>/agent-spec-semantic-commit</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. VERSÕES -->
+  <section class="tab" id="versoes" hidden>
+    <h2>Versões e tamanho da mudança</h2>
+    <p class="intro">Uma versão já implementada <b>nunca é editada</b>: uma mudança posterior abre <code>v2</code>, <code>v3</code>…
+      O tamanho da mudança define em que fase ela entra e quais documentos a nova versão tem.</p>
+
+    <div class="diagram" data-diagram="versoes" data-title="Mudança nova numa feature existente"></div>
+
+    <div class="card">
+      <h3>Exemplo: qual documento vale agora?</h3>
+      <p style="margin:0 0 10px;color:var(--muted)">Uma feature com 3 versões: <code>v1</code> (entrega), <code>v2</code> (mudança pequena) e
+        <code>v3</code> (débitos). <b>O estado atual de cada documento é o da versão mais recente em que ele aparece</b> (em verde).
+        Cada documento presente é completo, não um diff.</p>
+      <div class="tbl-wrap"><table class="vgrid">
+        <tr><th>Documento</th><th>v1 · grande</th><th>v2 · pequena</th><th>v3 · débitos</th></tr>
+        <tr><td><code>pre-refinement.md</code></td><td><span class="cell has">v1</span></td><td><span class="cell cur">v2 ✔</span></td><td><span class="cell none">—</span></td></tr>
+        <tr><td><code>prd.md</code></td><td><span class="cell cur">v1 ✔</span></td><td><span class="cell none">—</span></td><td><span class="cell none">—</span></td></tr>
+        <tr><td><code>tech-alignment.md</code></td><td><span class="cell cur">v1 ✔</span></td><td><span class="cell none">—</span></td><td><span class="cell none">—</span></td></tr>
+        <tr><td><code>spec.md</code></td><td><span class="cell has">v1</span></td><td><span class="cell cur">v2 ✔</span></td><td><span class="cell none">—</span></td></tr>
+        <tr><td><code>tasks.md</code> + <code>tasks/</code></td><td><span class="cell has">v1</span></td><td><span class="cell has">v2</span></td><td><span class="cell cur">v3 ✔</span></td></tr>
+        <tr><td><code>debts.md</code></td><td><span class="cell has">v1</span></td><td><span class="cell has">v2</span></td><td><span class="cell none">—</span></td></tr>
+      </table></div>
+      <p style="margin:10px 0 0;font-size:13px;color:var(--muted)">O <code>debts.md</code> não tem uma versão vigente: cada versão tem o seu, e a fase Debt lê os débitos <code>aberto</code> de todos eles.</p>
+    </div>
+
+    <div class="callout warn">
+      <strong>Débito × mudança pequena:</strong> pagar débito <b>não muda comportamento</b>, por isso a versão de débitos não
+      tem <code>spec.md</code>. Se a correção mudaria API, erros, dados ou regras, não é débito: é mudança, e segue o fluxo normal.
+    </div>
+  </section>
+
+  <!-- 5. CONTEXTO -->
+  <section class="tab" id="contexto" hidden>
+    <h2>Rules e contexto: o que o agente sabe sobre o projeto</h2>
+    <p class="intro">Nem tudo entra no contexto do agente ao mesmo tempo. O <code>CLAUDE.md</code> e o <code>behavior.md</code> carregam
+      sempre; as rules por área só carregam quando o agente toca os arquivos delas; ADRs e design system são lidos quando um
+      documento os cita.</p>
+
+    <div class="diagram" data-diagram="contexto" data-title="Quem carrega quando"></div>
+    <div class="diagram" data-diagram="onde" data-title="Surgiu uma convenção: onde ela deve ficar?"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Anatomia de uma rule por área</h3>
+<pre class="tree"><span class="c"># .claude/rules/database-access.md</span>
+---
+paths:
+  - <span class="d">src/db/**</span>
+  - <span class="d">docs/specs/**</span>   <span class="c"># carrega também na spec e nas tasks</span>
+---
+# Acesso a banco
+provisória   <span class="c"># → estável quando o tema ganha código</span>
+
+- Repositório recebe a conexão por parâmetro.
+  Porquê: facilita o teste com banco em memória.
+  ✅ new UserRepo(db)   ❌ import { db } dentro do repo</pre>
+      </div>
+      <div class="card">
+        <h3>Rule × ADR × CLAUDE.md</h3>
+        <ul style="margin:0;padding-left:20px">
+          <li><b>ADR</b> registra a decisão, as alternativas e o porquê. <i>Não carrega</i> no contexto.</li>
+          <li><b>Rule</b> diz ao agente <i>como aplicar</i> a decisão (uma linha + exemplo). <i>Carrega</i> ao tocar os paths.</li>
+          <li><b>CLAUDE.md</b> traz o transversal (stack, comandos, convenções globais). <i>Carrega sempre.</i></li>
+          <li><b>behavior.md</b> é do framework, não do projeto: as 4 regras de comportamento. <i>Carrega sempre.</i></li>
+          <li><b>README</b> é para pessoas, não para o agente.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. MAPA -->
+  <section class="tab" id="mapa" hidden>
+    <h2>Mapa de tudo</h2>
+    <p class="intro">Todas as peças do framework, por tipo. <b>Fases</b> geram um documento do fluxo; <b>agents</b> são chamados
+      pela Execução; <b>utilitários</b> ajudam em qualquer momento, sem gerar documento de fase; <b>rules</b> são o contexto
+      que carrega sozinho.</p>
+
+    <div class="diagram" data-diagram="mapa" data-title="As peças do framework"></div>
+
+    <div class="card">
+      <h3>Clique em uma peça para ver os detalhes</h3>
+      <div id="cards"></div>
+    </div>
+  </section>
+
+  <!-- 7. DOCUMENTOS -->
+  <section class="tab" id="documentos" hidden>
+    <h2>Documentos, IDs e status</h2>
+    <p class="intro">Os documentos de uma feature ficam juntos, por versão. Os IDs numerados criam uma <b>trilha</b> do pedido até
+      o commit: dá para saber de qual critério de aceite veio cada teste e de qual teste veio cada task.</p>
+
+    <div class="diagram" data-diagram="ids" data-title="Rastreabilidade: do critério de aceite ao commit"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Ciclo de status</h3>
+        <div class="status-row"><span class="who">Documentos de fase e <code>design-system.md</code></span><span class="st a">rascunho</span><span class="arrow">→</span><span class="st b">aprovado</span></div>
+        <div class="status-row"><span class="who">ADR</span><span class="st a">proposto</span><span class="arrow">→</span><span class="st b">aceito</span><span class="arrow">→</span><span class="st c">substituído</span></div>
+        <div class="status-row"><span class="who">Task (<code>T*.md</code>)</span><span class="st a">pendente</span><span class="arrow">→</span><span class="st a">em andamento</span><span class="arrow">→</span><span class="st b">concluída</span></div>
+        <div class="status-row"><span class="who">Débito (no <code>debts.md</code>)</span><span class="st a">aberto</span><span class="arrow">→</span><span class="st b">pago</span></div>
+        <div class="status-row"><span class="who">Rule por área</span><span class="st a">provisória</span><span class="arrow">→</span><span class="st b">estável</span></div>
+        <h3 style="margin-top:16px">Convenções</h3>
+        <ul style="margin:0;padding-left:20px;font-size:14px">
+          <li>Nomes em kebab-case, sem acento: <code>001-login-com-google</code>.</li>
+          <li>Numeração de 3 dígitos por pasta (<code>features/</code>, <code>adr/</code>); número nunca é reaproveitado.</li>
+          <li>Tasks recomeçam em <code>T1</code> a cada versão.</li>
+          <li>Todo documento de fase termina com <b>Próximo passo</b> e o comando pronto para copiar.</li>
+          <li>Pastas só são criadas quando usadas.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Onde cada coisa mora</h3>
+<pre class="tree"><span class="d">CLAUDE.md</span>                  <span class="c">contrato do agente (claude-md)</span>
+<span class="d">README.md</span>                  <span class="c">para pessoas (readme)</span>
+
+<span class="d">.claude/</span>
+├── <span class="d">skills/agent-spec-‹fase›/</span>
+│   ├── SKILL.md           <span class="c">instruções da skill</span>
+│   └── template.md        <span class="c">modelo do documento</span>
+├── <span class="d">agents/</span>                <span class="c">executor, reviewer,</span>
+│                          <span class="c">security-reviewer</span>
+└── <span class="d">rules/</span>
+    ├── behavior.md        <span class="c">sempre</span>
+    └── ‹tema›.md          <span class="c">só nos paths dela</span>
+
+<span class="d">docs/</span>
+├── <span class="d">references/</span>            <span class="c">entrada, escrita por você</span>
+│   ├── prompts/AAAA-MM-DD-‹assunto›.md
+│   ├── screens/           <span class="c">prints de outros sistemas</span>
+│   └── brand/             <span class="c">logo, fontes, paleta</span>
+├── <span class="d">specs/</span>
+│   ├── design-system.md   <span class="c">global, sem versão</span>
+│   └── <span class="d">features/001-‹nome›/</span>
+│       ├── <span class="d">v1/</span>                <span class="c">todos os documentos</span>
+│       │   ├── pre-refinement.md
+│       │   ├── prd.md
+│       │   ├── design.md      <span class="c">só com telas</span>
+│       │   ├── tech-alignment.md
+│       │   ├── spec.md
+│       │   ├── tasks.md
+│       │   ├── tasks/T1.md, T2.md…
+│       │   └── debts.md       <span class="c">se houve débito</span>
+│       └── <span class="d">v2/</span>                <span class="c">só o que mudou</span>
+└── <span class="d">adr/</span>001-‹titulo›.md      <span class="c">fora das features</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. COMANDOS -->
+  <section class="tab" id="comandos" hidden>
+    <h2>Necessidade → comando</h2>
+    <p class="intro">A tabela de roteamento do <code>agent-spec-guide</code>. Copie o comando e troque o que está entre <code>‹ ›</code>.</p>
+    <div class="card"><div class="tbl-wrap"><table id="cmd-table"></table></div></div>
+
+    <h3 style="margin:8px 0 10px">Fronteiras que mais confundem</h3>
+    <div class="bounds" id="bounds"></div>
+  </section>
+
+</main>
+
+<aside class="panel" id="panel" aria-live="polite"></aside>
+</div>
+
+<div class="toast" id="toast">Copiado</div>
+
+<script type="module">
+/* Página mantida pela skill agent-spec-visual-guide: rode-a depois de mudar
+   .claude/skills, .claude/agents ou .claude/rules, em vez de editar à mão. */
+
+/* =====================================================================
+   Detalhes de cada peça (abre no painel ao clicar num nó do diagrama).
+   Fonte: o SKILL.md de cada skill, os agents em .claude/agents/ e o agent-spec-guide.
+   ===================================================================== */
+const SK = '../.claude/skills/';
+const INFO = {
+  PRE: {
+    tipo: 'phase', rotulo: 'Fase 1 · Pre-Refinement', nome: 'agent-spec-pre-refinement',
+    q: 'Qual é o problema, de verdade?',
+    curto: 'Brainstorm de produto antes do PRD.',
+    resumo: 'Brainstorm de produto com Tree of Thought: primeiro um esqueleto de 3 a 5 ramos, depois 2 a 3 direções por ramo com exemplos concretos, ancorado no que o projeto já tem. Converge com você e indica a próxima fase pelo tamanho da mudança (grande → PRD, pequena → Tech Spec, trivial → implementar direto) e as ADRs a registrar antes.',
+    cmd: '/agent-spec-pre-refinement "‹ideia›"\n/agent-spec-pre-refinement docs/references/prompts/‹arquivo›.md',
+    entrada: 'Ideia em texto livre ou prompt em `docs/references/prompts/` (+ anexos).',
+    saida: '`vN/pre-refinement.md` (`rascunho`). É ele que cria a pasta `NNN-‹feature›`.',
+    quando: 'Ideia nova ou mudança grande ou pequena. É a porta de entrada do fluxo.',
+    nao: 'Não gera PRD, spec, tasks nem código. Foca no O QUÊ e no POR QUÊ.',
+    antes: ['PROMPT'], depois: ['PRD', 'SPEC', 'ADR'],
+    arq: SK + 'agent-spec-pre-refinement/SKILL.md'
+  },
+  ADR: {
+    tipo: 'phase', rotulo: 'Fase 2 · ADR (transversal)', nome: 'agent-spec-adr',
+    q: 'Por que decidimos assim?',
+    curto: 'Registra uma decisão de arquitetura do projeto.',
+    resumo: 'Registra uma decisão de arquitetura que vale para o projeto todo numa ADR curta: contexto, decisão, consequências e alternativas. Confere antes se a decisão merece mesmo uma ADR e monta o rascunho a partir do documento de origem. Também substitui uma ADR antiga por uma nova.',
+    cmd: '/agent-spec-adr "‹título›"\n/agent-spec-adr D-02 de ‹tech-alignment.md›\n/agent-spec-adr        (vazio: lista as pendentes)',
+    entrada: 'Uma decisão, vinda do pre-refinement, do PRD ou do tech-alignment.',
+    saida: '`docs/adr/NNN-‹titulo›.md`: `proposto` → `aceito` → `substituído`.',
+    quando: 'Quando a decisão aparece. Precisa existir antes da fase que depende dela: recomendada pelo Pre-Refinement → antes do PRD; candidata do Tech Alignment → antes da Spec.',
+    nao: 'Nunca edita uma ADR aceita: cria outra, que a substitui. Não gera PRD, spec, tasks nem código.',
+    antes: ['PRE', 'TA'], depois: ['ADRR', 'TA', 'SPEC'],
+    arq: SK + 'agent-spec-adr/SKILL.md'
+  },
+  PRD: {
+    tipo: 'phase', rotulo: 'Fase 3 · PRD', nome: 'agent-spec-prd',
+    q: 'O que construir e para quem?',
+    curto: 'O QUÊ e o POR QUÊ, sem nada técnico.',
+    resumo: 'Transforma o pre-refinement aprovado em histórias de usuário (`US-01`), regras de negócio (`RN-01`), fluxo de uso e critérios de aceite DADO/QUANDO/ENTÃO (`CA-01`), todos numerados e rastreáveis. Resolve as dúvidas em aberto propondo opções.',
+    cmd: '/agent-spec-prd ‹pre-refinement.md ou vN/›',
+    entrada: '`pre-refinement.md` aprovado (e as ADRs recomendadas por ele).',
+    saida: '`vN/prd.md`',
+    quando: 'Mudança grande: capacidade nova, regra de negócio nova, várias personas.',
+    nao: 'Nenhum detalhe técnico. Não gera tech alignment, spec, tasks nem código.',
+    antes: ['PRE', 'ADR'], depois: ['DESIGN', 'TA'],
+    arq: SK + 'agent-spec-prd/SKILL.md'
+  },
+  DESIGN: {
+    tipo: 'phase', rotulo: 'Fase opcional · Design', nome: 'agent-spec-design',
+    q: 'O que o usuário vê?',
+    curto: 'As telas da feature (só se tiver interface).',
+    resumo: 'Especifica o COMO VISUAL da feature: telas, layout, componentes (reusados do design system ou novos com justificativa), estados visuais (carregando, sucesso, erro, vazio), mensagens literais, tamanhos de tela, interações, acessibilidade e assets. Aceita Figma ou mockups como referência, sem depender deles.',
+    cmd: '/agent-spec-design ‹prd.md ou vN/› [Figma, mockups ou descrição]',
+    entrada: '`prd.md` aprovado + `docs/specs/design-system.md`.',
+    saida: '`vN/design.md`. Consumido pelo Tech Alignment, pela Spec, pelo Task Plan e pela Execução.',
+    quando: 'Só em feature com telas, entre o PRD e o Tech Alignment. Sem design system, ela recomenda criá-lo antes.',
+    nao: 'Não decide regra de negócio nem mecânica técnica (rota, retry, de onde vêm os dados): isso é da Spec.',
+    antes: ['PRD', 'DS'], depois: ['TA'],
+    arq: SK + 'agent-spec-design/SKILL.md'
+  },
+  TA: {
+    tipo: 'phase', rotulo: 'Fase 4 · Tech Alignment', nome: 'agent-spec-tech-alignment',
+    q: 'Qual a abordagem técnica?',
+    curto: 'O COMO em alto nível: decisões D-01…',
+    resumo: 'Lista os pontos onde há escolha de arquitetura, já com a direção recomendada, e detalha cada um com alternativas, trade-offs e viabilidade ancorada no projeto. Registra as decisões numeradas (`D-01`…) e sinaliza as candidatas a ADR.',
+    cmd: '/agent-spec-tech-alignment ‹prd.md ou vN/›',
+    entrada: '`prd.md` aprovado (+ `design.md`). As ADRs `aceito` entram como restrições, não são reabertas.',
+    saida: '`vN/tech-alignment.md`',
+    quando: 'Depois do PRD (ou do Design) aprovado.',
+    nao: 'Não reabre o produto (o QUÊ vem do PRD) e não desce a detalhe de implementação (isso é da Spec).',
+    antes: ['PRD', 'DESIGN'], depois: ['SPEC', 'ADR'],
+    arq: SK + 'agent-spec-tech-alignment/SKILL.md'
+  },
+  SPEC: {
+    tipo: 'phase', rotulo: 'Fase 5 · Tech Spec', nome: 'agent-spec-tech-spec',
+    q: 'Como exatamente vai funcionar?',
+    curto: 'O COMO em detalhe, até ficar implementável.',
+    resumo: 'Detalha o COMO até não sobrar decisão importante pendente: componentes, contratos de API, erros, dados, regras, fluxos, telas, testes (cada `CA` vira `CT-01`…) e arquivos envolvidos. Ancora no código e confere a conformidade literal com as ADRs aceitas.',
+    cmd: '/agent-spec-tech-spec ‹prd.md, tech-alignment.md, pre-refinement.md ou vN/›',
+    entrada: '`prd.md` + `tech-alignment.md` aprovados, ou só o `pre-refinement.md` de uma mudança pequena.',
+    saida: '`vN/spec.md`',
+    quando: 'Depois do Tech Alignment; ou logo depois do Pre-Refinement, numa mudança pequena.',
+    nao: 'Não gera tasks nem código.',
+    antes: ['TA', 'PRE'], depois: ['CH', 'TP'],
+    arq: SK + 'agent-spec-tech-spec/SKILL.md'
+  },
+  TP: {
+    tipo: 'phase', rotulo: 'Fase 6 · Task Plan', nome: 'agent-spec-task-plan',
+    q: 'Em que passos implementar?',
+    curto: 'Quebra a spec em tasks pequenas e ordenadas.',
+    resumo: 'Quebra a spec em tasks pequenas, ordenadas e autocontidas: o que fazer, arquivos, testes (CTs), ADRs que se aplicam e risco. Garante que todo arquivo, CT e história da spec caia em alguma task, com regras anti-fragmentação. Risco alto = mexe em autenticação, autorização, pagamentos, dados sensíveis, segredos ou entrada externa: na Execução, a task passa também pelo revisor de segurança.',
+    cmd: '/agent-spec-task-plan ‹spec.md ou vN/›',
+    entrada: '`spec.md` aprovado.',
+    saida: '`vN/tasks.md` (índice: ordem, dependências, status) + `vN/tasks/T1.md`, `T2.md`… (uma task por arquivo).',
+    quando: 'Depois da Spec aprovada.',
+    nao: 'Não gera código.',
+    antes: ['SPEC', 'CH'], depois: ['RUN'],
+    arq: SK + 'agent-spec-task-plan/SKILL.md'
+  },
+  DEBT: {
+    tipo: 'phase', rotulo: 'Fase 7 · Debt (transversal)', nome: 'agent-spec-debt',
+    q: 'Quais débitos pagar agora?',
+    curto: 'Abre uma versão só para pagar débitos.',
+    resumo: 'Lê os débitos `aberto` de todos os `debts.md` da feature, avalia cada um (pagar agora ou esperar, com custo e risco), você escolhe e ela abre a próxima versão só com `tasks.md` + `tasks/` (uma task por débito, ou por arquivo). Os escolhidos viram `pago`; os outros continuam `aberto`.',
+    cmd: '/agent-spec-debt ‹feature, vN/ ou debts.md›',
+    entrada: 'Os `debts.md` da feature.',
+    saida: 'Nova versão `vN+1/` com `tasks.md` + `tasks/`, sem `spec.md`.',
+    quando: 'Quando decidir pagar os débitos acumulados.',
+    nao: 'Não muda comportamento nem a spec. Se a correção muda API, erros, dados ou regras, não é débito: é mudança, e segue o fluxo normal.',
+    antes: ['DEBTS'], depois: ['RUN'],
+    arq: SK + 'agent-spec-debt/SKILL.md'
+  },
+  RUN: {
+    tipo: 'phase', rotulo: 'Fase 8 · Execução', nome: 'agent-spec-run-tasks',
+    q: 'Está implementado e revisado?',
+    curto: 'Coordena os agents, task a task.',
+    resumo: 'Executa as tasks uma por vez, na ordem das dependências. Delega a implementação ao executor e a revisão ao revisor (nas tasks de risco alto, também ao revisor de segurança, em paralelo). No máximo 3 tentativas por task (a execução + 2 correções). Problemas médios e baixos vão para o `debts.md`; a task aprovada fica em stage (`git add`), sem commit.',
+    cmd: '/agent-spec-run-tasks ‹tasks.md ou vN/›\n/agent-spec-run-tasks ‹vN/› T3      (só uma task)',
+    entrada: '`tasks.md` aprovado + `tasks/T*.md`.',
+    saida: 'Código e testes em stage, status das tasks atualizado, `vN/debts.md` se houver débito.',
+    quando: 'Depois do Task Plan (ou do Debt) aprovado.',
+    nao: 'Coordena, não escreve código. Não commita.',
+    antes: ['TP', 'DEBT'], depois: ['EXEC', 'REV', 'SEC', 'COMMIT'],
+    arq: SK + 'agent-spec-run-tasks/SKILL.md'
+  },
+  EXEC: {
+    tipo: 'agent', rotulo: 'Agent · Execução', nome: 'agent-spec-executor',
+    q: 'Quem escreve o código.',
+    curto: 'Implementa UMA task: código + testes.',
+    resumo: 'Implementa UMA task com qualidade de engenheiro sênior: código e testes dos CTs da task, seguindo as ADRs que ela cita, e devolve um resumo curto. Também corrige uma task reprovada pelo revisor. Segue 7 regras: qualidade de sênior sem complexidade especulativa, mudanças cirúrgicas, teste primeiro, testes honestos, ADRs como contrato…',
+    cmd: 'Não é para uso direto: quem chama é a agent-spec-run-tasks.',
+    entrada: 'Só a task da vez (`tasks/TN.md`) e, numa correção, os problemas apontados pela revisão.',
+    saida: 'Código + testes da task e um resumo curto.',
+    quando: 'Modelo: Sonnet, esforço high. A 2ª correção (3ª e última tentativa) roda em Opus.',
+    nao: 'Não fala com você: quando precisa de uma decisão, para e a run-tasks faz a pergunta.',
+    antes: ['RUN'], depois: ['REV', 'SEC'],
+    arq: '../.claude/agents/agent-spec-executor.md'
+  },
+  REV: {
+    tipo: 'agent', rotulo: 'Agent · Execução', nome: 'agent-spec-reviewer',
+    q: 'Quem revisa toda task.',
+    curto: 'Revisa o diff da task e devolve JSON.',
+    resumo: 'Revisa toda task sobre o `git diff` dela: roda a suíte de testes, confere cada CT, o escopo, as ADRs, a arquitetura, a qualidade do código e as migrações. Classifica cada problema: crítica/alta bloqueiam; média/baixa viram débito.',
+    cmd: 'Não é para uso direto: quem chama é a agent-spec-run-tasks.',
+    entrada: 'A task e o `git diff` dela.',
+    saida: 'Só JSON, com cada problema e a gravidade.',
+    quando: 'Em toda task. Modelo: Sonnet, esforço high. Ferramentas: Read, Grep, Glob, Bash.',
+    nao: 'Não edita nada.',
+    antes: ['EXEC'], depois: ['RUN', 'DEBTS'],
+    arq: '../.claude/agents/agent-spec-reviewer.md'
+  },
+  SEC: {
+    tipo: 'agent', rotulo: 'Agent · Execução', nome: 'agent-spec-security-reviewer',
+    q: 'Quem tenta abusar do código.',
+    curto: 'Revisão de segurança das tasks de risco alto.',
+    resumo: 'Só nas tasks `Risco: alto`, em paralelo com o revisor. Procura como abusar do código: autenticação, autorização (IDOR, escalação de privilégio), entrada não confiável, dados sensíveis, segredos, dependências e pagamentos (valor calculado no servidor, idempotência, webhooks). Vale o pior dos dois resultados.',
+    cmd: 'Não é para uso direto: quem chama é a agent-spec-run-tasks.',
+    entrada: 'A task de risco alto e o `git diff` dela.',
+    saida: 'Só JSON, com cada problema e a gravidade.',
+    quando: 'Tasks marcadas `Risco: alto` pelo Task Plan. Modelo: Opus, esforço high.',
+    nao: 'Não roda testes nem edita nada.',
+    antes: ['EXEC', 'TP'], depois: ['RUN'],
+    arq: '../.claude/agents/agent-spec-security-reviewer.md'
+  },
+  CH: {
+    tipo: 'util', rotulo: 'Utilitário · opcional', nome: 'agent-spec-challenge-spec',
+    q: 'A spec tem furos?',
+    curto: 'Stress-test da spec antes das tasks.',
+    resumo: 'Confronta o `spec.md` com o código real, as ADRs aceitas (ao pé da letra), o PRD e o Tech Alignment, procurando colisões com o que já existe, divergências de ADR, decisões implícitas e casos de borda. Faz UMA pergunta por vez, com recomendação, e corrige o próprio `spec.md`.',
+    cmd: '/agent-spec-challenge-spec ‹spec.md ou vN/›',
+    entrada: '`spec.md` ainda não implementado.',
+    saida: 'O mesmo `spec.md`, corrigido. Não gera documento novo.',
+    quando: 'Spec grande, de fundação ou que toca área sensível. De preferência em sessão nova, com contexto diferente do que escreveu a spec.',
+    nao: 'Não cria ADR (aponta candidatas), não gera tasks nem código. Não roda depois que a implementação começou.',
+    antes: ['SPEC'], depois: ['TP'],
+    arq: SK + 'agent-spec-challenge-spec/SKILL.md'
+  },
+  ADRR: {
+    tipo: 'util', rotulo: 'Utilitário', nome: 'agent-spec-adr-review',
+    q: 'As ADRs estão consistentes?',
+    curto: 'Audita as ADRs e as referências a elas.',
+    resumo: 'Audita `docs/adr/` e mostra um relatório no chat, com cada problema classificado em erro ou aviso e a ação sugerida: formato, numeração, substituições ligadas dos dois lados (sem ciclo), links entre ADRs, decisões vigentes que se contradizem, e features que citam ADR inexistente, substituída ou ainda proposta.',
+    cmd: '/agent-spec-adr-review',
+    entrada: '`docs/adr/` e os documentos das features.',
+    saida: 'Relatório no chat.',
+    quando: 'Depois de registrar ou substituir uma ADR, e antes do Tech Alignment de uma feature nova.',
+    nao: 'Só lê: não corrige nada e não roda outra skill (sugere o comando).',
+    antes: ['ADR'], depois: ['TA'],
+    arq: SK + 'agent-spec-adr-review/SKILL.md'
+  },
+  DS: {
+    tipo: 'util', rotulo: 'Utilitário · opcional', nome: 'agent-spec-design-system',
+    q: 'Qual é a identidade visual do produto?',
+    curto: 'Tokens, componentes e padrões visuais globais.',
+    resumo: 'Cria ou atualiza a identidade visual do produto inteiro: cores, tipografia, espaçamento, ícones, layout, tema, componentes reutilizáveis (com o import real), padrões de feedback e acessibilidade visual. Deriva do código, do Figma e dos documentos o que já existe e só pergunta o resto; em projeto novo, propõe com recomendação.',
+    cmd: '/agent-spec-design-system [Figma, docs ou descrição]',
+    entrada: 'Código, Figma, documentos do time ou suas respostas.',
+    saida: '`docs/specs/design-system.md`: global, sem versão, `rascunho` → `aprovado`.',
+    quando: 'Projeto com interface: antes da primeira feature com telas, ou quando ficou defasado.',
+    nao: 'Não especifica as telas de uma feature (isso é o Design), não cria ADR, não escreve código.',
+    antes: [], depois: ['DESIGN'],
+    arq: SK + 'agent-spec-design-system/SKILL.md'
+  },
+  COMMIT: {
+    tipo: 'util', rotulo: 'Utilitário', nome: 'agent-spec-semantic-commit',
+    q: 'Como fecho o trabalho no git?',
+    curto: 'Commit semântico em português + push.',
+    resumo: 'Coloca em stage todas as mudanças (`git add -A`, respeitando o `.gitignore`), propõe a mensagem em Conventional Commits, em português, e, aprovada, commita e faz push (você pode escolher só commitar). Quando o commit fecha tasks, o rodapé `Refs: 001-‹feature›/v1 T1, T2` liga o git aos documentos.',
+    cmd: '/agent-spec-semantic-commit',
+    entrada: 'As mudanças do projeto.',
+    saida: 'Um commit (e o push).',
+    quando: 'Depois da Execução, ou de qualquer mudança fora do fluxo.',
+    nao: 'Nunca usa `--amend` nem `push --force`. Se o push falhar, mostra o erro e para.',
+    antes: ['RUN'], depois: [],
+    arq: SK + 'agent-spec-semantic-commit/SKILL.md'
+  },
+  README: {
+    tipo: 'util', rotulo: 'Utilitário', nome: 'agent-spec-readme',
+    q: 'O que é e como rodo este projeto?',
+    curto: 'README.md: documentação para pessoas.',
+    resumo: 'Gera ou atualiza o `README.md`: a documentação para pessoas (o que é, por que existe, como rodar). Template único com seções por tipo de projeto (lib, cli, app, service), com os comandos reais extraídos do repo. Pergunta só o que o repo não responde (sempre o idioma).',
+    cmd: '/agent-spec-readme [pasta do projeto]',
+    entrada: 'O repositório.',
+    saida: '`README.md`, com o diff aprovado antes de gravar.',
+    quando: 'Projeto sem README, ou com README defasado depois de mudanças na stack ou nos comandos.',
+    nao: 'Não é CLAUDE.md nem rule. Não cria LICENSE nem arquivos de suporte (só avisa que faltam).',
+    antes: ['CMD'], depois: [],
+    arq: SK + 'agent-spec-readme/SKILL.md'
+  },
+  CMD: {
+    tipo: 'util', rotulo: 'Utilitário', nome: 'agent-spec-claude-md',
+    q: 'Como o agente deve trabalhar aqui?',
+    curto: 'CLAUDE.md: o contrato do agente.',
+    resumo: 'Gera ou audita o `CLAUDE.md`, o contrato do agente: visão, stack, comandos reais, convenções transversais e onde as coisas novas vão. Até cerca de 80 linhas, com regras objetivas e negativas. Todo fato tem fonte (arquivo do repo ou você); sem fonte, pergunta ou deixa de fora.',
+    cmd: '/agent-spec-claude-md [pasta do projeto]',
+    entrada: 'O repositório + o idioma e os anti-padrões que o time mais corrige.',
+    saida: '`CLAUDE.md`, com o diff e a fonte de cada fato aprovados antes de gravar.',
+    quando: 'Projeto sem CLAUDE.md (em projeto novo, depois que o repo já tem manifest e comandos), ou quando ele inchou ou ficou defasado.',
+    nao: 'Não repete o `behavior.md` e não copia ADRs nem design system (aponta para eles). Convenção de uma área só vai para uma rule por área.',
+    antes: [], depois: ['RC', 'RCU', 'README'],
+    arq: SK + 'agent-spec-claude-md/SKILL.md'
+  },
+  RC: {
+    tipo: 'util', rotulo: 'Utilitário · rules', nome: 'agent-spec-rule-create',
+    q: 'Quais as convenções deste tema?',
+    curto: 'Cria a rule de um tema inteiro.',
+    resumo: 'Cria (ou completa) a rule de um TEMA técnico: acesso a banco, erros HTTP, injeção de dependência, estado no front… Divide o tema em 3 a 5 eixos de decisão, com 3 alternativas por eixo e recomendação. Deriva do código o que já existe (brownfield) ou propõe a partir de boas práticas (greenfield, rule `provisória`).',
+    cmd: '/agent-spec-rule-create "‹tema›"',
+    entrada: 'O tema + o código existente.',
+    saida: '`.claude/rules/‹tema›.md`, com `paths` no frontmatter.',
+    quando: 'Antes da primeira feature que toca o tema (greenfield), ou para fixar um tema que o código já pratica (brownfield).',
+    nao: 'Não toca código e não cria ADR (aponta as decisões que valem uma).',
+    antes: ['CMD'], depois: ['RT', 'RCU'],
+    arq: SK + 'agent-spec-rule-create/SKILL.md'
+  },
+  RCU: {
+    tipo: 'util', rotulo: 'Utilitário · rules', nome: 'agent-spec-rule-curate',
+    q: 'Isso vale uma regra? Onde?',
+    curto: 'Julga um item solto e audita as rules.',
+    resumo: 'Decide se UM item vira regra, com o teste de fricção (alguém faria errado sem ela? dá para descobrir em 1 minuto? fica velha em 3 meses? tem o porquê?), e onde ela fica: CLAUDE.md, rule global ou rule por área. Também audita as rules e promove a `estável` a rule `provisória` cujo tema já tem código.',
+    cmd: '/agent-spec-rule-curate "‹item›"\n/agent-spec-rule-curate auditar [arquivo de rule]',
+    entrada: 'Uma convenção, decisão ou feedback (“isso foi feito errado”).',
+    saida: 'Uma linha nova no CLAUDE.md ou numa rule, com o diff aprovado antes de gravar.',
+    quando: 'Quando surge um item (“documenta isso”, um erro que se repete) ou quando o tema de uma rule provisória ganha código.',
+    nao: 'Só rules e CLAUDE.md: não toca código e não cria ADR.',
+    antes: ['RC', 'CMD'], depois: ['RT', 'CLAUDEMD'],
+    arq: SK + 'agent-spec-rule-curate/SKILL.md'
+  },
+  GUIDE: {
+    tipo: 'guide', rotulo: 'Utilitário · guia', nome: 'agent-spec-guide',
+    q: 'Qual skill eu rodo agora?',
+    curto: 'O mapa do framework. Tira dúvidas.',
+    resumo: 'O mapa do framework. Responde três tipos de pergunta: roteamento (qual skill rodar; qual o próximo passo da feature X), fluxo (como funciona uma fase) e configuração (onde mudar um caminho, template ou status). Lê o estado da feature e cita a fonte de cada resposta.',
+    cmd: '/agent-spec-guide "qual o próximo passo da 001?"',
+    entrada: 'Sua pergunta.',
+    saida: 'Uma resposta no chat, com o comando pronto para copiar.',
+    quando: 'Sempre que estiver perdido.',
+    nao: 'Só consulta: nunca cria nem edita arquivos e nunca roda a skill que recomenda.',
+    antes: [], depois: [],
+    arq: SK + 'agent-spec-guide/SKILL.md'
+  },
+  VG: {
+    tipo: 'guide', rotulo: 'Utilitário · guia', nome: 'agent-spec-visual-guide',
+    q: 'O guia visual está em dia?',
+    curto: 'Atualiza esta página quando o framework muda.',
+    resumo: 'Compara o `docs/visual-guide.html` (esta página) com as skills, os agents, as rules e o `agent-spec-guide`: peça sem caixa, caixa de peça que não existe mais, comando, modelo, entrada ou saída desatualizados, e mudanças no fluxo. Mostra um relatório, você escolhe o que aplicar, e ela edita a página e confere no navegador se todos os diagramas ainda desenham.',
+    cmd: '/agent-spec-visual-guide',
+    entrada: '`.claude/skills/`, `.claude/agents/`, `.claude/rules/` e o `agent-spec-guide`.',
+    saida: '`docs/visual-guide.html` atualizado, com a mudança aprovada antes de gravar.',
+    quando: 'Depois de criar, alterar ou remover uma skill, um agent ou uma rule do framework.',
+    nao: 'Só edita o `visual-guide.html`: nunca as skills, os agents, as rules ou o guia, que são a fonte. Não commita.',
+    antes: ['GUIDE'], depois: ['COMMIT'],
+    arq: SK + 'agent-spec-visual-guide/SKILL.md'
+  },
+  BEH: {
+    tipo: 'rule', rotulo: 'Rule global do framework', nome: '.claude/rules/behavior.md',
+    q: 'Como o agente deve se comportar?',
+    curto: 'As 4 regras de comportamento. Sempre carrega.',
+    resumo: 'As regras de comportamento, válidas em qualquer tarefa: (1) incerteza → leia o arquivo ou rode grep, nunca chute; (2) escopo é o pedido, com o menor delta que o resolva bem; (3) “funciona” só com evidência; (4) ação destrutiva ou irreversível exige confirmação antes.',
+    cmd: '',
+    entrada: '—',
+    saida: '—',
+    quando: 'Sempre (rule sem paths). Faz parte do framework: quem copia a `.claude/` leva junto. Os agents também recebem.',
+    nao: 'Não recebe convenção de projeto: isso vai para o CLAUDE.md ou para uma rule por área.',
+    antes: [], depois: [],
+    arq: '../.claude/rules/behavior.md'
+  },
+  RT: {
+    tipo: 'rule', rotulo: 'Rule por área', nome: '.claude/rules/‹tema›.md',
+    q: 'Como se escreve código nesta área?',
+    curto: 'Convenções de um tema. Carrega pelos paths.',
+    resumo: 'Convenções de uma área (banco, HTTP, um módulo), com `paths` no frontmatter: só carrega quando o agente lê ou edita um arquivo que casa com eles. Cada regra: uma linha, o porquê e um micro-exemplo ✅/❌. Rule que guia como o código é escrito inclui `docs/specs/**` nos paths, para carregar também na geração da spec e das tasks.',
+    cmd: '',
+    entrada: 'Criada pela rule-create; um item solto entra pela rule-curate.',
+    saida: '—',
+    quando: 'Status abaixo do título: `provisória` (sem código ainda) → `estável`.',
+    nao: 'Não é ADR: a ADR guarda o porquê e as alternativas; a rule diz como aplicar.',
+    antes: ['RC', 'RCU'], depois: [],
+    arq: ''
+  },
+  CLAUDEMD: {
+    tipo: 'doc', rotulo: 'Arquivo do projeto', nome: 'CLAUDE.md',
+    q: 'O contrato do agente com o projeto.',
+    curto: 'Stack, comandos e convenções globais.',
+    resumo: 'Carrega sempre. Traz o transversal: visão, stack, comandos reais, convenções globais e onde as coisas novas vão. Aponta para as ADRs e o design system em vez de copiá-los.',
+    cmd: '/agent-spec-claude-md',
+    entrada: '—', saida: '—',
+    quando: 'Gerado ou auditado pela agent-spec-claude-md; um item solto entra pela agent-spec-rule-curate.',
+    nao: 'Não traz detalhes de uma área só (vão para uma rule por área).',
+    antes: ['CMD', 'RCU'], depois: [],
+    arq: ''
+  },
+  DEBTS: {
+    tipo: 'doc', rotulo: 'Documento da versão', nome: 'vN/debts.md',
+    q: 'O que ficou aceitável, mas não ideal?',
+    curto: 'Débitos médios/baixos da versão.',
+    resumo: 'Débito técnico é algo que ficou “aceitável, mas não ideal” e deve ser corrigido depois. Nasce na Execução (problemas médios ou baixos que a revisão não bloqueou) ou é anotado à mão. IDs `DT-01`, citados de fora como `v1/DT-01`. Status: `aberto` → `pago`.',
+    cmd: '/agent-spec-debt ‹feature›',
+    entrada: '—', saida: '—',
+    quando: 'Só existe se a execução da versão deixou débitos.',
+    nao: '',
+    antes: ['RUN', 'REV'], depois: ['DEBT'],
+    arq: SK + 'agent-spec-debt/template-debts.md'
+  },
+  PROMPT: {
+    tipo: 'doc', rotulo: 'Entrada do fluxo', nome: 'docs/references/',
+    q: 'Onde escrevo o pedido?',
+    curto: 'O pedido e os anexos, antes da feature existir.',
+    resumo: 'A entrada do fluxo, escrita por você antes do Pre-Refinement: `prompts/AAAA-MM-DD-‹assunto›.md` (o pedido), `screens/` (prints de outros sistemas) e `brand/` (logo, fontes, paleta). Fica fora da feature porque é o Pre-Refinement que define o número `NNN`; a ponte é a seção “Fonte da ideia” do `pre-refinement.md`.',
+    cmd: '/agent-spec-pre-refinement docs/references/prompts/‹arquivo›.md',
+    entrada: '—', saida: '—',
+    quando: 'Opcional: um pedido curto pode ir em texto livre direto para a skill.',
+    nao: '',
+    antes: [], depois: ['PRE'],
+    arq: ''
+  },
+  DIR: {
+    tipo: 'doc', rotulo: 'Sem skill', nome: 'Mudança trivial',
+    q: 'Texto, cor, typo.',
+    curto: 'Implementa direto, sem versão nova.',
+    resumo: 'Mudança trivial (texto, cor, typo) não passa pelo fluxo: nenhuma skill e nenhuma versão nova. Implemente direto e commite.',
+    cmd: '/agent-spec-semantic-commit',
+    entrada: '—', saida: '—', quando: '—', nao: '',
+    antes: [], depois: ['COMMIT'], arq: ''
+  }
+};
+
+const KIND = {
+  phase: { css: 'k-phase', grupo: 'Fases (geram documento do fluxo)' },
+  agent: { css: 'k-agent', grupo: 'Agents (chamados pela Execução)' },
+  util:  { css: 'k-util',  grupo: 'Utilitários' },
+  guide: { css: 'k-guide', grupo: 'Utilitários' },
+  rule:  { css: 'k-rule',  grupo: 'Rules e contexto' },
+  doc:   { css: 'k-doc',   grupo: 'Rules e contexto' }
+};
+
+/* =====================================================================
+   Diagramas (sintaxe Mermaid). Para editar, copie o código pelo botão
+   "código" e teste em https://mermaid.live
+   ===================================================================== */
+const CLASSES = `
+  classDef phase fill:#ECECFF,stroke:#9370DB,stroke-width:1.5px,color:#1E1B2E
+  classDef phaseOpt fill:#ECECFF,stroke:#9370DB,stroke-width:1.5px,stroke-dasharray:6 4,color:#1E1B2E
+  classDef util fill:#FFF3DC,stroke:#D99A2B,stroke-width:1.5px,color:#1E1B2E
+  classDef utilOpt fill:#FFF3DC,stroke:#D99A2B,stroke-width:1.5px,stroke-dasharray:6 4,color:#1E1B2E
+  classDef agent fill:#DFF5E8,stroke:#2F9E66,stroke-width:1.5px,color:#1E1B2E
+  classDef doc fill:#FFFFFF,stroke:#8D93A8,stroke-width:1.5px,color:#1E1B2E
+  classDef rule fill:#EEF2F6,stroke:#64748B,stroke-width:1.5px,color:#1E1B2E
+  classDef guide fill:#E0F2FE,stroke:#0284C7,stroke-width:1.5px,color:#1E1B2E
+  classDef start fill:#E9E3FF,stroke:#7C5CE0,stroke-width:2px,color:#1E1B2E
+  classDef ok fill:#DDF4E4,stroke:#2F9E66,stroke-width:2px,color:#1E1B2E
+  classDef stop fill:#FFE1E1,stroke:#D64545,stroke-width:1.5px,color:#1E1B2E
+  classDef decision fill:#ECECFF,stroke:#9370DB,stroke-width:1.5px,color:#1E1B2E
+`;
+
+const DIAGRAMS = {
+start: `flowchart TD
+  IDEIA(["💡 Ideia, pedido ou mudança"])
+  IDEIA --> Q{"Que tipo de<br/>mudança?"}
+  Q -->|"trivial<br/>texto, cor, typo"| DIR["Implementa direto<br/>sem versão nova"]
+  Q -->|"pagar débitos<br/>já anotados"| DEBT["/agent-spec-debt<br/>→ nova versão só com tasks"]
+  Q -->|"capacidade nova<br/>ou ajuste"| PROMPT
+  subgraph DISC ["Fase 1 — Discovery"]
+    PROMPT["📝 Escreva o pedido<br/>docs/references/prompts/<br/>ou texto livre"]
+    PRE["/agent-spec-pre-refinement<br/>Brainstorm ToT de PRODUTO<br/>→ pre-refinement.md"]
+    TAM{"Tamanho?"}
+    PROMPT --> PRE
+    PRE -->|"recomenda o tamanho"| TAM
+  end
+  TAM -->|"grande"| PRD["/agent-spec-prd<br/>fluxo completo"]
+  TAM -->|"pequena"| SPEC["/agent-spec-tech-spec<br/>atalho: sem PRD<br/>nem Tech Alignment"]
+  TAM -.->|"trivial"| DIR
+  DEBT --> RUN["/agent-spec-run-tasks"]
+  DIR --> COMMIT(["/agent-spec-semantic-commit"])
+  GUIDE{{"🧭 Na dúvida, em qualquer ponto:<br/>/agent-spec-guide"}}
+  class IDEIA start
+  class Q,TAM decision
+  class PRE,PRD,SPEC,DEBT,RUN phase
+  class PROMPT,DIR doc
+  class COMMIT util
+  class GUIDE guide
+${CLASSES}`,
+
+setup: `flowchart TD
+  INI(["🚀 Copie a pasta .claude/ para o projeto<br/>skills · agents · rules/behavior.md"])
+  INI --> TIPO{"O projeto já<br/>tem código?"}
+  subgraph GREEN ["Projeto novo — greenfield"]
+    PROMPT["📝 Pedido da fundação<br/>docs/references/prompts/"]
+    F001["Fluxo da feature 001<br/>ex.: arquitetura base"]
+    ADR["/agent-spec-adr<br/>stack, arquitetura…"]
+    DS["/agent-spec-design-system<br/>proposta inicial"]
+    RC["/agent-spec-rule-create<br/>rule provisória"]
+    CMD["/agent-spec-claude-md"]
+    README["/agent-spec-readme"]
+    PROMPT --> F001
+    F001 -.->|"Pre-Refinement<br/>recomenda"| ADR
+    F001 -.->|"tem interface?"| DS
+    F001 -.->|"antes da 1ª feature<br/>que toca o tema"| RC
+    F001 -->|"repo já tem manifest<br/>e comandos"| CMD
+    CMD --> README
+  end
+  subgraph BROWN ["Projeto existente — brownfield"]
+    CMD_2["/agent-spec-claude-md<br/>gera ou enxuga"]
+    RC_2["/agent-spec-rule-create<br/>deriva do código"]
+    DS_2["/agent-spec-design-system<br/>deriva do código e do Figma"]
+    README_2["/agent-spec-readme"]
+    CMD_2 -.->|"temas que o código<br/>já pratica"| RC_2
+    CMD_2 -.->|"tem interface?"| DS_2
+    CMD_2 --> README_2
+  end
+  TIPO -->|"não"| PROMPT
+  TIPO -->|"sim"| CMD_2
+  README --> PRONTO(["✅ Pronto para as próximas features"])
+  README_2 --> PRONTO
+  class INI start
+  class TIPO decision
+  class PRONTO ok
+  class PROMPT doc
+  class F001,ADR phase
+  class CMD,README,CMD_2,README_2 util
+  class DS,RC,DS_2,RC_2 utilOpt
+${CLASSES}`,
+
+flow: `flowchart TD
+  IDEIA(["💡 Ideia / Feature"])
+  subgraph S1 ["① Discovery — qual é o problema?"]
+    PRE["/agent-spec-pre-refinement<br/>Brainstorm ToT de PRODUTO<br/>→ pre-refinement.md"]
+    TAM{"Tamanho?"}
+  end
+  subgraph S2 ["② Produto — O QUÊ e POR QUÊ"]
+    PRD["/agent-spec-prd<br/>US · RN · CA<br/>→ prd.md"]
+    TEL{"Tem telas?"}
+    DESIGN["/agent-spec-design<br/>telas, estados, mensagens<br/>→ design.md"]
+  end
+  subgraph S3 ["③ Técnico — COMO"]
+    TA["/agent-spec-tech-alignment<br/>decisões D-01…<br/>→ tech-alignment.md"]
+    SPEC["/agent-spec-tech-spec<br/>contratos, dados, CT-01…<br/>→ spec.md"]
+    CH["/agent-spec-challenge-spec<br/>caça furos na spec"]
+  end
+  subgraph S4 ["④ Planejamento"]
+    TP["/agent-spec-task-plan<br/>→ tasks.md + tasks/T1.md…"]
+  end
+  subgraph S5 ["⑤ Execução"]
+    RUN["/agent-spec-run-tasks<br/>executor → revisor(es)<br/>→ código em stage"]
+    DEBTS[("debts.md")]
+  end
+  ADR["/agent-spec-adr · transversal<br/>→ docs/adr/NNN-titulo.md"]
+  ADRR["/agent-spec-adr-review"]
+  DS["/agent-spec-design-system · global<br/>→ design-system.md"]
+  DEBT["/agent-spec-debt · transversal<br/>→ nova versão só com tasks"]
+  IDEIA --> PRE
+  PRE -->|"✔ aprovado"| TAM
+  TAM -->|"grande"| PRD
+  TAM -.->|"pequena"| SPEC
+  PRE -.->|"recomenda ADR<br/>de fundação"| ADR
+  PRD -->|"✔ aprovado"| TEL
+  TEL -->|"sim"| DESIGN
+  TEL -->|"não"| TA
+  DESIGN -->|"✔ aprovado"| TA
+  DS -.->|"base visual"| DESIGN
+  TA -.->|"D-NN candidata<br/>a ADR;<br/>ADR aceita vira<br/>restrição herdada"| ADR
+  ADR -.-> TA
+  ADR -.-> ADRR
+  TA -->|"✔ aprovado"| SPEC
+  SPEC -.->|"opcional"| CH
+  CH -.->|"corrige o spec.md"| SPEC
+  SPEC -->|"✔ aprovado"| TP
+  TP -->|"✔ aprovado"| RUN
+  RUN -.->|"média/baixa"| DEBTS
+  DEBTS -.-> DEBT
+  DEBT -->|"✔ aprovado · vN+1"| RUN
+  RUN -->|"tudo em stage"| COMMIT(["/agent-spec-semantic-commit<br/>commit + push"])
+  class IDEIA start
+  class TAM,TEL decision
+  class PRE,PRD,TA,SPEC,TP,RUN,ADR,DEBT phase
+  class DESIGN phaseOpt
+  class CH,DS utilOpt
+  class ADRR,COMMIT util
+  class DEBTS doc
+${CLASSES}`,
+
+exec: `flowchart TD
+  IN[("tasks.md aprovado<br/>+ tasks/T1.md, T2.md…")] --> RUN["/agent-spec-run-tasks<br/>coordena — não escreve código"]
+  RUN --> NEXT{"Próxima task, na ordem<br/>das dependências"}
+  NEXT --> EXEC["🤖 agent-spec-executor<br/>código + testes dos CTs<br/>Sonnet · high"]
+  EXEC --> RISK{"Risco da task?"}
+  RISK -->|"baixo"| REV["🔍 agent-spec-reviewer<br/>roda testes, confere CTs,<br/>escopo, ADRs, arquitetura<br/>Sonnet · high · JSON"]
+  RISK -->|"alto"| REV
+  RISK -->|"alto · em paralelo"| SEC["🛡️ agent-spec-security-reviewer<br/>auth, IDOR, entrada, segredos,<br/>pagamentos · Opus · JSON"]
+  REV --> RES{"Resultado<br/>vale o pior dos dois"}
+  SEC --> RES
+  RES -->|"aprovada"| ADD["git add<br/>task concluída"]
+  RES -->|"só média/baixa"| DEBTS[("debts.md<br/>DT-01, DT-02…")]
+  DEBTS --> ADD
+  RES -->|"crítica/alta"| TRY{"Qual tentativa<br/>reprovou?"}
+  TRY -->|"1ª ou 2ª → correção<br/>a 2ª correção roda em Opus"| EXEC
+  TRY -->|"3ª"| STOP["⛔ Para e pergunta ao usuário<br/>orientar · parar · pular a task"]
+  ADD --> MORE{"Tem mais<br/>tasks?"}
+  MORE -->|"sim"| NEXT
+  MORE -->|"não"| COMMIT(["/agent-spec-semantic-commit<br/>o commit é seu"])
+  class IN,DEBTS doc
+  class RUN phase
+  class NEXT,RISK,RES,TRY,MORE decision
+  class EXEC,REV,SEC agent
+  class ADD ok
+  class STOP stop
+  class COMMIT util
+${CLASSES}`,
+
+versoes: `flowchart LR
+  V1["v1/<br/>primeira entrega<br/>todos os documentos"] -->|"implementada =<br/>não se edita mais"| MUD{"Nova mudança<br/>na feature"}
+  MUD -->|"grande<br/>capacidade ou regra nova"| VC["vN/ completa<br/>entra no Pre-Refinement<br/>todos os documentos"]
+  MUD -->|"pequena<br/>um campo, uma validação"| VP["vN/ parcial<br/>entra na Tech Spec<br/>pre-refinement · spec · tasks<br/>+ design, se muda telas"]
+  MUD -->|"débitos<br/>duplicação, nome, código morto"| VD["vN/ só tasks<br/>entra no Debt<br/>tasks.md + tasks/"]
+  MUD -->|"trivial<br/>texto, cor, typo"| VT["sem versão<br/>implementa e commita"]
+  class V1 doc
+  class MUD decision
+  class VC,VP,VD phase
+  class VT doc
+${CLASSES}`,
+
+contexto: `flowchart LR
+  subgraph SEMPRE ["Carrega SEMPRE"]
+    CLAUDEMD["CLAUDE.md<br/>stack, comandos,<br/>convenções globais"]
+    BEH["rules/behavior.md<br/>4 regras de comportamento"]
+  end
+  subgraph PATHS ["Carrega só ao tocar os paths"]
+    RT["rules/‹tema›.md<br/>ex.: database-access.md<br/>paths: src/db/**, docs/specs/**"]
+  end
+  subgraph CONSULTA ["Não carrega — lido quando citado"]
+    ADRD["docs/adr/<br/>decisões e porquês"]
+    DSM["docs/specs/design-system.md"]
+  end
+  AG(("🤖 Agente"))
+  CLAUDEMD --> AG
+  BEH --> AG
+  RT -.->|"ao ler ou editar arquivo<br/>que casa com os paths"| AG
+  ADRD -.->|"citada na spec<br/>ou na task"| AG
+  DSM -.->|"citado no design.md"| AG
+  CMD["/agent-spec-claude-md"] -->|"gera / audita"| CLAUDEMD
+  RC["/agent-spec-rule-create"] -->|"cria um tema"| RT
+  RCU["/agent-spec-rule-curate"] -->|"item solto"| CLAUDEMD
+  RCU -->|"item solto ·<br/>provisória → estável"| RT
+  class CLAUDEMD doc
+  class BEH,RT rule
+  class ADRD,DSM doc
+  class AG start
+  class CMD,RC,RCU util
+${CLASSES}`,
+
+onde: `flowchart TD
+  ITEM(["Surgiu uma convenção, uma decisão<br/>ou um 'isso foi feito errado'"])
+  ITEM --> Q1{"Decisão de arquitetura<br/>que vale para o<br/>projeto todo?"}
+  Q1 -->|"sim"| ADR["/agent-spec-adr<br/>registra o porquê"]
+  ADR -.->|"como aplicar no código"| RCU
+  Q1 -->|"não"| Q2{"É um tema inteiro?<br/>banco, erros HTTP, DI…"}
+  Q2 -->|"sim"| RC["/agent-spec-rule-create<br/>3-5 eixos × 3 alternativas"]
+  Q2 -->|"não, um item solto"| RCU["/agent-spec-rule-curate<br/>teste de fricção"]
+  RCU --> Q3{"Passa no teste?"}
+  Q3 -->|"não"| NADA["Não vira regra<br/>óbvio, descobre-se em 1 min<br/>ou fica velho em 3 meses"]
+  Q3 -->|"vale para tudo"| CLAUDEMD["CLAUDE.md<br/>ou rule global"]
+  Q3 -->|"vale para uma área"| RT["rules/‹tema›.md"]
+  RC --> RT
+  class ITEM start
+  class Q1,Q2,Q3 decision
+  class ADR phase
+  class RC,RCU util
+  class CLAUDEMD doc
+  class RT rule
+  class NADA stop
+${CLASSES}`,
+
+mapa: `%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#6D4AE0", "primaryTextColor": "#ffffff", "cScale1": "#DCDCFF", "cScale2": "#CDEFDB", "cScale3": "#FFE8BF", "cScale4": "#DCE3EB", "cScaleLabel1": "#1E1B2E", "cScaleLabel2": "#1E1B2E", "cScaleLabel3": "#1E1B2E", "cScaleLabel4": "#1E1B2E", "fontFamily": "Inter, system-ui, sans-serif"}}}%%
+mindmap
+  root((agent-spec))
+    Fases
+      1 Pre-Refinement
+      2 ADR
+      3 PRD
+      Design · opcional
+      4 Tech Alignment
+      5 Tech Spec
+      6 Task Plan
+      7 Debt
+      8 Execução
+    Agents da Execução
+      executor
+      reviewer
+      security-reviewer · risco alto
+    Utilitários
+      Qualidade
+        challenge-spec
+        adr-review
+      Projeto
+        claude-md
+        readme
+        design-system
+      Rules
+        rule-create
+        rule-curate
+      Dia a dia
+        semantic-commit
+      Framework
+        guide
+        visual-guide
+    Contexto
+      CLAUDE.md · sempre
+      behavior.md · sempre
+      tema.md · pelos paths`,
+
+ids: `flowchart TD
+  PRDID["prd.md<br/>US-01 histórias<br/>RN-01 regras<br/>CA-01 critérios de aceite"]
+  TAID["tech-alignment.md<br/>D-01 decisões"]
+  SPECID["spec.md<br/>CT-01 casos de teste<br/>cada CA vira CT"]
+  TASKID["tasks/T1.md<br/>cada CT cai em<br/>exatamente 1 task"]
+  DEBTID[("debts.md<br/>DT-01 · citado de fora<br/>como v1/DT-01")]
+  ADRID["docs/adr/NNN.md<br/>proposto → aceito"]
+  COMMITID(["commit<br/>Refs: 001-feature/v1 T1, T2"])
+  PRDID --> TAID --> SPECID --> TASKID --> COMMITID
+  TASKID -.->|"revisão: média/baixa"| DEBTID
+  TAID -.->|"vira ADR se vale<br/>para o projeto todo"| ADRID
+  ADRID -.->|"citada nas tasks"| TASKID
+  class PRDID,TAID,SPECID,TASKID phase
+  class ADRID phase
+  class DEBTID doc
+  class COMMITID util
+${CLASSES}`
+};
+
+/* ---------- legenda ---------- */
+const LEGEND = [
+  ['phase', 'Fase (skill do fluxo)'], ['phase-opt', 'Fase ou utilitário opcional (tracejado)'],
+  ['util', 'Utilitário'], ['agent', 'Agent'], ['doc', 'Documento / arquivo'], ['rule', 'Rule (contexto)'],
+  ['guide', 'Guia'], ['cluster', 'Grupo / fase do fluxo'], ['diamond', 'Decisão'],
+  ['line', 'Caminho principal'], ['dash', 'Opcional ou relação']
+];
+document.querySelectorAll('[data-legend]').forEach(el => {
+  el.innerHTML = LEGEND.map(([c, t]) => `<span class="it"><span class="sw ${c}"></span>${t}</span>`).join('')
+    + '<span class="it"><b style="color:var(--ink)">✔ aprovado</b>&nbsp;= você revisa e aprova</span>';
+});
+
+/* ---------- utilidades ---------- */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
+const baseId = id => id.replace(/_\d+$/, '');
+const toast = document.getElementById('toast');
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); }
+  catch {
+    const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+    ta.select(); try { document.execCommand('copy'); } catch {} ta.remove();
+  }
+  toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 1200);
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-copy]');
+  if (b) copy(b.dataset.copy);
+});
+
+/* ---------- painel de detalhes ---------- */
+const panel = document.getElementById('panel');
+function panelEmpty() {
+  panel.innerHTML = `<div class="empty"><span class="big">👆</span>
+    <b>Clique em uma caixa</b> de qualquer diagrama (ou em uma peça na aba <i>Mapa de tudo</i>) para ver o que ela faz,
+    o que recebe, o que gera, o comando e o que vem antes e depois.</div>`;
+  panel.classList.remove('open');
+}
+function chips(keys) {
+  return `<div class="chips">${keys.filter(k => INFO[k]).map(k =>
+    `<button class="chip ${KIND[INFO[k].tipo].css}" data-info="${k}">${esc(INFO[k].nome)}</button>`).join('')}</div>`;
+}
+function openPanel(key) {
+  const d = INFO[key];
+  if (!d) return;
+  const k = KIND[d.tipo];
+  const row = (t, v) => v && v !== '—' ? `<dt>${t}</dt><dd>${fmt(v)}</dd>` : '';
+  panel.innerHTML = `
+    <button class="btn close" data-close>fechar ✕</button>
+    <span class="pill ${k.css}">${esc(d.rotulo)}</span>
+    <h3 class="mono">${esc(d.nome)}</h3>
+    <p class="q">${esc(d.q)}</p>
+    <p>${fmt(d.resumo)}</p>
+    ${d.cmd ? `<dt style="font-weight:600;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em">Comando</dt>
+      <div class="cmdbox"><code>${esc(d.cmd)}</code>${d.cmd.startsWith('/') ? `<button class="btn" data-copy="${esc(d.cmd.split('\n')[0])}">copiar</button>` : ''}</div>` : ''}
+    <dl>
+      ${row('Entrada', d.entrada)}
+      ${row('Saída', d.saida)}
+      ${row('Quando usar', d.quando)}
+      ${row('Não faz', d.nao)}
+      ${d.antes.length ? `<dt>Vem antes / alimenta</dt><dd>${chips(d.antes)}</dd>` : ''}
+      ${d.depois.length ? `<dt>Vem depois / alimenta</dt><dd>${chips(d.depois)}</dd>` : ''}
+    </dl>
+    ${d.arq ? `<a class="src" href="${d.arq}" target="_blank">Abrir o arquivo da definição ↗</a>` : ''}`;
+  panel.classList.add('open');
+  panel.scrollTop = 0;
+}
+panel.addEventListener('click', e => {
+  const c = e.target.closest('[data-info]');
+  if (c) openPanel(c.dataset.info);
+  if (e.target.closest('[data-close]')) panelEmpty();
+});
+window.showInfo = id => openPanel(baseId(id));
+panelEmpty();
+
+/* ---------- cards da aba Mapa ---------- */
+(() => {
+  const groups = {};
+  for (const [key, d] of Object.entries(INFO)) {
+    if (key === 'DIR') continue;
+    (groups[KIND[d.tipo].grupo] ??= []).push([key, d]);
+  }
+  document.getElementById('cards').innerHTML = Object.entries(groups).map(([g, items]) =>
+    `<div class="group-title">${g}</div><div class="cards">${items.map(([key, d]) =>
+      `<button class="scard ${KIND[d.tipo].css}" data-info="${key}"><span class="nm">${esc(d.nome)}</span><span class="ds">${esc(d.curto)}</span></button>`
+    ).join('')}</div>`).join('');
+  document.getElementById('cards').addEventListener('click', e => {
+    const c = e.target.closest('[data-info]');
+    if (c) openPanel(c.dataset.info);
+  });
+})();
+
+/* ---------- tabela de comandos ---------- */
+const COMMANDS = [
+  ['Ideia nova ou mudança grande; entender o problema', '/agent-spec-pre-refinement "‹ideia›"', 'PRE'],
+  ['Registrar uma decisão de arquitetura (ou substituir uma ADR)', '/agent-spec-adr "‹título›"', 'ADR'],
+  ['Ver as ADRs que os documentos mandam registrar e ainda faltam', '/agent-spec-adr', 'ADR'],
+  ['Conferir se as ADRs estão consistentes entre si e com as features', '/agent-spec-adr-review', 'ADRR'],
+  ['Gerar o PRD', '/agent-spec-prd ‹pre-refinement.md ou vN/›', 'PRD'],
+  ['Especificar as telas de uma feature (depois do PRD)', '/agent-spec-design ‹prd.md ou vN/› [Figma, mockups ou descrição]', 'DESIGN'],
+  ['Escolher a abordagem técnica', '/agent-spec-tech-alignment ‹prd.md ou vN/›', 'TA'],
+  ['Gerar a spec (inclusive de uma mudança pequena)', '/agent-spec-tech-spec ‹prd.md, tech-alignment.md, pre-refinement.md ou vN/›', 'SPEC'],
+  ['Caçar furos na spec antes das tasks', '/agent-spec-challenge-spec ‹spec.md ou vN/›', 'CH'],
+  ['Quebrar a spec em tasks', '/agent-spec-task-plan ‹spec.md ou vN/›', 'TP'],
+  ['Implementar as tasks (todas, ou só uma)', '/agent-spec-run-tasks ‹tasks.md ou vN/› [TN]', 'RUN'],
+  ['Pagar débitos anotados', '/agent-spec-debt ‹feature, vN/ ou debts.md›', 'DEBT'],
+  ['Criar, consolidar ou atualizar o design system do produto', '/agent-spec-design-system [Figma, docs ou descrição]', 'DS'],
+  ['Commitar todas as mudanças do projeto', '/agent-spec-semantic-commit', 'COMMIT'],
+  ['Criar ou atualizar o README de um projeto', '/agent-spec-readme [pasta do projeto]', 'README'],
+  ['Criar, auditar ou enxugar o CLAUDE.md de um projeto', '/agent-spec-claude-md [pasta do projeto]', 'CMD'],
+  ['Definir as convenções de um tema (banco, erros HTTP, DI…)', '/agent-spec-rule-create "‹tema›"', 'RC'],
+  ['Decidir se algo vira regra (“documenta isso”)', '/agent-spec-rule-curate "‹item›"', 'RCU'],
+  ['Auditar ou limpar as rules do projeto', '/agent-spec-rule-curate auditar [arquivo de rule]', 'RCU'],
+  ['Saber qual é o próximo passo de uma feature', '/agent-spec-guide "qual o próximo passo da 001?"', 'GUIDE'],
+  ['Atualizar este guia visual depois de mudar skills, agents ou rules', '/agent-spec-visual-guide', 'VG'],
+  ['Mudança trivial (texto, cor, typo)', 'nenhuma skill: implementa direto e commita', 'DIR']
+];
+document.getElementById('cmd-table').innerHTML =
+  '<tr><th>Necessidade</th><th>Comando</th><th>Peça</th></tr>' +
+  COMMANDS.map(([n, c, k]) => `<tr><td>${esc(n)}</td>
+    <td><div class="cmd"><code>${esc(c)}</code>${c.startsWith('/') ? `<button class="btn" data-copy="${esc(c)}">copiar</button>` : ''}</div></td>
+    <td><button class="chip ${KIND[INFO[k].tipo].css}" data-info="${k}">detalhes</button></td></tr>`).join('');
+document.getElementById('cmd-table').addEventListener('click', e => {
+  const c = e.target.closest('[data-info]');
+  if (c) openPanel(c.dataset.info);
+});
+
+const BOUNDS = [
+  ['Tech Alignment × Tech Spec', 'O primeiro escolhe a abordagem (decisões D-NN com alternativas); o segundo detalha a abordagem já escolhida até ficar implementável.'],
+  ['Decisão D-NN × ADR', 'A D-NN vale para a feature; vira ADR quando vale para o projeto todo e vai sobreviver à feature.'],
+  ['Challenge da spec × Tech Spec', 'O challenge não gera documento: procura furos e corrige o spec.md que já existe.'],
+  ['Design system × Design', 'O design system vale para o produto inteiro (tokens, componentes, padrões); o design.md vale para as telas de uma feature e de uma versão.'],
+  ['Design × Tech Spec', 'O design diz o que o usuário vê (“banner com Tentar novamente”); a spec diz como a máquina faz (rota, retry, de onde vêm os dados).'],
+  ['Debt × mudança pequena', 'Débito não muda comportamento (sem spec.md novo). Se a correção muda API, erros, dados ou regras, é mudança e segue o fluxo normal.'],
+  ['Rule × ADR', 'A ADR registra a decisão, as alternativas e o porquê, e não carrega no contexto; a rule diz ao agente como aplicá-la (uma linha + exemplo) e carrega.'],
+  ['rule-create × rule-curate', 'A primeira define um tema inteiro, eixo por eixo; a segunda julga um item solto e audita as rules existentes.'],
+  ['CLAUDE.md × rule por área', 'O CLAUDE.md carrega sempre e traz o transversal; a rule por área só carrega ao tocar os paths dela e traz os detalhes de um tema.'],
+  ['README × CLAUDE.md', 'O README é para pessoas (o que é, como rodar); o CLAUDE.md é para o agente (como trabalhar aqui).']
+];
+document.getElementById('bounds').innerHTML = BOUNDS.map(([t, d]) => `<div class="bound"><b>${esc(t)}</b>${esc(d)}</div>`).join('');
+
+/* =====================================================================
+   Diagramas: cartão com barra de zoom, área com pan e código Mermaid
+   ===================================================================== */
+document.querySelectorAll('.diagram').forEach(card => {
+  const key = card.dataset.diagram;
+  card.innerHTML = `
+    <div class="dg-bar">
+      <span class="dg-title">${esc(card.dataset.title || '')}</span>
+      <div class="dg-tools">
+        <button data-act="out" title="Diminuir">−</button>
+        <span class="dg-zoom">100%</span>
+        <button data-act="in" title="Aumentar">+</button>
+        <button data-act="fit" title="Ajustar à largura">ajustar</button>
+        <button data-act="code" title="Ver o código Mermaid">código</button>
+      </div>
+    </div>
+    <div class="canvas"><div class="inner"></div><div class="state">Carregando diagrama…</div></div>
+    <div class="dg-hint">Arraste para mover · Ctrl + roda do mouse para zoom${key === 'mapa' ? '' : ' · clique numa caixa para ver os detalhes'}</div>
+    <div class="dg-code"><button class="btn" data-copy="">copiar</button><pre></pre></div>`;
+  const code = DIAGRAMS[key].trim();
+  card.querySelector('.dg-code pre').textContent = code;
+  card.querySelector('.dg-code .btn').dataset.copy = code;
+  card.querySelector('[data-act="code"]').onclick = () => card.querySelector('.dg-code').classList.toggle('open');
+});
+
+function clickLines(src) {
+  const ids = new Set();
+  const re = /(?:^|[\s;&>])([A-Z][A-Z0-9]*(?:_\d+)?)(?=[\[\(\{])/gm;
+  let m;
+  while ((m = re.exec(src))) if (INFO[baseId(m[1])]) ids.add(m[1]);
+  return [...ids].map(id => `  click ${id} showInfo`).join('\n');
+}
+
+function setupPanZoom(card) {
+  const canvas = card.querySelector('.canvas');
+  const inner = card.querySelector('.inner');
+  const svg = inner.querySelector('svg');
+  const label = card.querySelector('.dg-zoom');
+  const vb = svg.viewBox.baseVal;
+  const w = vb.width, h = vb.height;
+  svg.removeAttribute('style');
+  svg.setAttribute('width', w);
+  svg.setAttribute('height', h);
+  const st = { s: 1, x: 0, y: 0 };
+  const apply = () => {
+    inner.style.transform = `translate(${st.x}px, ${st.y}px) scale(${st.s})`;
+    label.textContent = Math.round(st.s * 100) + '%';
+  };
+  const fit = () => {
+    const cw = canvas.clientWidth;
+    if (!cw) return;
+    const pad = 24;
+    // não encolhe abaixo de 72% (texto ilegível); o que sobrar à direita se vê arrastando
+    st.s = Math.min(1, Math.max(0.72, (cw - pad * 2) / w));
+    canvas.style.height = Math.max(220, h * st.s + pad * 2) + 'px';
+    st.x = w * st.s > cw - pad * 2 ? pad : (cw - w * st.s) / 2;
+    st.y = pad;
+    apply();
+  };
+  const zoomAt = (f, px, py) => {
+    const ns = Math.min(3, Math.max(0.2, st.s * f));
+    st.x = px - (px - st.x) * (ns / st.s);
+    st.y = py - (py - st.y) * (ns / st.s);
+    st.s = ns;
+    apply();
+  };
+  const center = () => [canvas.clientWidth / 2, canvas.clientHeight / 2];
+  card.querySelector('[data-act="in"]').onclick = () => zoomAt(1.2, ...center());
+  card.querySelector('[data-act="out"]').onclick = () => zoomAt(1 / 1.2, ...center());
+  card.querySelector('[data-act="fit"]').onclick = fit;
+  canvas.addEventListener('wheel', e => {
+    if (!(e.ctrlKey || e.metaKey)) return;
+    e.preventDefault();
+    const r = canvas.getBoundingClientRect();
+    zoomAt(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX - r.left, e.clientY - r.top);
+  }, { passive: false });
+
+  // arrastar para mover; um arrasto não conta como clique no nó
+  let drag = null, suppress = false;
+  canvas.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    drag = { x: e.clientX, y: e.clientY, sx: st.x, sy: st.y, moved: false };
+    const move = ev => {
+      const dx = ev.clientX - drag.x, dy = ev.clientY - drag.y;
+      if (!drag.moved && Math.hypot(dx, dy) < 5) return;
+      drag.moved = true;
+      canvas.classList.add('dragging');
+      st.x = drag.sx + dx; st.y = drag.sy + dy; apply();
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+      canvas.classList.remove('dragging');
+      if (drag.moved) { suppress = true; setTimeout(() => { suppress = false; }, 0); }
+      drag = null;
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
+  });
+  canvas.addEventListener('click', e => {
+    if (suppress) { e.stopPropagation(); e.preventDefault(); suppress = false; }
+  }, true);
+
+  card._fit = fit;
+  fit();
+}
+
+/* ---------- abas ---------- */
+const tabs = [...document.querySelectorAll('nav.tabs button')];
+const sections = [...document.querySelectorAll('section.tab')];
+let mermaid = null, mermaidFailed = false, renderCount = 0;
+
+async function renderCard(card) {
+  if (card.dataset.state === 'done') { card._fit?.(); return; }
+  if (card.dataset.state === 'loading') return;
+  const stateEl = card.querySelector('.state');
+  if (mermaidFailed) {
+    stateEl.innerHTML = 'Não foi possível carregar o Mermaid (a biblioteca vem da internet, pelo jsDelivr).<br/>Verifique a conexão e recarregue a página. O código do diagrama está no botão <b>código</b>.';
+    return;
+  }
+  if (!mermaid) return;
+  card.dataset.state = 'loading';
+  let src = DIAGRAMS[card.dataset.diagram].trim();
+  if (src.startsWith('flowchart')) src += '\n' + clickLines(src);
+  try {
+    const { svg, bindFunctions } = await mermaid.render('mmd-' + card.dataset.diagram + '-' + (renderCount++), src);
+    const inner = card.querySelector('.inner');
+    inner.innerHTML = svg;
+    bindFunctions?.(inner);
+    stateEl.remove();
+    card.dataset.state = 'done';
+    setupPanZoom(card);
+  } catch (err) {
+    console.error(err);
+    card.dataset.state = 'error';
+    stateEl.textContent = 'Erro ao desenhar o diagrama: ' + (err?.message || err);
+  }
+}
+
+async function show(tab) {
+  if (!sections.some(s => s.id === tab)) tab = 'comecar';
+  sections.forEach(s => { s.hidden = s.id !== tab; });
+  tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
+  if (location.hash !== '#' + tab) history.replaceState(null, '', '#' + tab);
+  const section = document.getElementById(tab);
+  for (const card of section.querySelectorAll('.diagram')) await renderCard(card);
+}
+tabs.forEach(b => b.addEventListener('click', () => { show(b.dataset.tab); window.scrollTo({ top: 0 }); }));
+window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    document.querySelectorAll('section.tab:not([hidden]) .diagram[data-state="done"]').forEach(c => c._fit?.());
+  }, 150);
+});
+
+show(location.hash.slice(1) || 'comecar');
+
+try {
+  mermaid = (await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs')).default;
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: 'default',
+    themeVariables: { fontFamily: 'Inter, system-ui, sans-serif', fontSize: '14px' },
+    flowchart: { curve: 'basis', padding: 14, nodeSpacing: 40, rankSpacing: 52, htmlLabels: true }
+  });
+} catch (err) {
+  console.error(err);
+  mermaidFailed = true;
+}
+show(location.hash.slice(1) || 'comecar');
+</script>
+</body>
+</html>

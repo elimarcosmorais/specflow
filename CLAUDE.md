@@ -44,6 +44,7 @@ Além das fases, há skills **utilitárias**, que não geram documento de fase:
 | CLAUDE.md do projeto | `agent-spec-claude-md` | `agent-spec-generate-claude-md` | criada |
 | Rules de um tema | `agent-spec-rule-create` | `agent-spec-rule-create` | criada |
 | Curadoria das rules | `agent-spec-rule-curate` | `agent-spec-curate-project-rules` | criada |
+| Guia visual (`docs/visual-guide.html`) | `agent-spec-visual-guide` | `agent-spec-docs-sync` | criada |
 
 Atualize estas tabelas sempre que uma skill for criada ou alterada (nome da skill e status).
 
