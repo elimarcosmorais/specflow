@@ -17,7 +17,7 @@ Os documentos em `docs/specs/` e `docs/adr/` são o exemplo do que o fluxo gera.
 | 1 | Pre-Refinement | `agent-spec-pre-refinement` |
 | 2 | ADR            | `agent-spec-adr`            |
 | 3 | PRD            | `agent-spec-prd`            |
-| — | Design (opcional, só feature com telas) | `agent-spec-design` |
+| — | Design (obrigatório em feature com telas) | `agent-spec-design` |
 | 4 | Tech Alignment | `agent-spec-tech-alignment` |
 | 5 | Tech Spec      | `agent-spec-tech-spec`      |
 | 6 | Task Plan      | `agent-spec-task-plan`      |
@@ -35,7 +35,7 @@ Além das fases, há skills **utilitárias**, que não geram documento de fase:
 | Challenge da spec                      | `agent-spec-challenge-spec`  |
 | Guia do framework                      | `agent-spec-guide`           |
 | Revisão das ADRs                       | `agent-spec-adr-review`      |
-| Design system (opcional)               | `agent-spec-design-system`   |
+| Design system (projeto com interface)  | `agent-spec-design-system`   |
 | README do projeto                      | `agent-spec-readme`          |
 | CLAUDE.md do projeto                   | `agent-spec-claude-md`       |
 | Rules de um tema                       | `agent-spec-rule-create`     |

@@ -81,7 +81,9 @@ Zero pontos é uma resposta válida (ex.: mais um CRUD igual aos outros). Invent
 ## Etapa 1 — Ler e verificar
 
 1. Leia o `prd.md` e o `pre-refinement.md` da mesma pasta, e o `design.md`, se existir: o que
-   o usuário vê já está decidido nele, e as soluções técnicas precisam viabilizá-lo.
+   o usuário vê já está decidido nele, e as soluções técnicas precisam viabilizá-lo. Feature
+   com telas e sem `design.md` → pare: o Design vem antes; indique
+   `/agent-spec-design <caminho do prd.md>`.
 2. **Status.** Se o `prd.md` (ou o `design.md`) for `rascunho`, lembre a regra de ouro
    (`agent-spec-guide`, seção 1) e pergunte: "marcar como `aprovado` e seguir" ou "parar
    para revisar".

@@ -1,6 +1,6 @@
 ---
 name: agent-spec-design-system
-description: Utilitário do framework (transversal, opcional - só projetos com interface). Cria ou atualiza o design system do produto em docs/specs/design-system.md - cores, tipografia, espaçamento, ícones, layout, tema, componentes reutilizáveis, padrões de feedback e acessibilidade visual. Deriva do código, do Figma e dos documentos do time tudo o que já existe e só pergunta o resto; em projeto novo, propõe o design system inicial com perguntas de direção, sempre com recomendação. Não especifica as telas de uma feature, não cria ADR e não escreve código. Usar quando o usuário pedir para criar, consolidar ou atualizar o design system, ou antes da primeira feature com interface.
+description: Utilitário do framework (transversal; obrigatório em projeto com interface, antes do primeiro Design). Cria ou atualiza o design system do produto em docs/specs/design-system.md - cores, tipografia, espaçamento, ícones, layout, tema, componentes reutilizáveis, padrões de feedback e acessibilidade visual. Deriva do código, do Figma e dos documentos do time tudo o que já existe e só pergunta o resto; em projeto novo, propõe o design system inicial com perguntas de direção, sempre com recomendação. Não especifica as telas de uma feature, não cria ADR e não escreve código. Usar quando o usuário pedir para criar, consolidar ou atualizar o design system, ou antes do Design da primeira feature com interface (o PRD indica o comando).
 argument-hint: "[links de Figma | caminhos de documentos de design do time | descrição livre (opcional)]"
 disable-model-invocation: true
 ---
@@ -23,7 +23,8 @@ completos: `agent-spec-guide`.
 
 Quando rodar:
 
-- **Projeto novo com interface**, antes da primeira feature que tenha telas.
+- **Projeto novo com interface**, antes do Design da primeira feature que tenha telas (o PRD
+  dela indica o comando; o Design não roda sem o design system).
 - **Projeto que já tem interface** e nunca registrou o design system.
 - **Design system defasado:** o código, o Figma ou o time mudou algo.
 
@@ -86,7 +87,9 @@ Leia também:
 - **`design.md` das features** (`docs/specs/features/*/v*/design.md`), seção 2.2: item com
   "Promover: sim" cujo componente já existe no código é entrada nova para a seção 7.
 - **Documentos do time** passados no argumento, e candidatos óbvios (`docs/**/design*`,
-  `**/styleguide*`).
+  `**/styleguide*`). Um prompt de `docs/references/prompts/` vale como documento do time: leia
+  também as imagens que ele cita, com o papel que ele dá a cada uma (ex.: "fonte da paleta" ×
+  "só estrutura").
 - **Referências do usuário** em `docs/references/brand/` (logo, fontes, paleta) e
   `docs/references/screens/` (prints de inspiração), se existirem; leia as imagens com Read.
   Valem como documento do time na precedência.

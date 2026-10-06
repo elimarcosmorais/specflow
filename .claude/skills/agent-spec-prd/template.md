@@ -92,10 +92,10 @@ status: rascunho   # rascunho | aprovado
 
 ## 12. Próximo passo
 
-- **Próxima fase:** Tech Alignment → `/agent-spec-tech-alignment docs/specs/features/NNN-<feature>/vN/prd.md`
-- **Antes, se a feature tem telas (opcional):** Design → `/agent-spec-design docs/specs/features/NNN-<feature>/vN/prd.md`
+- **Próxima fase:** Design → `/agent-spec-design docs/specs/features/NNN-<feature>/vN/prd.md`
+- **Antes, crie o design system:** `/agent-spec-design-system docs/references/prompts/<prompt>.md`
 - **ADR a registrar antes:**
   - `/agent-spec-adr "<título da decisão>"` — <o que ela decide, em poucas palavras>
 
-<!-- LLM-ONLY: os comandos ficam prontos para copiar, com o caminho real deste arquivo. ADR aqui = recomendada pelo pre-refinement e ainda ausente em docs/adr/; sem nenhuma → "**ADR a registrar antes:** nenhuma". A linha do Design só existe se a feature tem interface. -->
+<!-- LLM-ONLY: os comandos ficam prontos para copiar, com o caminho real deste arquivo. Próxima fase: feature com telas → Design (obrigatório nela), como acima; sem telas → "Tech Alignment → `/agent-spec-tech-alignment <caminho deste prd.md>`". A linha "Antes, crie o design system" só existe se a feature tem telas e docs/specs/design-system.md não existe; o argumento é só a "Fonte da ideia" do pre-refinement (o prompt já cita as imagens e o papel de cada uma); ideia em texto livre → sem argumento. ADR aqui = recomendada pelo pre-refinement e ainda ausente em docs/adr/; sem nenhuma → "**ADR a registrar antes:** nenhuma". -->
 

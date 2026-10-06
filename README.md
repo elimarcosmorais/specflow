@@ -76,7 +76,7 @@ débitos) e as [ADRs](docs/adr/).
 | 1 | `/agent-spec-pre-refinement` | `pre-refinement.md`: o problema, de verdade |
 | 2 | `/agent-spec-adr` | `docs/adr/NNN-<titulo>.md`: uma decisão de arquitetura (transversal) |
 | 3 | `/agent-spec-prd` | `prd.md`: o que construir e para quem |
-| — | `/agent-spec-design` | `design.md`: as telas (opcional, só feature com interface) |
+| — | `/agent-spec-design` | `design.md`: as telas (obrigatório em feature com interface) |
 | 4 | `/agent-spec-tech-alignment` | `tech-alignment.md`: a abordagem técnica |
 | 5 | `/agent-spec-tech-spec` | `spec.md`: como vai funcionar, em detalhe |
 | 6 | `/agent-spec-task-plan` | `tasks.md` + `tasks/T*.md`: os passos de implementação |
@@ -94,7 +94,7 @@ tasks de risco alto).
 | `/agent-spec-guide` | Tirar dúvidas: qual skill rodar, próximo passo de uma feature, como funciona uma fase |
 | `/agent-spec-challenge-spec` | Caçar furos no `spec.md` antes do Task Plan |
 | `/agent-spec-adr-review` | Conferir se as ADRs são consistentes entre si e com as features |
-| `/agent-spec-design-system` | Criar ou atualizar o design system do produto (projetos com interface) |
+| `/agent-spec-design-system` | Criar ou atualizar o design system do produto (obrigatório em projeto com interface, antes do primeiro Design) |
 | `/agent-spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
 | `/agent-spec-readme` | Gerar ou completar o `README.md` |
 | `/agent-spec-claude-md` | Gerar ou enxugar o `CLAUDE.md` |

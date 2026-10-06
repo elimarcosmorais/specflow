@@ -357,8 +357,9 @@
   <section class="tab" id="fluxo" hidden>
     <h2>Fluxo completo de uma feature</h2>
     <p class="intro">A espinha do framework é uma <b>sequência</b>: cada fase usa como entrada o documento aprovado da fase
-      anterior. Em volta dela ficam as <b>transversais</b> (ADR, Debt, design system), que entram quando aparece uma
-      decisão de arquitetura ou quando se decide pagar débitos.</p>
+      anterior. Em volta dela ficam as <b>transversais</b> (ADR, Debt), que entram quando aparece uma
+      decisão de arquitetura ou quando se decide pagar débitos. O design system entra uma vez, antes do Design da
+      primeira feature com telas, e depois só é atualizado quando fica defasado.</p>
 
     <div class="card"><div class="legend" data-legend></div></div>
 
@@ -631,18 +632,18 @@ const INFO = {
     saida: '`vN/prd.md`',
     quando: 'Mudança grande: capacidade nova, regra de negócio nova, várias personas.',
     nao: 'Nenhum detalhe técnico. Não gera tech alignment, spec, tasks nem código.',
-    antes: ['PRE', 'ADR'], depois: ['DESIGN', 'TA'],
+    antes: ['PRE', 'ADR'], depois: ['DS', 'DESIGN', 'TA'],
     arq: SK + 'agent-spec-prd/SKILL.md'
   },
   DESIGN: {
-    tipo: 'phase', rotulo: 'Fase opcional · Design', nome: 'agent-spec-design',
+    tipo: 'phase', rotulo: 'Fase condicional · Design', nome: 'agent-spec-design',
     q: 'O que o usuário vê?',
-    curto: 'As telas da feature (só se tiver interface).',
+    curto: 'As telas da feature (obrigatório se ela tem interface).',
     resumo: 'Especifica o COMO VISUAL da feature: telas, layout, componentes (reusados do design system ou novos com justificativa), estados visuais (carregando, sucesso, erro, vazio), mensagens literais, tamanhos de tela, interações, acessibilidade e assets. Aceita Figma ou mockups como referência, sem depender deles.',
     cmd: '/agent-spec-design ‹prd.md ou vN/› [Figma, mockups ou descrição]',
     entrada: '`prd.md` aprovado + `docs/specs/design-system.md`.',
     saida: '`vN/design.md`. Consumido pelo Tech Alignment, pela Spec, pelo Task Plan e pela Execução.',
-    quando: 'Só em feature com telas, entre o PRD e o Tech Alignment. Sem design system, ela recomenda criá-lo antes.',
+    quando: 'Obrigatório em feature com telas, entre o PRD e o Tech Alignment (sem telas, não se aplica). Sem design system, ela para e indica o comando; sem `design.md`, o Tech Alignment de uma feature com telas também para.',
     nao: 'Não decide regra de negócio nem mecânica técnica (rota, retry, de onde vêm os dados): isso é da Spec.',
     antes: ['PRD', 'DS'], depois: ['TA'],
     arq: SK + 'agent-spec-design/SKILL.md'
@@ -778,16 +779,16 @@ const INFO = {
     arq: SK + 'agent-spec-adr-review/SKILL.md'
   },
   DS: {
-    tipo: 'util', rotulo: 'Utilitário · opcional', nome: 'agent-spec-design-system',
+    tipo: 'util', rotulo: 'Utilitário · projeto com interface', nome: 'agent-spec-design-system',
     q: 'Qual é a identidade visual do produto?',
     curto: 'Tokens, componentes e padrões visuais globais.',
     resumo: 'Cria ou atualiza a identidade visual do produto inteiro: cores, tipografia, espaçamento, ícones, layout, tema, componentes reutilizáveis (com o import real), padrões de feedback e acessibilidade visual. Deriva do código, do Figma e dos documentos o que já existe e só pergunta o resto; em projeto novo, propõe com recomendação.',
     cmd: '/agent-spec-design-system [Figma, docs ou descrição]',
     entrada: 'Código, Figma, documentos do time ou suas respostas.',
     saida: '`docs/specs/design-system.md`: global, sem versão, `rascunho` → `aprovado`.',
-    quando: 'Projeto com interface: antes da primeira feature com telas, ou quando ficou defasado.',
+    quando: 'Projeto com interface: antes do Design da primeira feature com telas (o PRD indica o comando, com o prompt da ideia, que já cita as imagens; o Design não roda sem ele), ou quando ficou defasado.',
     nao: 'Não especifica as telas de uma feature (isso é o Design), não cria ADR, não escreve código.',
-    antes: [], depois: ['DESIGN'],
+    antes: ['PRD'], depois: ['DESIGN'],
     arq: SK + 'agent-spec-design-system/SKILL.md'
   },
   COMMIT: {
@@ -1023,7 +1024,7 @@ setup: `flowchart TD
     README["/agent-spec-readme"]
     PROMPT --> F001
     F001 -.->|"Pre-Refinement<br/>recomenda"| ADR
-    F001 -.->|"tem interface?"| DS
+    F001 -.->|"PRD com telas<br/>recomenda"| DS
     F001 -.->|"antes da 1ª feature<br/>que toca o tema"| RC
     F001 -->|"repo já tem manifest<br/>e comandos"| CMD
     CMD --> README
@@ -1046,8 +1047,8 @@ setup: `flowchart TD
   class PRONTO ok
   class PROMPT doc
   class F001,ADR phase
-  class CMD,README,CMD_2,README_2 util
-  class DS,RC,DS_2,RC_2 utilOpt
+  class CMD,README,CMD_2,README_2,DS,DS_2 util
+  class RC,RC_2 utilOpt
 ${CLASSES}`,
 
 flow: `flowchart TD
@@ -1059,6 +1060,8 @@ flow: `flowchart TD
   subgraph S2 ["② Produto — O QUÊ e POR QUÊ"]
     PRD["/agent-spec-prd<br/>US · RN · CA<br/>→ prd.md"]
     TEL{"Tem telas?"}
+    HASDS{"design-system.md<br/>existe?"}
+    DS["/agent-spec-design-system · global<br/>paleta, tokens, componentes<br/>→ design-system.md"]
     DESIGN["/agent-spec-design<br/>telas, estados, mensagens<br/>→ design.md"]
   end
   subgraph S3 ["③ Técnico — COMO"]
@@ -1075,7 +1078,6 @@ flow: `flowchart TD
   end
   ADR["/agent-spec-adr · transversal<br/>→ docs/adr/NNN-titulo.md"]
   ADRR["/agent-spec-adr-review"]
-  DS["/agent-spec-design-system · global<br/>→ design-system.md"]
   DEBT["/agent-spec-debt · transversal<br/>→ nova versão só com tasks"]
   IDEIA --> PRE
   PRE -->|"✔ aprovado"| TAM
@@ -1083,10 +1085,12 @@ flow: `flowchart TD
   TAM -.->|"pequena"| SPEC
   PRE -.->|"recomenda ADR<br/>de fundação"| ADR
   PRD -->|"✔ aprovado"| TEL
-  TEL -->|"sim"| DESIGN
+  TEL -->|"sim"| HASDS
   TEL -->|"não"| TA
+  HASDS -->|"sim"| DESIGN
+  HASDS -->|"não · o PRD<br/>indica o comando"| DS
+  DS -->|"✔ aprovado"| DESIGN
   DESIGN -->|"✔ aprovado"| TA
-  DS -.->|"base visual"| DESIGN
   TA -.->|"D-NN candidata<br/>a ADR;<br/>ADR aceita vira<br/>restrição herdada"| ADR
   ADR -.-> TA
   ADR -.-> ADRR
@@ -1100,10 +1104,11 @@ flow: `flowchart TD
   DEBT -->|"✔ aprovado · vN+1"| RUN
   RUN -->|"tudo em stage"| COMMIT(["/agent-spec-semantic-commit<br/>commit + push"])
   class IDEIA start
-  class TAM,TEL decision
+  class TAM,TEL,HASDS decision
   class PRE,PRD,TA,SPEC,TP,RUN,ADR,DEBT phase
-  class DESIGN phaseOpt
-  class CH,DS utilOpt
+  class DESIGN phase
+  class CH utilOpt
+  class DS util
   class ADRR,COMMIT util
   class DEBTS doc
 ${CLASSES}`,
@@ -1206,7 +1211,7 @@ mindmap
       1 Pre-Refinement
       2 ADR
       3 PRD
-      Design · opcional
+      Design · com telas
       4 Tech Alignment
       5 Tech Spec
       6 Task Plan

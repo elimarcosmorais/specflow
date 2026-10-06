@@ -1,6 +1,6 @@
 ---
 name: agent-spec-design
-description: Fase opcional do framework, entre o PRD e o Tech Alignment, só para features com interface. A partir de um prd.md aprovado, especifica o COMO VISUAL da feature no design.md - telas, layout, componentes, estados visuais concretos (carregando, sucesso, erro, vazio), mensagens, tamanhos de tela, interações, acessibilidade visual e assets - ancorado no design-system.md e nos componentes que o projeto já tem. Aceita Figma ou mockups como referência sem depender deles. Promove ao design system, com confirmação, o que nasceu reutilizável. Não decide regra de negócio nem mecânica técnica; não gera tech alignment, spec, tasks nem código.
+description: Fase condicional do framework, entre o PRD e o Tech Alignment - obrigatória em toda feature com interface, pulada nas que não têm. A partir de um prd.md aprovado, especifica o COMO VISUAL da feature no design.md - telas, layout, componentes, estados visuais concretos (carregando, sucesso, erro, vazio), mensagens, tamanhos de tela, interações, acessibilidade visual e assets - ancorado no design-system.md e nos componentes que o projeto já tem. Aceita Figma ou mockups como referência sem depender deles. Promove ao design system, com confirmação, o que nasceu reutilizável. Não decide regra de negócio nem mecânica técnica; não gera tech alignment, spec, tasks nem código.
 argument-hint: "[caminho do prd.md ou da pasta vN/ da feature (opcional)] [links de Figma, caminhos de mockups ou descrição do design imaginado (opcional)]"
 disable-model-invocation: true
 ---
@@ -20,8 +20,8 @@ de redefinir as telas, e o executor e o revisor têm um contrato visual para seg
 Saída: `docs/specs/features/NNN-<feature>/vN/design.md`, na mesma pasta do `prd.md`, seguindo o
 [template](template.md). Fluxo e convenções completos: `agent-spec-guide`.
 
-Fase **opcional**: só para features com telas. Feature sem interface (API, job, integração) vai
-direto do PRD para o Tech Alignment.
+Fase **condicional**: obrigatória em feature com telas (sem ela, o executor adivinha a
+interface). Feature sem interface (API, job, integração) vai direto do PRD para o Tech Alignment.
 
 # O território desta fase
 
@@ -83,10 +83,10 @@ direto do PRD para o Tech Alignment.
 3. **Status.** Se o `prd.md` for `rascunho`, lembre a regra de ouro
    (`agent-spec-guide`, seção 1) e pergunte: "marcar como `aprovado` e seguir" ou "parar
    para revisar".
-4. **Design system.** Leia `docs/specs/design-system.md`. Se não existir, recomende criá-lo
-   antes, com `/agent-spec-design-system`, e pergunte: "parar para criar" (recomendado) ou "seguir
-   sem". Seguindo sem, ancore só no código; todo componente ou token reutilizável que surgir
-   fica na seção 2.2 como "Promover: sim", e a Etapa 4 não edita nada.
+4. **Design system.** Leia `docs/specs/design-system.md`. Se não existir, pare sem criar
+   arquivo: o design system vem antes do Design. Indique
+   `/agent-spec-design-system <"Fonte da ideia" do pre-refinement>` (sem argumento, se a ideia
+   veio em texto livre) e, depois de aprovado, rodar esta skill de novo.
 5. **Plataforma.** Se o design system lista mais de uma plataforma e o PRD não diz em qual a
    feature roda, pergunte.
 6. Se já existir `design.md` na pasta, pergunte se deve sobrescrevê-lo. Se a versão já foi
@@ -137,7 +137,7 @@ Para cada decisão, pergunte-se: **vale só para esta feature, ou para o produto
 Para cada candidato, pergunte se deve ser promovido e registre a resposta na coluna "Promover"
 da seção 2.2. Promoção confirmada:
 
-- **Token ou padrão de feedback** (e o design system existe): acrescente a entrada no
+- **Token ou padrão de feedback:** acrescente a entrada no
   `design-system.md`, com Origem `[decisão] NNN-<feature>/vN`, sem tocar no resto, e volte o
   status dele para `rascunho`.
 - **Componente:** fica só em 2.2. O design system só aceita componente com import que exista no

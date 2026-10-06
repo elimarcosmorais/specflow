@@ -66,7 +66,10 @@ Este arquivo é o **mapa do framework** (seções 1 a 9 abaixo): responda a part
        ▼
   [3] PRD ────────────────► prd.md              O QUÊ construir e POR QUÊ
        │
-       ├┄┄ (opcional) design ──► design.md   o que o usuário vê (só feature com telas)
+       ├── (só feature com telas: obrigatório nela)
+       │     design-system ──► docs/specs/design-system.md   só se ainda não existe
+       │           ▼
+       │     design ─────────► design.md   o que o usuário vê
        ▼
   [4] Tech Alignment ─────► tech-alignment.md   COMO, em alto nível
        │
@@ -84,20 +87,22 @@ Este arquivo é o **mapa do framework** (seções 1 a 9 abaixo): responda a part
   Transversais (podem acontecer em qualquer momento):
   [2] ADR  ──► docs/adr/     registra uma decisão importante de arquitetura
   [7] Debt ──► nova versão   lê os debts.md e abre a próxima versão (só tasks) para pagá-los
-  (opcional) design-system ──► docs/specs/design-system.md   identidade visual do produto
+  design-system ──► docs/specs/design-system.md   atualiza quando ficou defasado
 ```
 
 As fases 1, 3, 4, 5, 6 e 8 são uma **sequência**: cada uma usa o documento da anterior como
-entrada. O Design (`agent-spec-design`) entra na sequência, entre o PRD e o Tech Alignment, só
-quando a feature tem telas. ADR e Debt são **transversais**: são disparadas quando surge uma decisão de arquitetura
-ou quando se decide pagar débitos acumulados.
+entrada. O Design (`agent-spec-design`) é **condicional**: entra na sequência, entre o PRD e o
+Tech Alignment, em toda feature com telas (nela é obrigatório; sem telas, não se aplica). Se
+`docs/specs/design-system.md` ainda não existe, o design system (`agent-spec-design-system`) é
+criado e aprovado antes do Design: o PRD indica o comando. ADR e Debt são **transversais**: são
+disparadas quando surge uma decisão de arquitetura ou quando se decide pagar débitos acumulados.
 
 | # | Fase           | Skill                       | Pergunta que responde          | Entrada                        | Saída (dentro de `vN/`)             |
 |---|----------------|-----------------------------|--------------------------------|--------------------------------|-------------------------------------|
 | 1 | Pre-Refinement | `agent-spec-pre-refinement` | Qual é o problema, de verdade? | ideia ou prompt (+ anexos)     | `pre-refinement.md`                 |
 | 2 | ADR            | `agent-spec-adr`            | Por que decidimos assim?       | uma decisão a registrar        | `docs/adr/NNN-<titulo>.md`          |
 | 3 | PRD            | `agent-spec-prd`            | O que construir e para quem?   | `pre-refinement.md`            | `prd.md`                            |
-| — | Design (opcional) | `agent-spec-design`      | O que o usuário vê?            | `prd.md` + `design-system.md`  | `design.md`                         |
+| — | Design (com telas) | `agent-spec-design`     | O que o usuário vê?            | `prd.md` + `design-system.md`  | `design.md`                         |
 | 4 | Tech Alignment | `agent-spec-tech-alignment` | Qual a abordagem técnica?      | `prd.md` (+ `design.md`)       | `tech-alignment.md`                 |
 | 5 | Tech Spec      | `agent-spec-tech-spec`      | Como exatamente vai funcionar? | `prd.md` + `tech-alignment.md` | `spec.md`                           |
 | 6 | Task Plan      | `agent-spec-task-plan`      | Em que passos implementar?     | `spec.md`                      | `tasks.md` + `tasks/T*.md`          |
@@ -229,7 +234,7 @@ inexistente, substituída ou ainda proposta.
   feature nova.
 - **Limites:** só lê; não corrige nada e não roda outra skill (sugere o comando).
 
-**Design system (`agent-spec-design-system`, opcional — só projetos com interface).** Cria ou
+**Design system (`agent-spec-design-system`, obrigatório em projeto com interface).** Cria ou
 atualiza `docs/specs/design-system.md`, a identidade visual do produto inteiro: cores, tipografia,
 espaçamento, ícones, layout, tema, componentes reutilizáveis (com o import real), padrões de
 feedback e acessibilidade visual. Deriva do código, do Figma e dos documentos do time o que já
@@ -238,16 +243,18 @@ direção (biblioteca de UI, estilo, cor da marca, tema), sempre com recomendaç
 ADRs: fica fora das features e não tem versão. Status `rascunho` → `aprovado`; ao atualizar,
 volta para `rascunho`.
 
-- **Quando usar:** projeto novo com interface, antes da primeira feature com telas; projeto com
+- **Quando usar:** projeto novo com interface, antes do Design da primeira feature com telas (o
+  PRD indica o comando, com o prompt da ideia, que já cita as imagens); projeto com
   interface que nunca registrou o design system; ou quando ele ficou defasado.
 - **Limites:** só o global (as telas de uma feature não entram); não cria ADR (recomenda); não
   escreve código; atualizar só completa o que está vazio, defasado ou novo, com confirmação.
 
-**Design da feature (`agent-spec-design`, fase opcional).** Não é utilitário, mas fica aqui
-junto do design system. Entre o PRD e o Tech Alignment, só em feature com telas, gera o
+**Design da feature (`agent-spec-design`, fase condicional).** Não é utilitário, mas fica aqui
+junto do design system. Entre o PRD e o Tech Alignment, obrigatório em feature com telas, gera o
 `design.md`: telas, layout, componentes (reusados do design system ou novos com justificativa),
 estados visuais concretos, mensagens literais, tamanhos de tela, interações, acessibilidade
-visual e assets. Sem `design-system.md`, recomenda criá-lo antes. Consumido pelo Tech Alignment,
+visual e assets. Sem `design-system.md`, para e indica o comando para criá-lo; o Tech Alignment
+de uma feature com telas, sem `design.md`, também para. Consumido pelo Tech Alignment,
 pela Tech Spec (a §7 aponta para ele), pelo Task Plan (linha **Design** das tasks de tela) e pela
 Execução (o executor segue, o revisor confere). Promove ao design system, com confirmação, token e
 padrão de feedback; componente novo entra no design system só depois de existir no código.
@@ -489,8 +496,9 @@ descubra onde ela está:
    aprovar** esse documento, não rodar a fase seguinte (regra de ouro).
 4. Tudo aprovado → o comando está na seção "Próximo passo" do último documento. Confira se as
    ADRs que ela manda registrar antes já existem em `docs/adr/`. Último documento é o `prd.md`
-   de uma feature com telas, sem `design.md` → mencione o Design como opcional antes do Tech
-   Alignment.
+   de uma feature com telas, sem `design.md` → o próximo passo é o Design, não o Tech
+   Alignment; se `docs/specs/design-system.md` não existe, o `/agent-spec-design-system` vem
+   antes do Design.
 5. `tasks.md` aprovado → olhe o status das tasks: alguma `pendente` ou `em andamento` → Execução;
    todas `concluída` → commit, se houver algo em stage (`git diff --staged --stat`), e, se algum
    `debts.md` da feature tiver débito `aberto`, mencione o Debt como opcional. Se alguma rule em

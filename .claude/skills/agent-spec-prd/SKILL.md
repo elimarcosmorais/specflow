@@ -113,11 +113,16 @@ Preencha o template, **remova os comentários `<!-- LLM-ONLY -->`** e salve como
 pasta do `pre-refinement.md`, com `status: rascunho`. Seção sem conteúdo fica com
 "N/A — <motivo>", nunca vazia.
 
-Na seção 12 ("Próximo passo"), escreva os **comandos prontos para copiar**: o
-`/agent-spec-tech-alignment` com o caminho deste `prd.md`; se a feature tem telas, o
-`/agent-spec-design` (fase opcional, antes do Tech Alignment) com o mesmo caminho; e, se a seção
-11 do pre-refinement recomendou ADRs que ainda não existem em `docs/adr/`, um
-`/agent-spec-adr "<título>"` por ADR.
+Na seção 12 ("Próximo passo"), escreva os **comandos prontos para copiar**, com o caminho deste
+`prd.md`:
+
+- **Próxima fase:** feature com telas → `/agent-spec-design` (obrigatório nela); sem telas →
+  `/agent-spec-tech-alignment`.
+- **Design system:** feature com telas e `docs/specs/design-system.md` não existe →
+  `/agent-spec-design-system <"Fonte da ideia" do pre-refinement>`, antes do Design. Só o
+  prompt: ele já cita as imagens e diz o papel de cada uma. Ideia em texto livre → sem argumento.
+- **ADR:** se a seção 11 do pre-refinement recomendou ADRs que ainda não existem em
+  `docs/adr/`, um `/agent-spec-adr "<título>"` por ADR.
 
 ## Etapa 6 — Resumo
 
@@ -134,8 +139,8 @@ Arquivo salvo em: <path>
 - Fora do escopo: ...
 - Decisões técnicas delegadas: X
 
-Próxima fase: Tech Alignment → <comando, igual à seção 12>
-Antes, se a feature tem telas (opcional): Design → <comando, igual à seção 12>
+Próxima fase: <Design | Tech Alignment> → <comando, igual à seção 12>
+Antes, crie o design system: <comando, igual à seção 12>   ← só se a seção 12 tem essa linha
 ADR a registrar antes: <um comando por linha, igual à seção 12> | nenhuma
 
 Revise o arquivo. Se estiver de acordo, mude o status para `aprovado` (ou peça que eu mude).
