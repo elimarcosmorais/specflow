@@ -137,6 +137,9 @@ Preencha o template seção a seção. Pontos que costumam ficar fracos:
   estável, status e mensagem. Atualização parcial ganha exemplo de payload mínimo.
 - **Regras (§5):** cada RN vira pelo menos uma regra, dizendo onde é aplicada e o que acontece
   quando falha.
+- **Migrações (§4.2):** toda migração diz como se desfaz; a que destrói dado diz
+  "irreversível" e o plano. Mudança de schema é sempre migração nova, nunca edição de uma que já
+  existe.
 - **Fluxos (§6):** camada por camada, incluindo os alternativos do PRD.
 - **Testes (§10):** monte primeiro a tabela CA → testes; todo CA tem pelo menos um CT. Cada CT
   tem uma camada só (unitário, integração, e2e ou manual) e segue o padrão de testes do projeto
@@ -165,8 +168,8 @@ Antes de salvar, confira:
 Preencha o template, numere os testes (`CT-01`, `CT-02`… sem pular), **remova os comentários
 `<!-- LLM-ONLY -->`** e salve como `spec.md` na pasta da versão, com `status: rascunho`.
 
-Na seção 14 ("Próximo passo"), escreva a próxima fase (Task Plan) e um `/agent-spec-adr
-"<título>"` por candidata nova a ADR, prontos para copiar.
+Na seção 14 ("Próximo passo"), escreva a próxima fase (Task Plan), um `/agent-spec-adr
+"<título>"` por candidata nova a ADR e o challenge opcional, prontos para copiar.
 
 ## Etapa 6 — Resumo
 
@@ -187,6 +190,7 @@ Arquivo salvo em: <path>
 
 Próxima fase: Task Plan → <igual à seção 14>
 ADR a registrar antes: <um comando por linha, igual à seção 14> | nenhuma
+Antes de aprovar (opcional): <comando do challenge, igual à seção 14>
 
 Revise o arquivo. Se estiver de acordo, mude o status para `aprovado` (ou peça que eu mude).
 ```

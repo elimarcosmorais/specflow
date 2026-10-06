@@ -71,9 +71,11 @@ Formato de cada uma.>
 
 ### 4.2 Migrações
 
-| Arquivo  | O que faz |
-|----------|-----------|
-| <arquivo> | <cria a tabela X…> |
+| Arquivo  | O que faz | Volta |
+|----------|-----------|-------|
+| <arquivo> | <cria a tabela X…> | <apaga a tabela X> \| irreversível: <plano> |
+
+<!-- LLM-ONLY: "Volta" é o que desfaz a migração (o down). Migração que destrói dado (DROP, troca de tipo com perda, coluna NOT NULL sem default em tabela com dados) não tem volta sem perda: escreva "irreversível:" e o plano (backup antes, cópia dos dados, migração em etapas). Nunca altere uma migração que já existe: a mudança vira uma migração nova. -->
 
 ### 4.3 Outros dados guardados
 
@@ -185,5 +187,6 @@ Legenda: `[N]` novo · `[M]` modificado · `[R]` referência (só leitura)
 - **Próxima fase:** Task Plan → `/agent-spec-task-plan docs/specs/features/NNN-<feature>/vN/spec.md`
 - **ADR a registrar antes:**
   - `/agent-spec-adr "<título da decisão>"` — <o que ela decide, em poucas palavras>
+- **Antes de aprovar (opcional):** Challenge da spec → `/agent-spec-challenge-spec docs/specs/features/NNN-<feature>/vN/spec.md` — em sessão nova; vale para spec grande, de fundação ou que toca área sensível
 
 <!-- LLM-ONLY: um comando por decisão nova desta spec que vale para o projeto todo. Sem candidatas → "**ADR a registrar antes:** nenhuma". -->

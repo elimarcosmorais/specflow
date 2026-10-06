@@ -24,12 +24,12 @@ status: rascunho   # rascunho | aprovado
 
 ## 3. Tasks
 
-| ID | Task | Fase | Depende de | Status |
-|----|------|------|------------|--------|
-| T1 | [<nome>](tasks/T1.md) | 1 | — | pendente |
-| T2 | [<nome>](tasks/T2.md) | 2 | T1 | pendente |
+| ID | Task | Fase | Depende de | Risco | Status |
+|----|------|------|------------|-------|--------|
+| T1 | [<nome>](tasks/T1.md) | 1 | — | baixo | pendente |
+| T2 | [<nome>](tasks/T2.md) | 2 | T1 | alto | pendente |
 
-<!-- LLM-ONLY: a fonte do status é o frontmatter de cada tasks/TN.md; esta coluna é um espelho, atualizado junto pela Execução. Status: pendente | em andamento | concluída. -->
+<!-- LLM-ONLY: a fonte é cada tasks/TN.md (status no frontmatter, risco no cabeçalho); estas colunas são espelho. O Status é atualizado junto pela Execução. Status: pendente | em andamento | concluída. Risco: baixo | alto. -->
 
 ### 3.1 Ordem de execução
 

@@ -1,6 +1,6 @@
 ---
 name: agent-spec-task-plan
-description: Fase 6 do framework. A partir do spec.md aprovado, quebra a feature em tasks pequenas, ordenadas e autocontidas - cada uma com o que fazer, arquivos, testes (CTs da spec) e ADRs que se aplicam. Aplica regras anti-fragmentação, garante que todo arquivo, CT e história da spec caia em alguma task. Gera o tasks.md (índice) e tasks/T1.md, T2.md…; não gera código.
+description: Fase 6 do framework. A partir do spec.md aprovado, quebra a feature em tasks pequenas, ordenadas e autocontidas - cada uma com o que fazer, arquivos, testes (CTs da spec), ADRs que se aplicam e risco (alto leva a task à revisão de segurança na Execução). Aplica regras anti-fragmentação, garante que todo arquivo, CT e história da spec caia em alguma task. Gera o tasks.md (índice) e tasks/T1.md, T2.md…; não gera código.
 argument-hint: "[caminho do spec.md ou da pasta vN/ (opcional)]"
 disable-model-invocation: true
 ---
@@ -77,6 +77,33 @@ cada task antes de fechar o plano:
 6. **Quantidade é sinal, não limite.** Feature pequena: 3 a 5 tasks; média: 5 a 8; grande: 8
    a 12. Se uma mesma US aparece em 4 ou mais tasks, revise a quebra dela.
 
+# Regras de risco
+
+Cada task leva um **Risco**: `baixo` ou `alto`. Na Execução, a task `alto` passa também pelo
+revisor de segurança (`agent-spec-security-reviewer`). É assim que o framework se ajusta a cada
+projeto sem mudar nenhuma skill: um app sem login nem dados de usuário quase não tem task `alto`;
+um serviço com API e pagamentos tem muitas.
+
+Uma task é `alto` quando cria ou altera:
+
+| Área             | Exemplos                                                                 |
+|------------------|--------------------------------------------------------------------------|
+| autenticação     | login, senha, sessão, token, hash, criptografia                          |
+| autorização      | quem pode ver ou fazer o quê, acesso a recurso por ID, papéis e permissões |
+| pagamentos       | cobrança, captura, reembolso, preço e desconto, webhook do provedor      |
+| dados sensíveis  | dado pessoal ou de cartão gravado, devolvido pela API ou escrito em log  |
+| segredos         | chave de API, credencial, configuração que carrega segredo               |
+| entrada externa  | rota, endpoint, webhook ou deep link que recebe dado de fora do processo |
+
+1. **Julgue pelo que a task faz** (seções 2 e 3 dela e as seções da spec que ela cita), não pelo
+   nome da pasta.
+2. **Na dúvida, `alto`.** Uma revisão a mais custa menos que uma falha de segurança.
+3. **`alto` diz por quê:** `alto — autorização, pagamentos`, com as áreas da tabela.
+4. **O risco não muda a quebra.** As regras de decomposição continuam valendo: não separe nem
+   junte tasks só para mudar o risco delas.
+5. **Migração de schema, sozinha, não é `alto`:** o risco dela é perder dado, não segurança. Ela
+   é `alto` só se também tocar uma área da tabela (ex.: coluna com dado sensível).
+
 # Fluxo
 
 ## Etapa 0 — Entrada
@@ -125,6 +152,7 @@ cada task antes de fechar o plano:
 5. **Lacunas.** Task sem nenhum CT → provavelmente viola a regra 1; reveja. Se ela é legítima e
    a spec não tem teste para ela, crie um CT novo seguindo a numeração da spec (ex.: spec parou
    em `CT-24` → `CT-25`), marcado como "(novo)", e avise no resumo.
+6. **Classifique o risco** de cada task pelas regras de risco.
 
 ## Etapa 4 — Checkpoint
 
@@ -137,12 +165,13 @@ Li a spec e o projeto. Proposta de plano: N tasks em M fases.
 **Fase 1 — <nome>**
 - T1 — <nome> · CTs: CT-01, CT-02
 **Fase 2 — <nome>**
-- T2 — <nome> · depende de T1 · CTs: CT-03…
+- T2 — <nome> · depende de T1 · CTs: CT-03… · risco alto (autorização)
 - T3 — <nome> · depende de T1 · CTs: …
 
 Ordem: T1 → (T2 ∥ T3) → T4
 Cobertura: X/X arquivos de §11 · X/X CTs · X/X US
 CTs novos (fora da spec): nenhum | CT-25 em T3 — <motivo>
+Risco alto (revisão de segurança): nenhuma | T2, T4
 ```
 
 Se houver uma escolha real (ex.: duas quebras viáveis), pergunte no mesmo checkpoint, com a sua
@@ -168,6 +197,8 @@ Seção que não se aplica fica com "N/A — <motivo>", nunca vazia.
 5. Alguma task viola as regras 1 a 4 de decomposição?
 6. A ordem de execução (`∥`) só junta tasks sem dependência entre si e sem arquivo em comum?
 7. Ficou algum termo vago, "etc." ou "a definir"? Ou código de implementação?
+8. Toda task que toca uma área da tabela de risco está `alto`, com as áreas? A coluna Risco do
+   índice bate com as tasks?
 
 Corrija o que falhar antes de mostrar o resumo.
 
@@ -183,10 +214,11 @@ Arquivos salvos em: <pasta vN/> (tasks.md + tasks/T1.md … TN.md)
 - Ordem: <igual à seção 3.1 do tasks.md>
 - Cobertura: X/X arquivos · X/X CTs · X/X US
 - CTs novos (fora da spec): nenhum | <lista>
+- Risco alto (revisão de segurança): nenhuma | <lista>
 
-| ID | Task | Fase | Depende de | CTs |
-|----|------|------|------------|-----|
-| T1 | …    | 1    | —          | CT-01, CT-02 |
+| ID | Task | Fase | Depende de | CTs | Risco |
+|----|------|------|------------|-----|-------|
+| T1 | …    | 1    | —          | CT-01, CT-02 | baixo |
 
 Próxima fase: Execução → <igual à seção 6 do tasks.md>
 

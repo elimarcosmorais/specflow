@@ -20,6 +20,7 @@ documento cada fase gera e onde cada arquivo fica. É o mapa que as skills segue
        ▼
   [5] Tech Spec ──────────► spec.md             COMO, em detalhe
        │
+       ├┄┄ (opcional) challenge-spec ──► spec.md corrigido   caça furos antes das tasks
        ▼
   [6] Task Plan ──────────► tasks.md            visão geral das tasks
        │                    tasks/T1.md, T2.md…  uma task por arquivo
@@ -81,6 +82,12 @@ Uma ADR nasce `proposto` e passa a valer quando o humano a aprova (`aceito`), co
 documentos. Uma decisão nova que contradiz uma ADR aceita não a edita: cria uma ADR nova, e a
 antiga fica `substituído`, preservando o histórico.
 
+Para conferir o conjunto, a skill utilitária `agent-spec-adr-review` audita `docs/adr/` e mostra
+um relatório no chat: formato de cada ADR, substituições ligadas dos dois lados, links entre
+ADRs, decisões vigentes que se contradizem ou se sobrepõem, e documentos de feature que citam ADR
+inexistente, substituída ou ainda proposta. Ela só lê: não corrige nada, só sugere a ação. Vale
+rodar depois de registrar ou substituir uma ADR e antes do Tech Alignment de uma feature nova.
+
 ### Débitos técnicos
 
 Débito técnico é algo que ficou "aceitável, mas não ideal" e deve ser corrigido depois.
@@ -122,15 +129,18 @@ O Task Plan gera dois níveis:
 - **`tasks.md`** é o índice: a lista de tasks, a ordem, as dependências entre elas e o status
   de cada uma. É o que se lê para saber "onde estamos".
 - **`tasks/T1.md`, `T2.md`…** traz o detalhe de cada task: o que fazer, arquivos envolvidos,
-  os testes (CTs da spec) que ela implementa, as ADRs que ela segue e como saber que está
-  pronta. Cada CT da spec cai em exatamente uma task.
+  os testes (CTs da spec) que ela implementa, as ADRs que ela segue, o **risco** e como saber
+  que está pronta. Cada CT da spec cai em exatamente uma task.
+- **Risco** é `baixo` ou `alto`. É `alto` a task que mexe em autenticação, autorização,
+  pagamentos, dados sensíveis, segredos ou entrada externa; na Execução, ela passa também pela
+  revisão de segurança. É assim que o fluxo se ajusta a cada projeto sem mudar as skills.
 
 Uma task por arquivo permite entregar ao Claude (ou a um agent) **só a task da vez**, com o
 contexto enxuto, em vez do plano inteiro.
 
-### Execução: executor e revisor
+### Execução: executor e revisores
 
-A skill da Execução (`agent-spec-run-tasks`) **não escreve código**: ela coordena dois agents,
+A skill da Execução (`agent-spec-run-tasks`) **não escreve código**: ela coordena os agents,
 uma task de cada vez, na ordem das dependências.
 
 ```
@@ -142,14 +152,32 @@ uma task de cada vez, na ordem das dependências.
 
 - **Executor** implementa a task seguindo 7 regras (qualidade de sênior sem complexidade
   especulativa, mudanças cirúrgicas, teste primeiro, testes honestos, ADRs como contrato…).
-- **Revisor** é a única revisão: roda a suíte, confere cada CT, o escopo, as ADRs, a arquitetura
-  e a qualidade, e devolve um JSON com cada problema classificado.
-- **Modelo e esforço:** os dois agents rodam em Sonnet com esforço `high`, fixado no frontmatter
-  para não depender do esforço da sessão. A última correção do executor (3ª tentativa) roda em
-  Opus.
+- **Revisor** revisa toda task: roda a suíte, confere cada CT, o escopo, as ADRs, a arquitetura,
+  a qualidade e as migrações, e devolve um JSON com cada problema classificado.
+- **Revisor de segurança** (`agent-spec-security-reviewer`) entra só nas tasks `Risco: alto`, em
+  paralelo com o revisor: procura como abusar do código (autenticação, autorização, entrada,
+  dados sensíveis, segredos, pagamentos). Não roda testes. Vale o pior dos dois resultados.
+- **Modelo e esforço:** executor e revisor rodam em Sonnet com esforço `high`, fixado no
+  frontmatter para não depender do esforço da sessão. O revisor de segurança roda em Opus. A
+  última correção do executor (3ª tentativa) roda em Opus.
 - **Git:** a task aprovada fica em **stage** (`git add`), nunca commitada. Como o trabalho das
   tasks anteriores já está em stage, `git diff` mostra só o que a task da vez mudou: é assim que o
-  revisor isola a task.
+  revisão isola a task.
+
+### Challenge da spec (opcional)
+
+Entre a Tech Spec e a aprovação dela, a skill utilitária `agent-spec-challenge-spec` faz um
+stress-test do `spec.md`: confronta a spec com o código real, as ADRs aceitas (ao pé da letra),
+o PRD e o Tech Alignment, procurando colisões com o que já existe, divergências de ADR,
+decisões implícitas e casos de borda descobertos. Ela faz **uma pergunta por vez**, sempre com
+recomendação, e corrige o próprio `spec.md` (não gera outro documento).
+
+- **Quando usar:** spec grande, de fundação ou que toca área sensível. Em sessão nova, para não
+  ser o mesmo contexto que escreveu a spec.
+- **Limites:** só edita o `spec.md`; não cria ADR (aponta candidatas em §14); se o furo exige
+  regra de negócio nova ou trocar uma `D-NN`, ela para e avisa que a mudança é na fase anterior.
+- Não roda depois que a versão começou a ser implementada (alguma task `em andamento` ou
+  `concluída`).
 
 ### Commit
 
@@ -160,6 +188,15 @@ pode escolher só commitar). Quando o commit fecha tasks do framework, o rodapé
 `Refs: 001-<feature>/v1 T1, T2` liga o histórico do git aos documentos da feature. Ela nunca usa
 `--amend` nem `push --force`, e se o push falhar ela mostra o erro e para.
 
+### Dúvidas sobre o framework
+
+A skill utilitária `agent-spec-guide` responde dúvidas de uso: qual skill rodar (e, dada uma
+feature, qual é o próximo passo dela, pelo status dos documentos), como funciona uma fase e onde
+mudar uma convenção. Ela só consulta: não edita nada e não roda a skill que recomenda. Ela
+carrega o próprio mapa do framework (fluxo, versões, ADRs, débitos, execução, pastas e
+convenções), para continuar funcionando quando este arquivo for removido. Por isso, enquanto ele
+existir, uma mudança no fluxo precisa ser feita aqui **e** no guia.
+
 ## Estrutura de diretórios
 
 ```
@@ -169,15 +206,17 @@ ai-software-engineering/
 ├── README.md
 │
 ├── .claude/
-│   ├── skills/                uma skill por fase
+│   ├── skills/                uma skill por fase, mais as utilitárias (ex.: semantic-commit)
 │   │   └── agent-spec-<fase>/
 │   │       ├── SKILL.md       instruções da skill
 │   │       └── template.md    modelo do documento que a skill gera
 │   │                          (o Task Plan tem dois: template-tasks.md e template-task.md;
-│   │                          o Debt tem esses dois e mais o template-debts.md)
+│   │                          o Debt tem esses dois e mais o template-debts.md; a Execução
+│   │                          e as utilitárias não geram documento, então não têm template)
 │   ├── agents/                subagents, chamados pelas skills
 │   │   ├── agent-spec-executor.md   implementa uma task (Execução)
-│   │   └── agent-spec-reviewer.md   revisa uma task (Execução)
+│   │   ├── agent-spec-reviewer.md   revisa uma task (Execução)
+│   │   └── agent-spec-security-reviewer.md   revisa a segurança de uma task de risco alto (Execução)
 │   └── rules/                 regras que valem sempre, carregadas automaticamente
 │       └── behavior.md        como agir: não chutar, escopo, evidência, confirmação
 │

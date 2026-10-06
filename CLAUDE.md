@@ -26,11 +26,18 @@ O framework segue o SDD. Cada fase do fluxo terá a sua skill:
 | 7 | Debt           | `agent-spec-debt`           | `agent-spec-debt-resolution`         | criada   |
 | 8 | Execução       | `agent-spec-run-tasks`      | `agent-spec-sdd-run-tasks` + agents  | criada   |
 
+Agents da Execução: `agent-spec-executor`, `agent-spec-reviewer` e `agent-spec-security-reviewer`
+(só nas tasks de risco alto; modelo: as seções de segurança do `agent-spec-staff-architecture-review`
+e do `agent-spec-qa-validator`, mais itens de pagamento nossos).
+
 Além das fases, há skills **utilitárias**, que não geram documento de fase:
 
 | Utilitário       | Skill                        | Modelo do professor          | Status |
 |------------------|------------------------------|------------------------------|--------|
 | Commit semântico | `agent-spec-semantic-commit` | `agent-spec-semantic-commit` | criada |
+| Challenge da spec | `agent-spec-challenge-spec` | `agent-spec-challenge-spec` | criada |
+| Guia do framework | `agent-spec-guide` | `agent-spec-guide` | criada |
+| Revisão das ADRs | `agent-spec-adr-review` | `agent-spec-adr-review` | criada |
 
 Atualize estas tabelas sempre que uma skill for criada ou alterada (nome da skill e status).
 
