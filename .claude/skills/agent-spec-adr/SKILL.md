@@ -1,6 +1,6 @@
 ---
 name: agent-spec-adr
-description: Fase 2 do framework (transversal). Registra uma decisão de arquitetura que vale para o projeto todo em uma ADR curta (contexto, decisão, consequências, alternativas) em docs/adr/NNN-<titulo>.md. Confere antes se a decisão merece uma ADR, monta o rascunho a partir do documento de origem (pre-refinement, PRD ou tech-alignment) e fecha com o usuário o que estiver em aberto. Também substitui uma ADR antiga por uma nova. Não gera PRD, spec, tasks nem código.
+description: Fase 2 do framework (transversal). Registra uma decisão de arquitetura que vale para o projeto todo em uma ADR curta (contexto, decisão, consequências, alternativas) em docs/adr/NNN-<titulo>.md. Confere antes se a decisão merece uma ADR, monta o rascunho a partir do documento de origem (pre-refinement, PRD, tech-alignment ou design system) e fecha com o usuário o que estiver em aberto. Também substitui uma ADR antiga por uma nova. Não gera PRD, spec, tasks nem código.
 argument-hint: "[título da decisão | referência à origem, ex.: D-02 de <caminho do tech-alignment.md> | vazio para listar as pendentes]"
 disable-model-invocation: true
 ---
@@ -23,11 +23,12 @@ completos: `agent-spec-guide`.
 # Quando registrar
 
 Uma ADR é **transversal**: não é um passo da fila, é disparada quando surge a decisão. Na
-prática, as recomendações vêm de dois lugares:
+prática, as recomendações vêm de três lugares:
 
 | Quem recomenda           | Exemplo                             | Registrar antes de |
 |--------------------------|-------------------------------------|--------------------|
 | Pre-Refinement (seção 11) | stack e arquitetura de uma fundação | PRD (no máximo, antes do Tech Alignment) |
+| Design system (seção 11)  | biblioteca de componentes de UI     | Design             |
 | Tech Alignment (`D-NN`)   | padrão de logging, de persistência  | Spec               |
 
 # Regras
@@ -57,13 +58,13 @@ prática, as recomendações vêm de dois lugares:
 
 `$ARGUMENTS` pode ser:
 
-- **Título de uma decisão** → use-o. Procure nos documentos das features de onde ele veio; se
-  achar, essa é a origem.
+- **Título de uma decisão** → use-o. Procure nos documentos das features e no
+  `docs/specs/design-system.md` de onde ele veio; se achar, essa é a origem.
 - **Referência a uma decisão** (ex.: "D-02 de `.../v1/tech-alignment.md`") → leia o documento e
   use aquela decisão como origem.
 - **Vazio** → liste as ADRs **pendentes**: as recomendadas na seção 11 dos
-  `pre-refinement.md`, e as marcadas como "candidata" nos `tech-alignment.md`, que ainda não
-  existem em `docs/adr/`. Pergunte qual registrar. Nenhuma pendente → pergunte qual decisão o
+  `pre-refinement.md` e do `docs/specs/design-system.md`, e as marcadas como "candidata" nos
+  `tech-alignment.md`, que ainda não existem em `docs/adr/`. Pergunte qual registrar. Nenhuma pendente → pergunte qual decisão o
   usuário quer registrar.
 
 Se vierem várias decisões, registre **uma de cada vez**: salve a primeira, mostre o resumo e só
@@ -128,7 +129,8 @@ Se a origem for uma decisão `D-NN` de um `tech-alignment.md` de uma versão **a
 implementada**, troque a linha **ADR:** daquela decisão por
 `registrada em docs/adr/NNN-<titulo>.md`. Não mexa em mais nada do documento.
 
-Pre-refinement e PRD não são editados: as fases seguintes leem `docs/adr/` diretamente.
+Pre-refinement, PRD e design system não são editados: as fases seguintes leem `docs/adr/`
+diretamente.
 
 ## Etapa 6 — Resumo
 

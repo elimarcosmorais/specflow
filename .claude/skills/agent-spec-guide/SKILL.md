@@ -147,6 +147,8 @@ A ADR não tem lugar fixo na fila: é registrada **quando a decisão aparece** e
 - **Recomendada pelo Pre-Refinement** (comum em features de fundação: stack, arquitetura) →
   registre **antes do PRD**, que já cita as ADRs em "ADRs relacionadas". Prazo limite: antes do
   Tech Alignment, que trata as ADRs `aceito` como restrições e não as reabre.
+- **Recomendada pelo design system** (seção 11 do `design-system.md`; ex.: biblioteca de
+  componentes de UI) → registre **antes do Design**.
 - **Candidata do Tech Alignment** (ex.: padrão de logging escolhido no `D-02`) → registre
   **antes da Spec**.
 
@@ -246,14 +248,17 @@ volta para `rascunho`.
 - **Quando usar:** projeto novo com interface, antes do Design da primeira feature com telas (o
   PRD indica o comando, com o prompt da ideia, que já cita as imagens); projeto com
   interface que nunca registrou o design system; ou quando ele ficou defasado.
-- **Limites:** só o global (as telas de uma feature não entram); não cria ADR (recomenda); não
-  escreve código; atualizar só completa o que está vazio, defasado ou novo, com confirmação.
+- **Limites:** só o global (as telas de uma feature não entram); não cria ADR (recomenda, na
+  seção "Próximo passo"); não escreve código; atualizar só completa o que está vazio, defasado
+  ou novo, com confirmação.
 
 **Design da feature (`agent-spec-design`, fase condicional).** Não é utilitário, mas fica aqui
 junto do design system. Entre o PRD e o Tech Alignment, obrigatório em feature com telas, gera o
 `design.md`: telas, layout, componentes (reusados do design system ou novos com justificativa),
 estados visuais concretos, mensagens literais, tamanhos de tela, interações, acessibilidade
-visual e assets. Sem `design-system.md`, para e indica o comando para criá-lo; o Tech Alignment
+visual e assets. Sem `design-system.md`, para e indica o comando para criá-lo; com ele em
+`rascunho`, pergunta se marca como `aprovado` ou para para revisar; com ADR pendente (do PRD ou
+da seção 11 do design system), pergunta se para para registrá-la. O Tech Alignment
 de uma feature com telas, sem `design.md`, também para. Consumido pelo Tech Alignment,
 pela Tech Spec (a §7 aponta para ele), pelo Task Plan (linha **Design** das tasks de tela) e pela
 Execução (o executor segue, o revisor confere). Promove ao design system, com confirmação, token e
@@ -448,6 +453,8 @@ docs/
 
 - **Próximo passo:** todo documento de fase termina com a seção "Próximo passo", com o comando
   pronto para copiar da próxima fase e de cada ADR a registrar antes dela. A ADR é a exceção.
+  O `design-system.md` também tem essa seção (a 11), com o Design de cada feature que o aguarda
+  e as ADRs que ele recomenda: nenhuma recomendação fica só no chat.
 - **Nomes de skills e agents** em inglês, com prefixo `agent-spec-` (fase em kebab-case, ou o que
   o utilitário faz; agents: o papel). **Rules** em inglês, kebab-case, pelo tema
   (`database-access.md`). O conteúdo é em português.
@@ -497,8 +504,10 @@ descubra onde ela está:
 4. Tudo aprovado → o comando está na seção "Próximo passo" do último documento. Confira se as
    ADRs que ela manda registrar antes já existem em `docs/adr/`. Último documento é o `prd.md`
    de uma feature com telas, sem `design.md` → o próximo passo é o Design, não o Tech
-   Alignment; se `docs/specs/design-system.md` não existe, o `/agent-spec-design-system` vem
-   antes do Design.
+   Alignment, e antes dele vem o design system (`docs/specs/design-system.md`): não existe →
+   `/agent-spec-design-system`; está em `rascunho` → o usuário revisa e aprova; aprovado → as
+   ADRs da seção 11 ("Próximo passo") dele que ainda não existem em `docs/adr/` vêm antes do
+   Design.
 5. `tasks.md` aprovado → olhe o status das tasks: alguma `pendente` ou `em andamento` → Execução;
    todas `concluída` → commit, se houver algo em stage (`git diff --staged --stat`), e, se algum
    `debts.md` da feature tiver débito `aberto`, mencione o Debt como opcional. Se alguma rule em

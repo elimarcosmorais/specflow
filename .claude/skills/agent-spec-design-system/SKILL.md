@@ -45,7 +45,8 @@ Projeto sem interface (só backend, biblioteca, CLI) não precisa desta skill.
 6. **Componente só com referência real.** Componente próprio entra na seção 7 com o import que o
    código usa, e esse caminho tem que existir no repo.
 7. **Não crie ADR.** Decisão transversal com trade-off real (biblioteca de UI, dark mode desde já,
-   skeleton em todo o produto) vira **recomendação** de `/agent-spec-adr` no resumo.
+   skeleton em todo o produto) vira **recomendação** de `/agent-spec-adr` na seção 11 ("Próximo
+   passo") e no resumo. Só no chat ela se perde quando a conversa fecha.
 8. **Não escreva código.** Os tokens de um projeto novo são implementados por uma task, no fluxo
    normal.
 9. **Não exiba o documento no terminal.** Salve o arquivo e mostre só o resumo.
@@ -141,6 +142,14 @@ Confira antes de salvar:
 
 ## Etapa 4 — Salvar e resumir
 
+Na seção 11 ("Próximo passo"), escreva os **comandos prontos para copiar**:
+
+- **Próxima fase:** um `/agent-spec-design <caminho do prd.md>` por feature aguardando o Design
+  (a versão mais recente em `docs/specs/features/` tem `prd.md` indicando o Design na seção
+  "Próximo passo" e não tem `design.md`). Nenhuma → "nenhuma feature aguardando o Design".
+- **ADR:** um `/agent-spec-adr "<título>"` por decisão transversal recomendada (regra 7) que
+  ainda não existe em `docs/adr/`.
+
 Remova os comentários `<!-- LLM-ONLY -->` e salve em `docs/specs/design-system.md` com
 `status: rascunho`. Depois, mostre **apenas**:
 
@@ -155,6 +164,7 @@ Arquivo salvo em: docs/specs/design-system.md
 - Divergências conhecidas: N | nenhuma
 
 ADR a registrar: `/agent-spec-adr "<título>"` — <motivo> (uma por linha) | nenhuma
+Depois: <próxima fase da seção 11>
 
 Revise o arquivo. Se estiver de acordo, mude o status para `aprovado` (ou peça que eu mude).
 ```
@@ -166,14 +176,17 @@ Atualizar é **completar**, não reescrever.
 1. Leia o `design-system.md` e rode a Etapa 1 para coletar as fontes atuais.
 2. Classifique cada seção: **coerente** (não toque, não pergunte), **vazia**, **defasada**
    (diverge do código ou do Figma atual) ou **nova** (uma fonte trouxe algo que o arquivo não
-   tem).
+   tem). A seção 11 está defasada quando falta, quando lista ADR que já existe em `docs/adr/` ou
+   feature que já tem `design.md`, ou quando surgiu feature aguardando o Design: refaça-a como
+   na Etapa 4, sem perguntar nada.
 3. Faça a Etapa 2 só sobre o que não está coerente. Conteúdo escrito à mão que ainda é válido
    **nunca** é sobrescrito sem perguntar; o mesmo vale para entradas que vieram de uma feature.
 4. Nada a mudar → diga "design system já coerente com as fontes" e pare, sem gravar.
 5. Mostre a lista das mudanças (seção, antes → depois) e peça confirmação antes de editar: o
    arquivo pode estar `aprovado` (`behavior.md`, regra 4). Confirmado, edite só essas
    entradas, volte o status para `rascunho` e mostre o resumo da Etapa 4, com a linha
-   "Mudanças: <seções alteradas>".
+   "Mudanças: <seções alteradas>". Se a única mudança for a seção 11, o status fica como está:
+   ela registra o próximo passo, não muda a identidade visual.
 
 # Entrada
 

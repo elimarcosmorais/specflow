@@ -86,10 +86,17 @@ interface). Feature sem interface (API, job, integração) vai direto do PRD par
 4. **Design system.** Leia `docs/specs/design-system.md`. Se não existir, pare sem criar
    arquivo: o design system vem antes do Design. Indique
    `/agent-spec-design-system <"Fonte da ideia" do pre-refinement>` (sem argumento, se a ideia
-   veio em texto livre) e, depois de aprovado, rodar esta skill de novo.
-5. **Plataforma.** Se o design system lista mais de uma plataforma e o PRD não diz em qual a
+   veio em texto livre) e, depois de aprovado, rodar esta skill de novo. Se existir em
+   `rascunho`, lembre a regra de ouro e pergunte: "marcar como `aprovado` e seguir" ou "parar
+   para revisar". O Design se ancora nos tokens e componentes dele; um design system ainda em
+   revisão pode mudar debaixo do design.
+5. **ADRs pendentes.** Se a seção "Próximo passo" do `prd.md` ou a seção 11 do
+   `design-system.md` lista ADR a registrar, confira se ela já existe `aceito` em `docs/adr/`.
+   Se faltar, mostre os comandos e pergunte: "parar para registrar" (recomendado) ou "seguir
+   assim mesmo".
+6. **Plataforma.** Se o design system lista mais de uma plataforma e o PRD não diz em qual a
    feature roda, pergunte.
-6. Se já existir `design.md` na pasta, pergunte se deve sobrescrevê-lo. Se a versão já foi
+7. Se já existir `design.md` na pasta, pergunte se deve sobrescrevê-lo. Se a versão já foi
    implementada, não sobrescreva: a mudança entra como nova versão.
 
 ## Etapa 2 — Ancorar no projeto

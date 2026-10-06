@@ -388,6 +388,7 @@
         <ul style="margin:0;padding-left:20px">
           <li><b>Recomendada pelo Pre-Refinement</b> (fundação: stack, arquitetura) → registre antes do PRD.
             Prazo limite: antes do Tech Alignment, que trata as ADRs <code>aceito</code> como restrições.</li>
+          <li><b>Recomendada pelo design system</b> (ex.: biblioteca de componentes de UI) → registre antes do Design.</li>
           <li><b>Candidata do Tech Alignment</b> (uma <code>D-NN</code> que vale para o projeto todo) → registre antes da Spec.</li>
           <li>Decisão nova que contradiz uma ADR aceita <b>não edita</b> a antiga: cria outra, e a antiga vira <code>substituído</code>.</li>
         </ul>
@@ -527,7 +528,7 @@ provisória   <span class="c"># → estável quando o tema ganha código</span>
           <li>Nomes em kebab-case, sem acento: <code>001-login-com-google</code>.</li>
           <li>Numeração de 3 dígitos por pasta (<code>features/</code>, <code>adr/</code>); número nunca é reaproveitado.</li>
           <li>Tasks recomeçam em <code>T1</code> a cada versão.</li>
-          <li>Todo documento de fase termina com <b>Próximo passo</b> e o comando pronto para copiar.</li>
+          <li>Todo documento de fase termina com <b>Próximo passo</b> e o comando pronto para copiar (o <code>design-system.md</code> também).</li>
           <li>Pastas só são criadas quando usadas.</li>
         </ul>
       </div>
@@ -615,11 +616,11 @@ const INFO = {
     curto: 'Registra uma decisão de arquitetura do projeto.',
     resumo: 'Registra uma decisão de arquitetura que vale para o projeto todo numa ADR curta: contexto, decisão, consequências e alternativas. Confere antes se a decisão merece mesmo uma ADR e monta o rascunho a partir do documento de origem. Também substitui uma ADR antiga por uma nova.',
     cmd: '/agent-spec-adr "‹título›"\n/agent-spec-adr D-02 de ‹tech-alignment.md›\n/agent-spec-adr        (vazio: lista as pendentes)',
-    entrada: 'Uma decisão, vinda do pre-refinement, do PRD ou do tech-alignment.',
+    entrada: 'Uma decisão, vinda do pre-refinement, do PRD, do tech-alignment ou do design system.',
     saida: '`docs/adr/NNN-‹titulo›.md`: `proposto` → `aceito` → `substituído`.',
-    quando: 'Quando a decisão aparece. Precisa existir antes da fase que depende dela: recomendada pelo Pre-Refinement → antes do PRD; candidata do Tech Alignment → antes da Spec.',
+    quando: 'Quando a decisão aparece. Precisa existir antes da fase que depende dela: recomendada pelo Pre-Refinement → antes do PRD; recomendada pelo design system → antes do Design; candidata do Tech Alignment → antes da Spec.',
     nao: 'Nunca edita uma ADR aceita: cria outra, que a substitui. Não gera PRD, spec, tasks nem código.',
-    antes: ['PRE', 'TA'], depois: ['ADRR', 'TA', 'SPEC'],
+    antes: ['PRE', 'DS', 'TA'], depois: ['ADRR', 'DESIGN', 'TA', 'SPEC'],
     arq: SK + 'agent-spec-adr/SKILL.md'
   },
   PRD: {
@@ -641,9 +642,9 @@ const INFO = {
     curto: 'As telas da feature (obrigatório se ela tem interface).',
     resumo: 'Especifica o COMO VISUAL da feature: telas, layout, componentes (reusados do design system ou novos com justificativa), estados visuais (carregando, sucesso, erro, vazio), mensagens literais, tamanhos de tela, interações, acessibilidade e assets. Aceita Figma ou mockups como referência, sem depender deles.',
     cmd: '/agent-spec-design ‹prd.md ou vN/› [Figma, mockups ou descrição]',
-    entrada: '`prd.md` aprovado + `docs/specs/design-system.md`.',
+    entrada: '`prd.md` aprovado + `docs/specs/design-system.md` aprovado.',
     saida: '`vN/design.md`. Consumido pelo Tech Alignment, pela Spec, pelo Task Plan e pela Execução.',
-    quando: 'Obrigatório em feature com telas, entre o PRD e o Tech Alignment (sem telas, não se aplica). Sem design system, ela para e indica o comando; sem `design.md`, o Tech Alignment de uma feature com telas também para.',
+    quando: 'Obrigatório em feature com telas, entre o PRD e o Tech Alignment (sem telas, não se aplica). Sem design system, ela para e indica o comando; com ele em `rascunho`, pergunta se aprova ou para; com ADR pendente (do PRD ou do design system), pergunta se para para registrá-la; sem `design.md`, o Tech Alignment de uma feature com telas também para.',
     nao: 'Não decide regra de negócio nem mecânica técnica (rota, retry, de onde vêm os dados): isso é da Spec.',
     antes: ['PRD', 'DS'], depois: ['TA'],
     arq: SK + 'agent-spec-design/SKILL.md'
@@ -787,8 +788,8 @@ const INFO = {
     entrada: 'Código, Figma, documentos do time ou suas respostas.',
     saida: '`docs/specs/design-system.md`: global, sem versão, `rascunho` → `aprovado`.',
     quando: 'Projeto com interface: antes do Design da primeira feature com telas (o PRD indica o comando, com o prompt da ideia, que já cita as imagens; o Design não roda sem ele), ou quando ficou defasado.',
-    nao: 'Não especifica as telas de uma feature (isso é o Design), não cria ADR, não escreve código.',
-    antes: ['PRD'], depois: ['DESIGN'],
+    nao: 'Não especifica as telas de uma feature (isso é o Design), não cria ADR (recomenda, no Próximo passo), não escreve código.',
+    antes: ['PRD'], depois: ['ADR', 'DESIGN'],
     arq: SK + 'agent-spec-design-system/SKILL.md'
   },
   COMMIT: {
@@ -1090,6 +1091,7 @@ flow: `flowchart TD
   HASDS -->|"sim"| DESIGN
   HASDS -->|"não · o PRD<br/>indica o comando"| DS
   DS -->|"✔ aprovado"| DESIGN
+  DS -.->|"recomenda ADR<br/>de UI"| ADR
   DESIGN -->|"✔ aprovado"| TA
   TA -.->|"D-NN candidata<br/>a ADR;<br/>ADR aceita vira<br/>restrição herdada"| ADR
   ADR -.-> TA

@@ -106,3 +106,16 @@ Componente reutilizável novo entra aqui antes de ser usado por uma segunda feat
   padrão é skeleton). "Nenhuma." se não houver. -->
 
 - <onde> — <o que diverge> — <o que vale: este documento>
+
+## 11. Próximo passo
+
+- **Próxima fase:** Design → `/agent-spec-design docs/specs/features/NNN-<feature>/vN/prd.md`
+- **ADR a registrar antes:**
+  - `/agent-spec-adr "<título da decisão>"` — <o que ela decide, em poucas palavras>
+
+<!-- LLM-ONLY: comandos prontos para copiar, com o caminho real. Próxima fase: um
+  `/agent-spec-design` por feature aguardando o Design (a versão mais recente tem `prd.md`
+  indicando o Design na seção "Próximo passo" e ainda não tem `design.md`); nenhuma →
+  "**Próxima fase:** nenhuma feature aguardando o Design". ADR aqui = decisão transversal
+  recomendada por este documento que ainda não existe em docs/adr/; sem nenhuma →
+  "**ADR a registrar antes:** nenhuma". -->
