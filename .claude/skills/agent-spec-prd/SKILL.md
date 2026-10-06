@@ -18,7 +18,7 @@ O PRD é o que as fases seguintes (Tech Alignment, Spec, Task Plan) vão consult
 histórias, regras e critérios recebem IDs (`US-01`, `RN-01`, `CA-01`) que serão citados nelas.
 
 Saída: `docs/specs/features/NNN-<feature>/vN/prd.md`, na mesma pasta do `pre-refinement.md`,
-seguindo o [template](template.md). Fluxo e convenções completos: `WORKFLOW.md`.
+seguindo o [template](template.md). Fluxo e convenções completos: `agent-spec-guide`.
 
 # Regras
 
@@ -52,8 +52,9 @@ seguindo o [template](template.md). Fluxo e convenções completos: `WORKFLOW.md
 ## Etapa 1 — Ler e verificar
 
 1. Leia o `pre-refinement.md` inteiro.
-2. **Status.** Se for `rascunho`, lembre a regra de ouro do `WORKFLOW.md` (só se avança sobre
-   documento aprovado) e pergunte: "marcar como `aprovado` e seguir" ou "parar para revisar".
+2. **Status.** Se for `rascunho`, lembre a regra de ouro (só se avança sobre documento
+   aprovado; `agent-spec-guide`, seção 1) e pergunte: "marcar como `aprovado` e seguir" ou
+   "parar para revisar".
 3. **Tamanho da mudança.** Se a seção 11 indicar que a próxima fase **não** é o PRD (mudança
    pequena ou trivial), avise e pergunte se quer mesmo gerar o PRD.
 4. **ADR pendente.** Se a seção 11 recomendar uma ADR que não existe em `docs/adr/`, recomende

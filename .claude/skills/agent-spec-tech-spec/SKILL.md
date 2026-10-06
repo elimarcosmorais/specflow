@@ -17,7 +17,7 @@ Produzir uma especificação técnica completa da feature: quem lê o `spec.md` 
 as tasks (fase 6) e implementar sem precisar decidir nada importante.
 
 Saída: `docs/specs/features/NNN-<feature>/vN/spec.md`, seguindo o [template](template.md).
-Fluxo e convenções completos: `WORKFLOW.md`.
+Fluxo e convenções completos: `agent-spec-guide`.
 
 # O território desta fase
 
@@ -69,7 +69,7 @@ Fluxo e convenções completos: `WORKFLOW.md`.
 - **Caminho de um `pre-refinement.md` de mudança pequena** (a pasta `vN/` não tem `prd.md`) →
   modo **mudança pequena**: a mudança é o pre-refinement; a base é a versão mais recente de
   cada documento nas versões anteriores (`prd.md`, `tech-alignment.md`, `spec.md`). A spec
-  gerada é **completa**, não um diff (`WORKFLOW.md`, "Versões de uma feature").
+  gerada é **completa**, não um diff (`agent-spec-guide`, seção 2).
 - **Vazio** → procure em `docs/specs/features/*/v*/` as pastas sem `spec.md` que têm
   `tech-alignment.md` ou um pre-refinement de mudança pequena. Uma só → confirme com o usuário.
   Várias → pergunte qual.
@@ -81,10 +81,11 @@ Fluxo e convenções completos: `WORKFLOW.md`.
    também o `spec.md` da versão anterior). Se a versão tem `design.md` (ou, na mudança pequena,
    uma versão anterior tem), leia-o também, e o `docs/specs/design-system.md`.
 2. **Status.** Se o documento de entrada (`tech-alignment.md`, ou o pre-refinement no modo
-   mudança pequena) for `rascunho`, lembre a regra de ouro do `WORKFLOW.md` e pergunte:
-   "marcar como `aprovado` e seguir" ou "parar para revisar".
+   mudança pequena) for `rascunho`, lembre a regra de ouro
+   (`agent-spec-guide`, seção 1) e pergunte: "marcar como `aprovado` e seguir" ou "parar
+   para revisar".
 3. **ADRs pendentes.** Toda `D-NN` marcada "ADR: candidata" precisa estar registrada e `aceito`
-   em `docs/adr/` antes desta fase (`WORKFLOW.md`, "Quando registrar uma ADR"). Se faltar
+   em `docs/adr/` antes desta fase (`agent-spec-guide`, seção 3). Se faltar
    alguma, liste os comandos da seção "Próximo passo" do tech-alignment e pergunte: "parar para
    registrar" (recomendado) ou "seguir assim mesmo".
 4. Se já existir `spec.md` na pasta, pergunte se deve sobrescrevê-lo. Se a versão já foi

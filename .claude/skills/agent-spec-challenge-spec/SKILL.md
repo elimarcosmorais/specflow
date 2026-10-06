@@ -21,7 +21,7 @@ Responder: **a spec sobrevive a um interrogatório contra o código real, as ADR
 da feature?** Cada furo encontrado é resolvido com o usuário e corrigido **no próprio
 `spec.md`**.
 
-Onde entra no fluxo (`WORKFLOW.md`):
+Onde entra no fluxo (`agent-spec-guide`, seção 1):
 
 ```
 [5] Tech Spec ──► spec.md (rascunho) ──► /agent-spec-challenge-spec ──► aprovar ──► [6] Task Plan
@@ -70,7 +70,7 @@ enxergar os próprios furos.
 
 1. **Já virou tasks?** Se a pasta tem `tasks.md`:
    - alguma task `em andamento` ou `concluída` → **não edite**: a versão já está sendo
-     implementada, e mudança entra como nova versão (`WORKFLOW.md`). Pare.
+     implementada, e mudança entra como nova versão (`agent-spec-guide`, seção 2). Pare.
    - nenhuma iniciada → avise que mudar a spec obriga a refazer o Task Plan, e pergunte se segue.
 2. **Status.** Se o `spec.md` está `aprovado`, editar exige confirmação (`behavior.md`, regra
    4). Pergunte: "seguir; as correções voltam a spec para `rascunho`" ou "parar".

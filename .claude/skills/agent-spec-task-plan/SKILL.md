@@ -24,7 +24,7 @@ Saída, na pasta da versão (`docs/specs/features/NNN-<feature>/vN/`):
 - `tasks/T1.md`, `T2.md`… — o detalhe de cada task. Segue o
   [template da task](template-task.md).
 
-Fluxo e convenções completos: `WORKFLOW.md`.
+Fluxo e convenções completos: `agent-spec-guide`.
 
 # O território desta fase
 
@@ -121,8 +121,9 @@ Uma task é `alto` quando cria ou altera:
 1. Leia o `spec.md` inteiro e o `prd.md` (para as US). Numa mudança pequena (versão sem
    `prd.md`), leia o `pre-refinement.md` da versão e o `prd.md` mais recente das versões
    anteriores; as tasks cobrem **só a mudança**.
-2. **Status.** Se o `spec.md` for `rascunho`, lembre a regra de ouro do `WORKFLOW.md` e
-   pergunte: "marcar como `aprovado` e seguir" ou "parar para revisar".
+2. **Status.** Se o `spec.md` for `rascunho`, lembre a regra de ouro
+   (`agent-spec-guide`, seção 1) e pergunte: "marcar como `aprovado` e seguir" ou "parar
+   para revisar".
 3. **ADRs pendentes.** Se a seção "Próximo passo" da spec lista ADR a registrar, confira se ela
    já existe `aceito` em `docs/adr/`. Se faltar, mostre os comandos e pergunte: "parar para
    registrar" (recomendado) ou "seguir assim mesmo".

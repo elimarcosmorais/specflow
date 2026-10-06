@@ -19,7 +19,7 @@ antes de convergir**, gerando várias direções, avaliando cada uma e podando a
 usuário, em vez de especificar a primeira ideia que vier à cabeça.
 
 Saída: `docs/specs/features/NNN-<feature>/vN/pre-refinement.md`, seguindo o
-[template](template.md). Fluxo e convenções completos: `WORKFLOW.md`.
+[template](template.md). Fluxo e convenções completos: `agent-spec-guide`.
 
 # Regras
 
@@ -106,7 +106,7 @@ Minha leitura: **A2** tem o melhor custo-benefício porque <razão>. Concorda, p
 ## Etapa 4 — Convergir e indicar o próximo passo
 
 1. Consolide: direções escolhidas → **escopo**; descartadas/adiadas → **fora do escopo**, com motivo.
-2. Classifique o **tamanho da mudança** (tabela de versões do `WORKFLOW.md`):
+2. Classifique o **tamanho da mudança** (tabela de versões do `agent-spec-guide`, seção 2):
 
    | Tamanho | Quando | Próxima fase |
    |---|---|---|

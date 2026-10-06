@@ -18,7 +18,7 @@ várias features) em um arquivo próprio. As fases seguintes tratam ADRs `aceito
 **restrições herdadas**: o Tech Alignment não reabre o que uma ADR já decidiu.
 
 Saída: `docs/adr/NNN-<titulo>.md`, seguindo o [template](template.md). Fluxo e convenções
-completos: `WORKFLOW.md`.
+completos: `agent-spec-guide`.
 
 # Quando registrar
 

@@ -19,7 +19,7 @@ Quando rodar: depois de registrar ou substituir uma ADR, antes de começar o Tec
 feature nova, ou quando quiser conferir o conjunto.
 
 O formato de uma ADR e as regras de substituição estão na skill `agent-spec-adr` (`SKILL.md` e
-`template.md`). Fluxo e convenções completos: `WORKFLOW.md`.
+`template.md`). Fluxo e convenções completos: `agent-spec-guide`.
 
 # Regras
 

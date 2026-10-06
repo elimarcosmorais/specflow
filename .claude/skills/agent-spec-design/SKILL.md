@@ -18,7 +18,7 @@ Registrar o **COMO VISUAL** da feature no `design.md`. A Tech Spec passa a apont
 de redefinir as telas, e o executor e o revisor têm um contrato visual para seguir e conferir.
 
 Saída: `docs/specs/features/NNN-<feature>/vN/design.md`, na mesma pasta do `prd.md`, seguindo o
-[template](template.md). Fluxo e convenções completos: `WORKFLOW.md`.
+[template](template.md). Fluxo e convenções completos: `agent-spec-guide`.
 
 Fase **opcional**: só para features com telas. Feature sem interface (API, job, integração) vai
 direto do PRD para o Tech Alignment.
@@ -67,7 +67,7 @@ direto do PRD para o Tech Alignment.
 - **Caminho de um `pre-refinement.md` de mudança pequena** que mexe em telas (a pasta `vN/` não
   tem `prd.md`) → modo **mudança pequena**: a mudança é o pre-refinement; a base é a versão mais
   recente do `prd.md` e do `design.md` nas versões anteriores. O `design.md` gerado é
-  **completo**, não um diff (`WORKFLOW.md`, "Versões de uma feature").
+  **completo**, não um diff (`agent-spec-guide`, seção 2).
 - **Vazio** → procure em `docs/specs/features/*/v*/` as pastas que têm `prd.md` e ainda não têm
   `design.md` nem `tech-alignment.md`. Uma só → confirme com o usuário. Várias → pergunte qual.
 - **Caminho que não existe** ou nenhum `prd.md` → avise e pare, orientando a rodar
@@ -80,8 +80,9 @@ direto do PRD para o Tech Alignment.
 1. Leia o `prd.md` e o `pre-refinement.md` da pasta.
 2. **Tem interface?** Se a feature não tem telas, diga que esta fase não se aplica, indique o
    `/agent-spec-tech-alignment` e pare, sem criar arquivo.
-3. **Status.** Se o `prd.md` for `rascunho`, lembre a regra de ouro do `WORKFLOW.md` e pergunte:
-   "marcar como `aprovado` e seguir" ou "parar para revisar".
+3. **Status.** Se o `prd.md` for `rascunho`, lembre a regra de ouro
+   (`agent-spec-guide`, seção 1) e pergunte: "marcar como `aprovado` e seguir" ou "parar
+   para revisar".
 4. **Design system.** Leia `docs/specs/design-system.md`. Se não existir, recomende criá-lo
    antes, com `/agent-spec-design-system`, e pergunte: "parar para criar" (recomendado) ou "seguir
    sem". Seguindo sem, ancore só no código; todo componente ou token reutilizável que surgir

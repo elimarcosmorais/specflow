@@ -22,7 +22,7 @@ Transformar o plano aprovado em código **implementado, testado e revisado**, um
   - `debts.md` da versão com os problemas médios e baixos, seguindo o
     [template de débitos](../agent-spec-debt/template-debts.md).
 
-Fluxo e convenções completos: `WORKFLOW.md`.
+Fluxo e convenções completos: `agent-spec-guide`.
 
 ## Os papéis
 
@@ -89,8 +89,9 @@ A **revisão** é o `agent-spec-reviewer`; numa task `Risco: alto`, é ele e o
 
 ## Etapa 1 — Verificar
 
-1. **Status.** `tasks.md` em `rascunho` → lembre a regra de ouro do `WORKFLOW.md` e pergunte:
-   "marcar como `aprovado` e seguir" ou "parar para revisar".
+1. **Status.** `tasks.md` em `rascunho` → lembre a regra de ouro
+   (`agent-spec-guide`, seção 1) e pergunte: "marcar como `aprovado` e seguir" ou "parar
+   para revisar".
 2. **Git.** Rode `git rev-parse --is-inside-work-tree`. Se falhar, pare: a revisão depende do
    `git diff`. Oriente: `git init`, `git add -A`, `git commit -m "baseline"`.
 3. **Execução interrompida.** Alguma task `em andamento` (uma sessão anterior caiu no meio)?

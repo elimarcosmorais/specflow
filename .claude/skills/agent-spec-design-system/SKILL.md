@@ -19,7 +19,7 @@ interface não fique diferente de tela para tela.
 
 Saída: `docs/specs/design-system.md`, seguindo o [template](template.md). Ele é global, como as
 ADRs: fica fora das features e não tem versão (o histórico fica no git). Fluxo e convenções
-completos: `WORKFLOW.md`.
+completos: `agent-spec-guide`.
 
 Quando rodar:
 

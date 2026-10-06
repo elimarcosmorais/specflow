@@ -23,7 +23,7 @@ tasks de pagamento, prontas para a Execução.
   - `tasks/T1.md`, `T2.md`… — uma task por débito, seguindo o [template da task](template-task.md).
 - **No `debts.md` de origem:** os débitos escolhidos passam a `pago`, apontando para a task.
 
-Fluxo e convenções completos: `WORKFLOW.md`.
+Fluxo e convenções completos: `agent-spec-guide`.
 
 ## Por que a versão de débitos só tem tasks
 

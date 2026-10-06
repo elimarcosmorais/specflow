@@ -71,8 +71,8 @@ Regras:
 
 ## Estrutura de arquivos
 
-O fluxo completo, a estrutura de diretórios e as convenções estão em `WORKFLOW.md`. Siga-o
-ao criar skills e documentos, e atualize-o quando o fluxo mudar.
+O fluxo completo, a estrutura de diretórios e as convenções estão na skill `agent-spec-guide`
+(o mapa do framework). Siga-a ao criar skills e documentos, e atualize-a quando o fluxo mudar.
 
 - Skills: `.claude/skills/<nome-da-skill>/SKILL.md`
 - Agents: `.claude/agents/<nome-do-agent>.md`
