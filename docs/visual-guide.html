@@ -485,7 +485,7 @@ provisória   <span class="c"># → estável quando o tema ganha código</span>
           <li><b>ADR</b> registra a decisão, as alternativas e o porquê. <i>Não carrega</i> no contexto.</li>
           <li><b>Rule</b> diz ao agente <i>como aplicar</i> a decisão (uma linha + exemplo). <i>Carrega</i> ao tocar os paths.</li>
           <li><b>CLAUDE.md</b> traz o transversal (stack, comandos, convenções globais). <i>Carrega sempre.</i></li>
-          <li><b>behavior.md</b> é do framework, não do projeto: as 4 regras de comportamento. <i>Carrega sempre.</i></li>
+          <li><b>behavior.md</b> é do framework, não do projeto: as 5 regras de comportamento. <i>Carrega sempre.</i></li>
           <li><b>README</b> é para pessoas, não para o agente.</li>
         </ul>
       </div>
@@ -886,8 +886,8 @@ const INFO = {
   BEH: {
     tipo: 'rule', rotulo: 'Rule global do framework', nome: '.claude/rules/behavior.md',
     q: 'Como o agente deve se comportar?',
-    curto: 'As 4 regras de comportamento. Sempre carrega.',
-    resumo: 'As regras de comportamento, válidas em qualquer tarefa: (1) incerteza → leia o arquivo ou rode grep, nunca chute; (2) escopo é o pedido, com o menor delta que o resolva bem; (3) “funciona” só com evidência; (4) ação destrutiva ou irreversível exige confirmação antes.',
+    curto: 'As 5 regras de comportamento. Sempre carrega.',
+    resumo: 'As regras de comportamento, válidas em qualquer tarefa: (1) incerteza → leia o arquivo ou rode grep, nunca chute; (2) escopo é o pedido, com o menor delta que o resolva bem; (3) “funciona” só com evidência; (4) ação destrutiva ou irreversível exige confirmação antes; (5) precisou de admin → eleve só aquele comando (aviso do UAC), com a saída gravada num log como prova.',
     cmd: '',
     entrada: '—',
     saida: '—',
@@ -1158,7 +1158,7 @@ ${CLASSES}`,
 contexto: `flowchart LR
   subgraph SEMPRE ["Carrega SEMPRE"]
     CLAUDEMD["CLAUDE.md<br/>stack, comandos,<br/>convenções globais"]
-    BEH["rules/behavior.md<br/>4 regras de comportamento"]
+    BEH["rules/behavior.md<br/>5 regras de comportamento"]
   end
   subgraph PATHS ["Carrega só ao tocar os paths"]
     RT["rules/‹tema›.md<br/>ex.: database-access.md<br/>paths: src/db/**, docs/specs/**"]

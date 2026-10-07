@@ -152,7 +152,7 @@ Formato de cada uma.>
 |-------|----------|----------------|-------------------|--------------------|----|
 | CT-01 | unitário | <regra>        | <dados>           | <saída>            | CA-01 |
 
-<!-- LLM-ONLY: preencha 10.1 primeiro: ela guia os casos. Todo CA tem pelo menos um CT. Camadas: unitário | integração | e2e | manual. Manual só quando automatizar não é viável (ex.: instalador sem admin), com o roteiro em "Entrada / cenário". Agrupe por componente; teste manual fica num grupo "Manuais". -->
+<!-- LLM-ONLY: preencha 10.1 primeiro: ela guia os casos. Todo CA tem pelo menos um CT. Camadas: unitário | integração | e2e | manual. Manual só quando o teste pede uma pessoa (ex.: conferir uma tela, usar outra máquina), com o roteiro em "Entrada / cenário". Precisar de admin não torna o teste manual: o agente roda o comando elevado; escreva "requer admin" em "Entrada / cenário". Agrupe por componente; teste manual fica num grupo "Manuais". -->
 
 ## 11. Arquivos
 

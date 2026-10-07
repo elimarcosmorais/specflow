@@ -149,7 +149,8 @@ Preencha o template seção a seção. Pontos que costumam ficar fracos:
 - **Testes (§10):** monte primeiro a tabela CA → testes; todo CA tem pelo menos um CT. Cada CT
   tem uma camada só (unitário, integração, e2e ou manual) e segue o padrão de testes do projeto
   (ADR, testes existentes). Para cada caminho feliz que tem um modo de falha no PRD, inclua
-  também o teste da falha. Teste manual só quando automatizar não é viável, e com roteiro.
+  também o teste da falha. Teste manual só quando ele pede uma pessoa, e com roteiro. Precisar
+  de admin não basta: o agente roda o comando elevado, e o CT diz "requer admin".
 - **Arquivos (§11):** todos os arquivos tocados, inclusive testes, migrações e documentação. É
   daqui que o Task Plan parte.
 - **Conformidade com ADRs (§12):** uma linha por ADR `aceito`, citando o texto da Decisão.

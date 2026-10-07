@@ -56,7 +56,7 @@ A **revisão** é o `agent-spec-reviewer`; numa task `Risco: alto`, é ele e o
 # Regras
 
 1. **Nunca implemente.** Código e testes são do executor; você só roda git e, no fechamento, os
-   comandos de testes e build.
+   comandos de testes e build e os testes manuais que só pedem admin.
 2. **Uma task por vez**, em ordem. As marcas `∥` do `tasks.md` dizem que a ordem entre aquelas
    tasks não importa; aqui elas rodam em sequência mesmo.
 3. **Crítica e alta bloqueiam; média e baixa viram débito.** Nunca conclua uma task com problema
@@ -244,8 +244,13 @@ Quando todas as tasks estiverem `concluída`:
 
 1. Rode os comandos dos **critérios de conclusão** do `tasks.md` (testes e build). Passou →
    marque `[x]`. Falhou → não marque, e mostre a falha no relatório.
-2. Testes **manuais** não são executados por você: deixe a caixa vazia e liste-os no relatório
-   para o usuário fazer.
+2. Testes **manuais**, CT por CT, pelo roteiro em "Entrada / cenário":
+   - **só pede admin** (instalar, registrar serviço, gravar em pasta protegida) → rode você
+     mesmo, elevando só esse comando (`behavior.md`, regra 5). O log é a prova do resultado;
+   - **pede uma pessoa** (conferir uma tela, usar outra máquina, julgar a experiência) → não
+     rode: liste no relatório para o usuário fazer.
+
+   Marque `[x]` na caixa dos testes manuais só quando todos tiverem passado.
 
 Execução parcial (parou numa task, ou rodou só uma `TN`) → pule esta etapa.
 
@@ -264,7 +269,7 @@ Tasks concluídas: X/Y
 | T3   | parada: <motivo> | 3          | —                  |
 
 Revisão de segurança (risco alto): T2, T4 | nenhuma task de risco alto
-Critérios de conclusão: testes ok · build ok · testes manuais a fazer: CT-XX, CT-YY
+Critérios de conclusão: testes ok · build ok · manuais: CT-XX ok (elevado) · a fazer pelo usuário: CT-YY
 Pendências do executor: <decisões tomadas que valem saber> | nenhuma
 
 O código está em stage, sem commit. Revise com `git diff --staged` e faça o commit com

@@ -14,6 +14,16 @@ Valem em qualquer tarefa, em qualquer fase do fluxo. Não são negociáveis.
 4. **Ação destrutiva ou irreversível exige confirmação antes.** Ex.: apagar arquivos ou pastas,
    editar documento `aprovado` ou versão já implementada, `git reset`/`git restore`/`push
    --force`, commit e push, migração de schema, delete de dados em massa.
+5. **Precisou de admin → eleve só aquele comando.** Não passe a tarefa ao usuário nem rode a
+   sessão inteira como admin. Antes, diga no chat o comando exato e por quê: o aviso do UAC não
+   mostra o comando. O processo elevado não devolve a saída, então grave-a num log e leia-o
+   depois (é a evidência da regra 3). Usuário recusou o UAC → diga o comando e peça que ele o
+   rode.
+
+   ```powershell
+   $p = Start-Process pwsh -Verb RunAs -Wait -PassThru -WindowStyle Hidden -ArgumentList '-NoProfile','-Command',"& { <comando> } *> '<log>'; exit `$LASTEXITCODE"
+   $p.ExitCode; Get-Content '<log>'
+   ```
 
 Como evoluir esta lista: errou em algo que uma regra já cobria → reforce a redação dela; errou
 em algo novo → acrescente uma regra.
