@@ -6,12 +6,13 @@
 > identidade é decisão do usuário (rule `docs.md`).
 >
 > **Origem de cada valor:** `[código]` já implementado (com o caminho) · `[referência]` Figma ou
-> documento do time (com o link) · `[decisão]` decidido com o usuário (proposto e aceito).
+> documento do time (com o link) · `[decisão]` decidido com o usuário (proposto e aceito, ou
+> tirado do material que ele trouxe).
 
 - **Plataformas:** web | mobile | desktop
 - **Stack de UI:** <!-- LLM-ONLY: detectada no código ou na ADR. Ex.: React + Tailwind, Flutter (Material 3), WPF. Não invente. -->
 - **Biblioteca de componentes base:** <!-- LLM-ONLY: ex.: shadcn/ui, MUI, Material 3, nenhuma (componentes próprios) -->
-- **Fontes consultadas:** <!-- LLM-ONLY: caminhos do código, links de Figma, documentos do time, docs/references/ -->
+- **Fontes consultadas:** <!-- LLM-ONLY: caminhos do código, links de Figma, documentos do time. Nunca docs/references/: é temporário (rule docs.md); o que veio de lá é [decisão]. -->
 - **ADRs relacionadas:** `docs/adr/NNN-<titulo>.md` | nenhuma
 
 ## Direção

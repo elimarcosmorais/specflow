@@ -62,7 +62,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande ([template](../agent-spec-change/template.md)) | `rascunho` → `aprovado` → executado e apagado pelo build |
 | `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, uma categoria por arquivo | vivo; sincronizar com o código é livre, mudar a identidade é do usuário |
-| `docs/references/` | material do usuário: marca, prints, prompts | do usuário |
+| `docs/references/` | material de consulta do usuário: marca, prints, prompts | temporário; só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
 
 - **Plano** junta problema, comportamento (CAs), decisões, telas, contratos, specs afetadas e os
   **passos**. Seção que não se aplica é removida. Mais de 8 passos → fatiar em planos menores.

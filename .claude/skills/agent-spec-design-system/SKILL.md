@@ -98,7 +98,8 @@ Leia também:
   "só estrutura").
 - **Referências do usuário** em `docs/references/brand/` (logo, fontes, paleta) e
   `docs/references/screens/` (prints de inspiração), se existirem; leia as imagens com Read.
-  Valem como documento do time na precedência.
+  Valem como documento do time na precedência. São temporárias (rule `docs.md`): o valor
+  tirado delas entra como `[decisão]`, escrito no design system, sem o caminho do arquivo.
 - **Figma**, se veio um link: com um MCP de Figma na sessão, ofereça importar estilos e
   variáveis; sem ele, peça um export ou screenshots (leia as imagens com Read). O link entra em
   "Fontes consultadas" mesmo que não dê para lê-lo.
@@ -141,7 +142,8 @@ padrão vai para `divergencias-conhecidas.md`.
 
 Confira antes de salvar:
 
-1. Nenhum valor sem origem; nenhum valor inventado sem ter sido proposto e aceito.
+1. Nenhum valor sem origem; nenhum valor inventado sem ter sido proposto e aceito; nenhum
+   caminho de `docs/references/`.
 2. Todo componente próprio tem um import que existe no repo.
 3. Os padrões de feedback são concretos ("skeleton de 3 linhas no lugar da lista", não "mostrar
    loading").

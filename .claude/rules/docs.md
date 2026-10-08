@@ -11,7 +11,7 @@ Onde cada documento mora, quem pode mexer nele e quando. Vale em qualquer tarefa
 | `docs/adr/NNN-<titulo>.md` | **por que** uma decisão transversal foi tomada | só `/agent-spec-adr`, com o usuário |
 | `docs/design-system.md` + `docs/design/` | a identidade visual: tokens, componentes e padrões | `/agent-spec-design-system`; sincronizar com o código é livre |
 | `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande, até ser executado | `/agent-spec-change` cria, o usuário aprova, `/agent-spec-build` executa e apaga |
-| `docs/references/` | material do usuário: marca, prints, prompts | o usuário |
+| `docs/references/` | material de consulta temporário do usuário: marca, prints, prompts | o usuário |
 
 **Não duplique.** A spec diz **como funciona** e aponta para a ADR que diz **por quê**. O plano
 diz o que uma mudança vai fazer e some depois dela: o que sobrevive vai para a spec (como
@@ -58,6 +58,15 @@ rode `/agent-spec-design-system`.
 Um plano por mudança, nome `AAAA-MM-DD-<slug>.md`. `rascunho` → `aprovado` (pelo usuário) →
 executado e **apagado pelo build** no fechamento: a remoção fica em stage junto com o código e
 entra no mesmo commit. Plano não vira documentação.
+
+## Referências: temporárias
+
+`docs/references/` é material de consulta do usuário e pode sumir a qualquer momento. Leia à
+vontade, mas **só o plano** o cita, porque também é temporário. Nenhum documento permanente
+(specs, `architecture.md`, ADR, design system, `CLAUDE.md`, README, rules) cita, linka ou
+documenta esses arquivos. O que ele precisar de uma referência (uma cor, uma regra, um fluxo) é
+escrito nele como fato do projeto, sem o caminho. Quem apaga é o usuário; o agente não apaga
+nem move nada ali.
 
 ## Nomes
 
