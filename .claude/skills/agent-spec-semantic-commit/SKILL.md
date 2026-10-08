@@ -1,6 +1,6 @@
 ---
 name: agent-spec-semantic-commit
-description: Utilitário do framework (transversal). Commita TODAS as mudanças do projeto (modificados, novos e apagados, respeitando o .gitignore) - coloca tudo em stage, gera a mensagem em português seguindo o Conventional Commits (tipo, escopo, assunto no imperativo em até 72 caracteres, corpo e rodapé quando fazem falta), propõe ao usuário e, depois de aprovado, commita e faz push para o remoto. Nenhum arquivo fica sem commit no final. Usar quando o usuário pedir para commitar ("commita isso", "gera o commit", "qual seria o commit?"), inclusive depois da Execução (agent-spec-run-tasks), que deixa o código em stage. Não faz amend nem push --force.
+description: Utilitário do framework (transversal). Commita TODAS as mudanças do projeto (modificados, novos e apagados, respeitando o .gitignore) - coloca tudo em stage, gera a mensagem em português seguindo o Conventional Commits (tipo, escopo, assunto no imperativo em até 72 caracteres, corpo e rodapé quando fazem falta), propõe ao usuário e, depois de aprovado, commita e faz push para o remoto. Nenhum arquivo fica sem commit no final. Usar quando o usuário pedir para commitar ("commita isso", "gera o commit", "qual seria o commit?"), inclusive depois do agent-spec-change ou do agent-spec-build, que deixam o código sem commit. Não faz amend nem push --force.
 argument-hint: "[o que mudou, em poucas palavras (opcional)]"
 ---
 
@@ -16,8 +16,8 @@ Transformar **todas as mudanças do projeto** em um commit (ou mais de um, se mi
 padrão [Conventional Commits](https://www.conventionalcommits.org/), com a mensagem em português,
 e enviá-lo ao remoto (`push`). Ao terminar, o `git status` fica limpo.
 
-No nosso fluxo, a Execução (`agent-spec-run-tasks`) deixa as tasks aprovadas em stage e **não
-commita**: o commit é do usuário, e esta skill é a forma de fazê-lo.
+No nosso fluxo, o `agent-spec-change` (mudança pequena) e o `agent-spec-build` (spec) **não
+commitam**: o commit é do usuário, e esta skill é a forma de fazê-lo.
 
 # Regras
 
@@ -95,7 +95,7 @@ alterado), marque com `!` depois do tipo/escopo **e** explique no rodapé `BREAK
 [corpo: o quê e por quê, não o como]
 
 [rodapé: BREAKING CHANGE: <o que quebra e como migrar>]
-[rodapé: Refs: <feature>/<vN> <tasks>]
+[rodapé: Refs: docs/specs/<NNN-nome>.md]
 ```
 
 **Assunto (primeira linha):**
@@ -110,10 +110,9 @@ alterado), marque com `!` depois do tipo/escopo **e** explique no rodapé `BREAK
 **Corpo:** só quando o assunto não basta (o motivo não é óbvio, ou há um efeito colateral que vale
 registrar). Linhas de até 72 caracteres, separado do assunto por uma linha em branco.
 
-**Rodapé `Refs:`** — quando o commit fecha tasks do framework (ex.: logo depois da
-`agent-spec-run-tasks`, ou quando o stage contém arquivos de `docs/specs/features/`), cite a
-feature, a versão e as tasks: `Refs: 001-login/v1 T1, T2, T3`. É o que liga o histórico do git
-aos documentos da feature.
+**Rodapé `Refs:`** — quando o commit implementa um spec (ex.: logo depois do
+`agent-spec-build`, ou quando o stage contém um spec de `docs/specs/`), cite-o:
+`Refs: docs/specs/003-login.md`. É o que liga o histórico do git ao spec.
 
 ### Exemplos
 

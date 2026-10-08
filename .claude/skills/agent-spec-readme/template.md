@@ -14,7 +14,7 @@ trocar por: > ⚠️ Adicionar screenshot em <caminho sugerido>. Nos outros tipo
 
 ## Sobre
 <!-- [todos] 1–2 parágrafos: que problema resolve, para quem, e por que existe. O "porquê" vem
-antes do "como". Se a feature passou pelo fluxo, o problema já está no pre-refinement/PRD. -->
+antes do "como". Se há specs em docs/specs/, o problema pode já estar lá. -->
 {{POR_QUE_EXISTE}}
 
 ## Features

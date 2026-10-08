@@ -2,62 +2,51 @@
 
 ## Sobre o projeto
 
-Um framework enxuto de **skills e agents do Claude Code** para desenvolver software com
-Spec-Driven Development (SDD): cada fase gera um documento, um humano revisa e aprova, e só então
-a próxima fase começa, usando esse documento como entrada. Visão geral, instalação e uso estão no
-[README.md](README.md).
+Um framework enxuto de **skills e agents do Claude Code** para desenvolver software com specs,
+em que o processo escala com o tamanho da mudança: pequena → implementa direto, sem documento;
+média ou grande → um único `spec.md`, aprovado pelo humano e executado passo a passo com revisão.
+Visão geral, instalação e uso estão no [README.md](README.md).
 
 Este repositório é o próprio framework: o que se edita aqui são as skills, os agents e as rules.
-Os documentos em `docs/specs/` e `docs/adr/` são o exemplo do que o fluxo gera.
 
-## Fases
+## Fluxo
 
-| # | Fase           | Skill                       |
-|---|----------------|-----------------------------|
-| 1 | Pre-Refinement | `agent-spec-pre-refinement` |
-| 2 | ADR            | `agent-spec-adr`            |
-| 3 | PRD            | `agent-spec-prd`            |
-| — | Design (obrigatório em feature com telas) | `agent-spec-design` |
-| 4 | Tech Alignment | `agent-spec-tech-alignment` |
-| 5 | Tech Spec      | `agent-spec-tech-spec`      |
-| 6 | Task Plan      | `agent-spec-task-plan`      |
-| 7 | Debt           | `agent-spec-debt`           |
-| 8 | Execução       | `agent-spec-run-tasks`      |
+| Etapa | Skill |
+|---|---|
+| Entrada: classifica, implementa o pequeno, escreve o spec | `agent-spec-change` |
+| Executa um spec aprovado | `agent-spec-build` |
 
-Agents da Execução: `agent-spec-executor`, `agent-spec-reviewer` e `agent-spec-security-reviewer`
-(só nas tasks de risco alto).
+Agents do build: `agent-spec-executor`, `agent-spec-reviewer` e `agent-spec-security-reviewer`
+(só nos passos de risco alto).
 
-Além das fases, há skills **utilitárias**, que não geram documento de fase:
+Skills **utilitárias**:
 
-| Utilitário                             | Skill                        |
-|----------------------------------------|------------------------------|
-| Commit semântico                       | `agent-spec-semantic-commit` |
-| Challenge da spec                      | `agent-spec-challenge-spec`  |
-| Guia do framework                      | `agent-spec-guide`           |
-| Revisão das ADRs                       | `agent-spec-adr-review`      |
-| Design system (projeto com interface)  | `agent-spec-design-system`   |
-| README do projeto                      | `agent-spec-readme`          |
-| CLAUDE.md do projeto                   | `agent-spec-claude-md`       |
-| Rules de um tema                       | `agent-spec-rule-create`     |
-| Curadoria das rules                    | `agent-spec-rule-curate`     |
-| Guia visual (`docs/visual-guide.html`) | `agent-spec-visual-guide`    |
+| Utilitário | Skill |
+|---|---|
+| Guia do framework | `agent-spec-guide` |
+| Decisão de arquitetura (ADR) | `agent-spec-adr` |
+| Design system (opcional) | `agent-spec-design-system` |
+| Commit semântico | `agent-spec-semantic-commit` |
+| README do projeto | `agent-spec-readme` |
+| CLAUDE.md do projeto | `agent-spec-claude-md` |
+| Rules de um tema | `agent-spec-rule-create` |
+| Curadoria das rules | `agent-spec-rule-curate` |
 
 ## Ao alterar o framework
 
-- **Simplicidade acima de completude.** Cada skill faz uma coisa, com um template próprio. Antes
-  de acrescentar uma fase, skill ou seção, confira se ela é necessária para o fluxo.
+- **O processo escala com a mudança.** Não reintroduza fase obrigatória, documento por fase,
+  versões de documento, arquivo por task nem débito como fase: foi o que tornou o fluxo antigo
+  inviável. Antes de acrescentar uma skill, seção ou etapa, mostre que ela paga o próprio custo.
 - **Uma mudança por vez.** Uma skill ou agent por vez, terminada antes de passar à próxima.
 - **Explicar as decisões.** Ao criar ou alterar uma skill, dizer o que mudou e por quê.
-- **Manter tudo em sincronia** ao criar, alterar ou remover uma skill, agent ou rule:
-  - as tabelas deste arquivo e as do [README.md](README.md);
-  - o mapa do framework (`agent-spec-guide`);
-  - o guia visual (rodar `/agent-spec-visual-guide`).
+- **Manter tudo em sincronia** ao criar, alterar ou remover uma skill, agent ou rule: as tabelas
+  deste arquivo, as do [README.md](README.md) e o mapa do framework (`agent-spec-guide`).
 - **Idioma:** conversar com o usuário e escrever skills e documentos em português.
 
 ## Estrutura de arquivos
 
-O fluxo completo, a estrutura de diretórios e as convenções estão na skill `agent-spec-guide`
-(o mapa do framework). Siga-a ao criar skills e documentos, e atualize-a quando o fluxo mudar.
+O fluxo, a estrutura de diretórios e as convenções estão na skill `agent-spec-guide`. Siga-a ao
+criar skills e documentos, e atualize-a quando o fluxo mudar.
 
 - Skills: `.claude/skills/<nome-da-skill>/SKILL.md`
 - Agents: `.claude/agents/<nome-do-agent>.md`

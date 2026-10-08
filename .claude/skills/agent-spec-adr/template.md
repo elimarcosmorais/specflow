@@ -5,7 +5,7 @@ status: proposto   # proposto | aceito | substituído
 # ADR NNN — <título da decisão>
 
 - **Data:** AAAA-MM-DD
-- **Origem:** [<documento>](../specs/features/NNN-<feature>/vN/<documento>.md) — <seção ou D-NN> | conversa
+- **Origem:** [<spec ou design system>](../specs/<arquivo>.md) — <seção> | conversa
 - **Substitui:** [ADR NNN](NNN-<titulo>.md) | nenhuma
 - **Substituída por:** nenhuma
 

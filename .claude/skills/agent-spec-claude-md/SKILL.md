@@ -15,8 +15,8 @@ cada linha inútil custa token sempre e dilui as regras que importam.
 Escrever o `CLAUDE.md` do projeto: o que o agente precisa saber **deste** projeto para trabalhar
 nele sem chutar. **Alvo: até ~80 linhas.** Comece enxuto; o arquivo cresce com o uso.
 
-Saída: `CLAUDE.md` na pasta do projeto, seguindo o [template](template.md). Não é documento de
-fase: não tem status, versão nem pasta em `docs/`.
+Saída: `CLAUDE.md` na pasta do projeto, seguindo o [template](template.md). Não é um
+spec: não tem status nem pasta em `docs/`.
 
 Fronteiras:
 
@@ -89,8 +89,8 @@ mostrar ao usuário de onde veio cada regra (Etapa 5). Olhe por três ângulos:
   (componentes, CSS, tokens)? → habilita a seção UI.
 - **Comportamento:** config de lint e testes, `git log` recente, rules já existentes → o que
   costuma quebrar e o que não usar.
-- **Documentos do framework**, se existirem: o problema e o público do `pre-refinement.md` ou do
-  `prd.md` alimentam a Visão; `docs/adr/` e `docs/specs/design-system.md` viram links.
+- **Documentos do framework**, se existirem: o problema e o público da seção "Problema e
+  objetivo" dos specs (`docs/specs/*.md`) alimentam a Visão; `docs/adr/` e `docs/specs/design-system.md` viram links.
 
 ## Etapa 3 — Perguntar só o que o repo não responde
 

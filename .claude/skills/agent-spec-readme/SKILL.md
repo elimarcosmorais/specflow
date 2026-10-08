@@ -15,8 +15,8 @@ de decidir usar, rodar ou contribuir.
 Escrever o `README.md` do projeto **para humanos**. O leitor decide em segundos se continua, então
 o **"o quê" e o "porquê" vêm antes** de instalação e configuração.
 
-Saída: `README.md` na pasta do projeto, seguindo o [template](template.md). Não é documento de
-fase: não tem status, versão nem pasta em `docs/`.
+Saída: `README.md` na pasta do projeto, seguindo o [template](template.md). Não é um
+spec: não tem status nem pasta em `docs/`.
 
 Fronteira: `CLAUDE.md` e `.claude/rules/` são instruções para o **agente**; o README é para
 **pessoas** (o `CLAUDE.md` se gera com `/agent-spec-claude-md`). Nada de regra de comportamento
@@ -77,8 +77,8 @@ Leia, não adivinhe:
   pelo código.
 - **Comandos** de instalação, dev, build e teste (Regra 1). Extraia, **não rode** instalação nem
   build para conferir.
-- **Documentos do framework**, se existirem: o problema e o público do `pre-refinement.md` ou do
-  `prd.md` alimentam o "Sobre"; as ADRs (`docs/adr/`) viram link na "Arquitetura".
+- **Documentos do framework**, se existirem: o problema e o público da seção "Problema e
+  objetivo" dos specs (`docs/specs/*.md`) alimentam o "Sobre"; as ADRs (`docs/adr/`) viram link na "Arquitetura".
 
 ## Etapa 3 — Perguntar só o que o repo não responde
 

@@ -17,7 +17,7 @@ Estabelecer as convenções de **um tema** e gravá-las numa rule enxuta, que o 
 escrever a spec e o código daquele tema.
 
 Saída: `.claude/rules/<tema>.md`, nova ou completada. No chat, as decisões que merecem ADR. Não é
-documento de fase: não tem status de aprovação, versão nem pasta em `docs/`.
+um spec: não tem status de aprovação nem pasta em `docs/`.
 
 | Preciso…                                                         | Skill                     |
 |------------------------------------------------------------------|---------------------------|
@@ -25,7 +25,7 @@ documento de fase: não tem status de aprovação, versão nem pasta em `docs/`.
 | Decidir se um item solto vira regra, ou auditar as rules         | `/agent-spec-rule-curate` |
 | Registrar uma decisão de arquitetura, com alternativas           | `/agent-spec-adr`         |
 | Gerar ou auditar o `CLAUDE.md` inteiro                           | `/agent-spec-claude-md`   |
-| Decisões técnicas de uma feature só                              | `/agent-spec-tech-alignment` |
+| Decisões técnicas de uma mudança só                              | `/agent-spec-change` (seção Decisões do spec) |
 
 # Regras
 
@@ -75,7 +75,7 @@ Antes de incluir cada item:
 | Stack              | manifests do projeto                           | Exemplos na linguagem real. |
 | Pegada do tema     | pastas e arquivos do tema (ex.: banco: migrations, repositories, conexão) | **Brownfield** (há código) ou **greenfield** (não há). |
 | ADRs               | `docs/adr/` com status `aceito`                | Restrições: não reabra o que já foi decidido. |
-| Specs              | `docs/specs/features/`                         | Em greenfield, a spec de fundação pode já ter decidido parte do tema. |
+| Specs              | `docs/specs/*.md`                              | Em greenfield, um spec de fundação pode já ter decidido parte do tema. |
 
 Diga ao usuário, numa linha, o modo: **greenfield** ou **brownfield**, e **criar** ou
 **completar**. O usuário pode trocar.
@@ -132,10 +132,10 @@ diga "a rule já está coerente" e encerre sem gravar.
    `http-errors.md`). O usuário pode renomear.
 3. **Paths.** Decida o escopo:
    - **Produção** — a rule guia como o código é escrito (naming, camadas, erros, DI, testes,
-     contratos) → glob do código **+ `docs/specs/**`**. A Tech Spec e o Task Plan já decidem
-     nomes e assinaturas: sem `docs/specs/**`, a rule não carrega quando a spec é gerada e a
-     spec sai sem a convenção. Todas as fases leem os documentos da feature, então esse glob
-     cobre a geração e a execução.
+     contratos) → glob do código **+ `docs/specs/**`**. O spec já decide nomes e assinaturas
+     nos passos: sem `docs/specs/**`, a rule não carrega quando o spec é escrito e ele sai sem a
+     convenção. O executor e os revisores também leem o spec, então esse glob cobre a escrita e
+     a execução.
    - **Local** — vale só dentro de um módulo e não muda o que a spec escreve → só o glob do
      código.
    - **Transversal** — vale para todo o código → global: rule sem `paths`.
@@ -149,10 +149,10 @@ diga "a rule já está coerente" e encerre sem gravar.
 
 ````markdown
 ---
-description: Convenções de <tema> — <o que cobre>. Carrega ao mexer em <arquivos> e nos documentos de feature.
+description: Convenções de <tema> — <o que cobre>. Carrega ao mexer em <arquivos> e nos specs.
 paths:
   - "<glob do código do tema>"   # execução
-  - "docs/specs/**"              # geração da spec e das tasks (só em rule de produção)
+  - "docs/specs/**"              # escrita e leitura do spec (só em rule de produção)
 ---
 
 # <Tema> — Convenções

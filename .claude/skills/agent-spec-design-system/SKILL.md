@@ -1,6 +1,6 @@
 ---
 name: agent-spec-design-system
-description: Utilitário do framework (transversal; obrigatório em projeto com interface, antes do primeiro Design). Cria ou atualiza o design system do produto em docs/specs/design-system.md - cores, tipografia, espaçamento, ícones, layout, tema, componentes reutilizáveis, padrões de feedback e acessibilidade visual. Deriva do código, do Figma e dos documentos do time tudo o que já existe e só pergunta o resto; em projeto novo, propõe o design system inicial com perguntas de direção, sempre com recomendação. Não especifica as telas de uma feature, não cria ADR e não escreve código. Usar quando o usuário pedir para criar, consolidar ou atualizar o design system, ou antes do Design da primeira feature com interface (o PRD indica o comando).
+description: Utilitário do framework (opcional; recomendado em projeto com interface). Cria ou atualiza o design system do produto em docs/specs/design-system.md - cores, tipografia, espaçamento, ícones, layout, tema, componentes reutilizáveis, padrões de feedback e acessibilidade visual. Deriva do código, do Figma e dos documentos do time tudo o que já existe e só pergunta o resto; em projeto novo, propõe o design system inicial com perguntas de direção, sempre com recomendação. Não especifica as telas de uma mudança, não cria ADR e não escreve código. Usar quando o usuário pedir para criar, consolidar ou atualizar o design system.
 argument-hint: "[links de Figma | caminhos de documentos de design do time | descrição livre (opcional)]"
 disable-model-invocation: true
 ---
@@ -13,18 +13,17 @@ você **propõe**, com recomendação, e o usuário decide.
 
 # Objetivo
 
-Manter **um** documento com a identidade visual do produto inteiro: o `design-system.md`. Toda
-feature com interface parte dele, para que cada uma não reinvente botões, cores e estados, e a
+Manter **um** documento com a identidade visual do produto inteiro: o `design-system.md`. Todo
+spec com tela parte dele, para que cada mudança não reinvente botões, cores e estados, e a
 interface não fique diferente de tela para tela.
 
 Saída: `docs/specs/design-system.md`, seguindo o [template](template.md). Ele é global, como as
-ADRs: fica fora das features e não tem versão (o histórico fica no git). Fluxo e convenções
+ADRs, e documentação viva: é atualizado no lugar (o histórico fica no git). Fluxo e convenções
 completos: `agent-spec-guide`.
 
-Quando rodar:
+Quando rodar (é opcional: sem ele, o spec descreve a tela por conta própria):
 
-- **Projeto novo com interface**, antes do Design da primeira feature que tenha telas (o PRD
-  dela indica o comando; o Design não roda sem o design system).
+- **Projeto novo com interface**, antes do primeiro spec com tela.
 - **Projeto que já tem interface** e nunca registrou o design system.
 - **Design system defasado:** o código, o Figma ou o time mudou algo.
 
@@ -40,15 +39,15 @@ Projeto sem interface (só backend, biblioteca, CLI) não precisa desta skill.
 3. **O que não existe, proponha.** Use `AskUserQuestion` com 2 a 4 opções concretas, a sua
    recomendação primeiro e o porquê. Até 4 perguntas por chamada, no máximo **2 a 3 rodadas**.
 4. **Figma é referência, nunca pré-requisito.** Nunca pare por falta de acesso a ele.
-5. **Só o global.** Telas, layouts e estados de uma feature ficam no `design.md` da feature
-   (skill `agent-spec-design`), não aqui.
+5. **Só o global.** Telas, layouts e estados de uma mudança ficam na seção Telas do spec dela,
+   não aqui.
 6. **Componente só com referência real.** Componente próprio entra na seção 7 com o import que o
    código usa, e esse caminho tem que existir no repo.
 7. **Não crie ADR.** Decisão transversal com trade-off real (biblioteca de UI, dark mode desde já,
    skeleton em todo o produto) vira **recomendação** de `/agent-spec-adr` na seção 11 ("Próximo
    passo") e no resumo. Só no chat ela se perde quando a conversa fecha.
-8. **Não escreva código.** Os tokens de um projeto novo são implementados por uma task, no fluxo
-   normal.
+8. **Não escreva código.** Os tokens de um projeto novo são implementados pelo fluxo normal
+   (`/agent-spec-change`).
 9. **Não exiba o documento no terminal.** Salve o arquivo e mostre só o resumo.
 10. **Documento em português com acentuação correta.** Nomes de código e termos de design
     consagrados (token, breakpoint, skeleton, dark mode) ficam como são.
@@ -85,8 +84,6 @@ Leia também:
 
 - **ADRs `aceito`** em `docs/adr/` que tratem de UI (stack de frontend, organização do front).
   Elas são restrições: não reabra o que decidiram.
-- **`design.md` das features** (`docs/specs/features/*/v*/design.md`), seção 2.2: item com
-  "Promover: sim" cujo componente já existe no código é entrada nova para a seção 7.
 - **Documentos do time** passados no argumento, e candidatos óbvios (`docs/**/design*`,
   `**/styleguide*`). Um prompt de `docs/references/prompts/` vale como documento do time: leia
   também as imagens que ele cita, com o papel que ele dá a cada uma (ex.: "fonte da paleta" ×
@@ -142,13 +139,8 @@ Confira antes de salvar:
 
 ## Etapa 4 — Salvar e resumir
 
-Na seção 11 ("Próximo passo"), escreva os **comandos prontos para copiar**:
-
-- **Próxima fase:** um `/agent-spec-design <caminho do prd.md>` por feature aguardando o Design
-  (a versão mais recente em `docs/specs/features/` tem `prd.md` indicando o Design na seção
-  "Próximo passo" e não tem `design.md`). Nenhuma → "nenhuma feature aguardando o Design".
-- **ADR:** um `/agent-spec-adr "<título>"` por decisão transversal recomendada (regra 7) que
-  ainda não existe em `docs/adr/`.
+Na seção 11 ("Próximo passo"), escreva um `/agent-spec-adr "<título>"` por decisão transversal
+recomendada (regra 7) que ainda não existe em `docs/adr/`, pronto para copiar.
 
 Remova os comentários `<!-- LLM-ONLY -->` e salve em `docs/specs/design-system.md` com
 `status: rascunho`. Depois, mostre **apenas**:
@@ -164,7 +156,6 @@ Arquivo salvo em: docs/specs/design-system.md
 - Divergências conhecidas: N | nenhuma
 
 ADR a registrar: `/agent-spec-adr "<título>"` — <motivo> (uma por linha) | nenhuma
-Depois: <próxima fase da seção 11>
 
 Revise o arquivo. Se estiver de acordo, mude o status para `aprovado` (ou peça que eu mude).
 ```
@@ -176,11 +167,10 @@ Atualizar é **completar**, não reescrever.
 1. Leia o `design-system.md` e rode a Etapa 1 para coletar as fontes atuais.
 2. Classifique cada seção: **coerente** (não toque, não pergunte), **vazia**, **defasada**
    (diverge do código ou do Figma atual) ou **nova** (uma fonte trouxe algo que o arquivo não
-   tem). A seção 11 está defasada quando falta, quando lista ADR que já existe em `docs/adr/` ou
-   feature que já tem `design.md`, ou quando surgiu feature aguardando o Design: refaça-a como
-   na Etapa 4, sem perguntar nada.
+   tem). A seção 11 está defasada quando falta ou quando lista ADR que já existe em `docs/adr/`:
+   refaça-a como na Etapa 4, sem perguntar nada.
 3. Faça a Etapa 2 só sobre o que não está coerente. Conteúdo escrito à mão que ainda é válido
-   **nunca** é sobrescrito sem perguntar; o mesmo vale para entradas que vieram de uma feature.
+   **nunca** é sobrescrito sem perguntar.
 4. Nada a mudar → diga "design system já coerente com as fontes" e pare, sem gravar.
 5. Mostre a lista das mudanças (seção, antes → depois) e peça confirmação antes de editar: o
    arquivo pode estar `aprovado` (`behavior.md`, regra 4). Confirmado, edite só essas

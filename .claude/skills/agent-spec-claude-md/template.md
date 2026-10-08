@@ -2,7 +2,7 @@
 
 ## Visão do projeto
 <!-- [sempre] 2–4 linhas: o que é, para quem, o que otimiza, restrições principais. Sem marketing
-nem história da empresa. Se o projeto passou pelo fluxo, o problema já está no pre-refinement/PRD. -->
+nem história da empresa. Se há specs em docs/specs/, o problema pode já estar lá. -->
 {{VISAO}}
 
 ## Stack

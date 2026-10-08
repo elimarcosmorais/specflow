@@ -19,8 +19,8 @@ Dois modos:
    vira, com que escopo, em que arquivo e em que forma. Grava depois da aprovação.
 2. **Auditar** — revisar as rules existentes (e o `CLAUDE.md`) e propor cortes e ajustes.
 
-Saída: edição em `.claude/rules/<tema>.md` ou no `CLAUDE.md`. Não é documento de fase: não tem
-status de aprovação, versão nem pasta em `docs/`.
+Saída: edição em `.claude/rules/<tema>.md` ou no `CLAUDE.md`. Não é um spec: não tem status de
+aprovação nem pasta em `docs/`.
 
 | Preciso…                                                         | Skill                     |
 |------------------------------------------------------------------|---------------------------|
@@ -80,21 +80,20 @@ consegue escrever (ainda não está madura).
 
 **A armadilha: regra de produção com `paths` só de código.** Uma convenção que decide **como o
 código é escrito** (naming, camadas, tratamento de erro, formato de teste, contrato) é decidida
-já na Tech Spec e no Task Plan, que escrevem nomes, assinaturas e exemplos antes de existir
-código. Se os `paths` apontam só para o código (`src/**`), a rule não carrega quando a spec é
-gerada: a spec nasce sem a convenção e o executor herda o erro.
+já no spec, cujos passos escrevem nomes, assinaturas e exemplos antes de existir código. Se os
+`paths` apontam só para o código (`src/**`), a rule não carrega quando o spec é escrito: ele
+nasce sem a convenção e o executor herda o erro.
 
-Por isso, rule por área que guia a produção inclui `docs/specs/**`. Todas as fases, da Tech
-Alignment à Execução, leem os documentos da feature, então a rule carrega na geração e na
-execução:
+Por isso, rule por área que guia a produção inclui `docs/specs/**`. Quem escreve o spec, o
+executor e os revisores leem o spec, então a rule carrega na escrita e na execução:
 
 ```yaml
 paths:
   - "**/*.sql"        # onde o código do tema vive (execução)
-  - "docs/specs/**"   # documentos da feature (geração da spec e das tasks; executor lendo a task)
+  - "docs/specs/**"   # specs (escrita do spec; executor e revisores lendo o passo)
 ```
 
-O custo é a rule carregar em toda feature; aceitável enquanto ela for curta. Rule **local** (um
+O custo é a rule carregar em todo spec; aceitável enquanto ela for curta. Rule **local** (um
 módulo só, que não muda o que a spec escreve) leva só o glob do código.
 
 Ao escolher os globs: comece estreito e cubra só onde a regra se aplica; **nunca use `**`** (se

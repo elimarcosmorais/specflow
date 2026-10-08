@@ -1,39 +1,37 @@
 # AI Software Engineering
 
-> Um framework enxuto de skills e agents do Claude Code para desenvolver software com
-> Spec-Driven Development: da ideia ao código implementado e revisado, uma fase por vez.
+> Um framework enxuto de skills e agents do Claude Code para desenvolver software com specs,
+> onde o processo cresce com o tamanho da mudança: nada de documento para mudar uma linha de CSS.
 
 ## Sobre
 
 Pedir uma feature inteira para um agente de IA de uma vez costuma dar errado: ele preenche as
-lacunas com suposições, decide a arquitetura sozinho e entrega código que ninguém revisou contra
-um objetivo claro. Este framework divide o trabalho em fases curtas (Spec-Driven Development):
-cada fase gera um documento, **um humano revisa e aprova**, e só então a próxima fase começa,
-usando esse documento como entrada. A IA nunca constrói em cima de um entendimento que ninguém
-conferiu.
+lacunas com suposições e entrega código que ninguém revisou contra um objetivo claro. O outro
+extremo também falha: um fluxo com uma fase e um documento para cada etapa faz você escrever mais
+documentação do que código.
 
-São skills e agents do [Claude Code](https://claude.com/claude-code), de propósito poucos e
-simples: cada um faz uma coisa, com um template próprio, e o fluxo todo cabe num mapa só.
+Este framework escolhe o processo pelo tamanho da mudança:
+
+| Tamanho | Exemplo | O que acontece |
+|---|---|---|
+| **Pequena** | CSS, bug, texto, ajuste de validação | implementa direto, roda os testes, mostra o resultado. Nenhum documento |
+| **Média** | feature contida, endpoint + tela | um `spec.md` curto → você aprova → implementação passo a passo, com revisão |
+| **Grande** | fundação, decisão de arquitetura | o mesmo, com ADR para as decisões que valem para o projeto todo |
 
 ```
-ideia ─► Pre-Refinement ─► PRD ─► (Design) ─► Tech Alignment ─► Tech Spec ─► Task Plan ─► Execução
-          o problema       o quê   as telas    o como, alto nível  o como, detalhe  tasks      código revisado
-
-Transversais: ADR (decisões de arquitetura) · Debt (paga os débitos que a Execução anotou)
+pedido ─► /agent-spec-change ─┬─ pequena ─► código testado
+                              └─ média/grande ─► spec.md ─► você aprova ─► /agent-spec-build ─► código revisado
 ```
 
-- **[Guia visual](docs/visual-guide.html)**: diagramas clicáveis do fluxo, da Execução, das
-  versões e de todas as peças (abra o arquivo no navegador).
-- **[Mapa completo do framework](.claude/skills/agent-spec-guide/SKILL.md)**: fases, versões,
-  ADRs, débitos, pastas e convenções.
+Na revisão, só o que um sênior recusaria num PR volta para correção. O resto vira sugestão no
+relatório, e só vai para o backlog se você quiser. Mapa completo:
+[agent-spec-guide](.claude/skills/agent-spec-guide/SKILL.md).
 
 ## Pré-requisitos
 
 - [Claude Code](https://claude.com/claude-code), com acesso aos modelos Sonnet e Opus (os agents
-  da Execução rodam neles).
-- Git: a Execução deixa cada task aprovada em stage, e a revisão compara o `git diff`.
-- Chrome ou Edge: só para a `agent-spec-visual-guide`, que confere os diagramas no navegador
-  headless.
+  do build rodam neles).
+- Git: o build deixa cada passo aprovado em stage, e a revisão compara o `git diff`.
 
 ## Instalação
 
@@ -49,57 +47,47 @@ com `/agent-spec-claude-md`.
 
 ## Uso
 
-Dentro do Claude Code, na pasta do seu projeto, comece pela ideia:
+Dentro do Claude Code, na pasta do seu projeto, descreva a mudança:
 
 ```
-/agent-spec-pre-refinement "quero que o usuário faça login com o Google"
+/agent-spec-change "o botão de salvar está azul, deveria ser verde"
+/agent-spec-change "quero que o usuário faça login com o Google"
 ```
 
-A skill gera `docs/specs/features/001-<nome>/v1/pre-refinement.md`. Revise, mude o status para
-`aprovado`, e rode o comando que o próprio documento traz na seção "Próximo passo". Perdeu-se no
-caminho? Pergunte ao guia:
+O primeiro é pequeno: a skill muda o CSS e mostra o resultado. O segundo é médio ou grande: ela
+pergunta o que o código não responde e salva `docs/specs/001-login-com-google.md`. Revise,
+mude o status para `aprovado` e rode:
 
 ```
-/agent-spec-guide "qual o próximo passo da 001?"
+/agent-spec-build docs/specs/001-login-com-google.md
 ```
 
-Exemplo completo do que o fluxo gera (de um app de teste): a feature
-[`001-arquitetura-base`](docs/specs/features/001-arquitetura-base/) (v1 com todas as fases, v2 de
-débitos) e as [ADRs](docs/adr/).
+Nada é commitado sozinho: no fim, `/agent-spec-semantic-commit`.
 
 ## Skills e agents
 
-**Fases** (cada uma usa o documento aprovado da anterior):
+**Fluxo:**
 
-| # | Skill | Gera |
-|---|-------|------|
-| 1 | `/agent-spec-pre-refinement` | `pre-refinement.md`: o problema, de verdade |
-| 2 | `/agent-spec-adr` | `docs/adr/NNN-<titulo>.md`: uma decisão de arquitetura (transversal) |
-| 3 | `/agent-spec-prd` | `prd.md`: o que construir e para quem |
-| — | `/agent-spec-design` | `design.md`: as telas (obrigatório em feature com interface) |
-| 4 | `/agent-spec-tech-alignment` | `tech-alignment.md`: a abordagem técnica |
-| 5 | `/agent-spec-tech-spec` | `spec.md`: como vai funcionar, em detalhe |
-| 6 | `/agent-spec-task-plan` | `tasks.md` + `tasks/T*.md`: os passos de implementação |
-| 7 | `/agent-spec-debt` | nova versão com as tasks que pagam os débitos (transversal) |
-| 8 | `/agent-spec-run-tasks` | código + `debts.md`: implementa e revisa task a task |
+| Skill | Faz |
+|---|---|
+| `/agent-spec-change` | Porta de entrada: classifica o pedido; implementa o pequeno, escreve o spec do médio e do grande. Também faz itens do backlog |
+| `/agent-spec-build` | Implementa um spec aprovado, passo a passo |
 
-A Execução coordena três agents: `agent-spec-executor` (implementa a task),
-`agent-spec-reviewer` (roda os testes e revisa o diff) e `agent-spec-security-reviewer` (só nas
-tasks de risco alto).
+O build coordena três agents: `agent-spec-executor` (implementa um passo),
+`agent-spec-reviewer` (roda os testes e revisa o diff) e `agent-spec-security-reviewer` (só nos
+passos de risco alto).
 
 **Utilitários:**
 
 | Skill | Para quê |
-|-------|----------|
-| `/agent-spec-guide` | Tirar dúvidas: qual skill rodar, próximo passo de uma feature, como funciona uma fase |
-| `/agent-spec-challenge-spec` | Caçar furos no `spec.md` antes do Task Plan |
-| `/agent-spec-adr-review` | Conferir se as ADRs são consistentes entre si e com as features |
-| `/agent-spec-design-system` | Criar ou atualizar o design system do produto (obrigatório em projeto com interface, antes do primeiro Design) |
+|---|---|
+| `/agent-spec-guide` | Tirar dúvidas: qual skill rodar, próximo passo de um spec, como funciona o build |
+| `/agent-spec-adr` | Registrar uma decisão de arquitetura que vale para o projeto todo |
+| `/agent-spec-design-system` | Criar ou atualizar o design system do produto (opcional) |
 | `/agent-spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
 | `/agent-spec-readme` | Gerar ou completar o `README.md` |
 | `/agent-spec-claude-md` | Gerar ou enxugar o `CLAUDE.md` |
 | `/agent-spec-rule-create` | Definir as convenções de um tema (banco, erros HTTP…) em uma rule |
 | `/agent-spec-rule-curate` | Decidir se um item vira regra, e auditar as rules |
-| `/agent-spec-visual-guide` | Manter o guia visual em dia com as skills, agents e rules |
 
-Argumentos de cada comando: [mapa de roteamento](.claude/skills/agent-spec-guide/SKILL.md#7-mapa-de-roteamento--necessidade--skill).
+Argumentos de cada comando: [mapa de roteamento](.claude/skills/agent-spec-guide/SKILL.md#5-mapa-de-roteamento).
