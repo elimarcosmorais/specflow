@@ -1,6 +1,6 @@
 ---
 name: agent-spec-rule-create
-description: Utilitário do framework (transversal). Cria (ou completa) a rule de um TEMA técnico do projeto - ex.: acesso a banco, tratamento de erro HTTP, injeção de dependência, estado no front - tirando o usuário da página em branco. Divide o tema em 3 a 5 eixos de decisão, propõe 3 alternativas por eixo com recomendação, deriva do código o que já existe (brownfield) ou propõe a partir de boas práticas (greenfield, rule provisória), e grava uma rule enxuta em .claude/rules/<tema>.md (uma convenção + micro-exemplo ✅/❌ por item), com os paths que a fazem carregar na geração da spec e na execução. Mostra a rule antes de gravar e aponta as decisões que valem ADR. Usar quando o usuário pedir para "criar a rule de X", "definir as convenções de banco/erros/testes", ou quiser fixar como um tema vai ser feito antes da primeira feature. Não serve para julgar um item solto nem auditar rules (agent-spec-rule-curate), nem para registrar a ADR (agent-spec-adr).
+description: Utilitário do framework (transversal). Cria (ou completa) a rule de um TEMA técnico do projeto - ex.: acesso a banco, tratamento de erro HTTP, injeção de dependência, estado no front - tirando o usuário da página em branco. Divide o tema em 3 a 5 eixos de decisão, propõe 3 alternativas por eixo com recomendação, deriva do código o que já existe (brownfield) ou propõe a partir de boas práticas (greenfield, rule provisória), e grava uma rule enxuta em .claude/rules/<tema>.md (uma convenção + micro-exemplo ✅/❌ por item), com os paths que a fazem carregar na escrita do plano e na execução. Mostra a rule antes de gravar e aponta as decisões que valem ADR. Usar quando o usuário pedir para "criar a rule de X", "definir as convenções de banco/erros/testes", ou quiser fixar como um tema vai ser feito antes da primeira feature. Não serve para julgar um item solto nem auditar rules (agent-spec-rule-curate), nem para registrar a ADR (agent-spec-adr).
 argument-hint: "<tema, ex.: \"acesso a banco\", \"tratamento de erro HTTP\">"
 disable-model-invocation: true
 ---
@@ -14,10 +14,10 @@ uma e deixa o usuário escolher. Nunca impõe uma stack que o projeto não tem.
 # Objetivo
 
 Estabelecer as convenções de **um tema** e gravá-las numa rule enxuta, que o agente segue ao
-escrever a spec e o código daquele tema.
+escrever o plano e o código daquele tema.
 
 Saída: `.claude/rules/<tema>.md`, nova ou completada. No chat, as decisões que merecem ADR. Não é
-um spec: não tem status de aprovação nem pasta em `docs/`.
+um plano: não tem status de aprovação nem pasta em `docs/`.
 
 | Preciso…                                                         | Skill                     |
 |------------------------------------------------------------------|---------------------------|
@@ -25,7 +25,7 @@ um spec: não tem status de aprovação nem pasta em `docs/`.
 | Decidir se um item solto vira regra, ou auditar as rules         | `/agent-spec-rule-curate` |
 | Registrar uma decisão de arquitetura, com alternativas           | `/agent-spec-adr`         |
 | Gerar ou auditar o `CLAUDE.md` inteiro                           | `/agent-spec-claude-md`   |
-| Decisões técnicas de uma mudança só                              | `/agent-spec-change` (seção Decisões do spec) |
+| Decisões técnicas de uma mudança só                              | `/agent-spec-change` (seção Decisões do plano) |
 
 # Regras
 
@@ -75,7 +75,7 @@ Antes de incluir cada item:
 | Stack              | manifests do projeto                           | Exemplos na linguagem real. |
 | Pegada do tema     | pastas e arquivos do tema (ex.: banco: migrations, repositories, conexão) | **Brownfield** (há código) ou **greenfield** (não há). |
 | ADRs               | `docs/adr/` com status `aceito`                | Restrições: não reabra o que já foi decidido. |
-| Specs              | `docs/specs/*.md`                              | Em greenfield, um spec de fundação pode já ter decidido parte do tema. |
+| Specs e arquitetura | `docs/specs/`, `docs/architecture.md`         | Podem já descrever como o tema funciona hoje. |
 
 Diga ao usuário, numa linha, o modo: **greenfield** ou **brownfield**, e **criar** ou
 **completar**. O usuário pode trocar.
@@ -121,7 +121,7 @@ Substitui a 2a. Leia a rule e classifique cada eixo:
 | novo           | o tema ganhou um aspecto que a rule não cobre   | Proponha o acréscimo. |
 | coerente       | a rule bate com a realidade                     | **Não toque e não pergunte.** |
 
-Os `paths` entram na classificação (pasta que mudou, regra de produção sem `docs/specs/**`). Se o
+Os `paths` entram na classificação (pasta que mudou, regra de produção sem `docs/plans/**`). Se o
 texto escrito à mão diverge do código, pergunte: manter, atualizar ou mesclar. Tudo coerente →
 diga "a rule já está coerente" e encerre sem gravar.
 
@@ -132,16 +132,16 @@ diga "a rule já está coerente" e encerre sem gravar.
    `http-errors.md`). O usuário pode renomear.
 3. **Paths.** Decida o escopo:
    - **Produção** — a rule guia como o código é escrito (naming, camadas, erros, DI, testes,
-     contratos) → glob do código **+ `docs/specs/**`**. O spec já decide nomes e assinaturas
-     nos passos: sem `docs/specs/**`, a rule não carrega quando o spec é escrito e ele sai sem a
-     convenção. O executor e os revisores também leem o spec, então esse glob cobre a escrita e
-     a execução.
-   - **Local** — vale só dentro de um módulo e não muda o que a spec escreve → só o glob do
+     contratos) → glob do código **+ `docs/plans/**`**. O plano já decide nomes e assinaturas
+     nos passos: sem `docs/plans/**`, a rule não carrega quando o plano é escrito e ele sai sem
+     a convenção. O executor e os revisores também leem o plano, então esse glob cobre a
+     escrita e a execução.
+   - **Local** — vale só dentro de um módulo e não muda o que o plano escreve → só o glob do
      código.
    - **Transversal** — vale para todo o código → global: rule sem `paths`.
 
    Nunca use `**`. Confira cada glob com `Glob`: em brownfield ele precisa casar com arquivos
-   reais; em greenfield, com a pasta prevista na spec ou ADR (cite qual).
+   reais; em greenfield, com a pasta prevista no plano, na spec ou na ADR (cite qual).
 4. **Status.** Greenfield → `provisória` (exemplos ilustrativos, a conferir quando o código
    existir). Brownfield → `estável`.
 
@@ -149,10 +149,10 @@ diga "a rule já está coerente" e encerre sem gravar.
 
 ````markdown
 ---
-description: Convenções de <tema> — <o que cobre>. Carrega ao mexer em <arquivos> e nos specs.
+description: Convenções de <tema> — <o que cobre>. Carrega ao mexer em <arquivos> e nos planos.
 paths:
   - "<glob do código do tema>"   # execução
-  - "docs/specs/**"              # escrita e leitura do spec (só em rule de produção)
+  - "docs/plans/**"              # escrita e leitura do plano (só em rule de produção)
 ---
 
 # <Tema> — Convenções
@@ -173,10 +173,10 @@ Em pseudocódigo; numa rule real, os exemplos ficam na stack do projeto.
 
 ````markdown
 ---
-description: Convenções de injeção de dependência — mecanismo, tempo de vida e onde o grafo é montado. Carrega ao mexer no wiring e nos documentos de feature.
+description: Convenções de injeção de dependência — mecanismo, tempo de vida e onde o grafo é montado. Carrega ao mexer no wiring e nos planos.
 paths:
   - "src/di/**"
-  - "docs/specs/**"
+  - "docs/plans/**"
 ---
 
 # Injeção de Dependência — Convenções

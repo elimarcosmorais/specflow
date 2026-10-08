@@ -3,8 +3,10 @@
 ## Sobre o projeto
 
 Um framework enxuto de **skills e agents do Claude Code** para desenvolver software com specs,
-em que o processo escala com o tamanho da mudança: pequena → implementa direto, sem documento;
-média ou grande → um único `spec.md`, aprovado pelo humano e executado passo a passo com revisão.
+em que o processo escala com o tamanho da mudança: pequena → implementa direto, sem plano;
+média ou grande → um único plano em `docs/plans/`, aprovado pelo humano, executado passo a passo
+com revisão e apagado no fim. O que descreve o sistema fica nas specs vivas em `docs/specs/`, que
+o agente mantém sozinho.
 Visão geral, instalação e uso estão no [README.md](README.md).
 
 Este repositório é o próprio framework: o que se edita aqui são as skills, os agents e as rules.
@@ -13,8 +15,8 @@ Este repositório é o próprio framework: o que se edita aqui são as skills, o
 
 | Etapa | Skill |
 |---|---|
-| Entrada: classifica, implementa o pequeno, escreve o spec | `agent-spec-change` |
-| Executa um spec aprovado | `agent-spec-build` |
+| Entrada: classifica, implementa o pequeno, escreve o plano | `agent-spec-change` |
+| Executa um plano aprovado | `agent-spec-build` |
 
 Agents do build: `agent-spec-executor`, `agent-spec-reviewer` e `agent-spec-security-reviewer`
 (só nos passos de risco alto).
@@ -25,7 +27,7 @@ Skills **utilitárias**:
 |---|---|
 | Guia do framework | `agent-spec-guide` |
 | Decisão de arquitetura (ADR) | `agent-spec-adr` |
-| Design system (opcional) | `agent-spec-design-system` |
+| Design system (obrigatório com interface) | `agent-spec-design-system` |
 | Commit semântico | `agent-spec-semantic-commit` |
 | README do projeto | `agent-spec-readme` |
 | CLAUDE.md do projeto | `agent-spec-claude-md` |
@@ -50,4 +52,5 @@ criar skills e documentos, e atualize-a quando o fluxo mudar.
 
 - Skills: `.claude/skills/<nome-da-skill>/SKILL.md`
 - Agents: `.claude/agents/<nome-do-agent>.md`
-- Rules: `.claude/rules/<nome>.md` (ex.: `behavior.md`, as regras de comportamento)
+- Rules: `.claude/rules/<nome>.md` (`behavior.md`, as regras de comportamento; `docs.md`, onde
+  cada documento mora e quem mexe nele)

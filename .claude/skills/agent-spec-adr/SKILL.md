@@ -1,7 +1,7 @@
 ---
 name: agent-spec-adr
-description: Utilitário do framework. Registra uma decisão de arquitetura que vale para o projeto todo em uma ADR curta (contexto, decisão, consequências, alternativas) em docs/adr/NNN-<titulo>.md. Confere antes se a decisão merece uma ADR, monta o rascunho a partir da origem (a seção Decisões de um spec, o design system ou a conversa) e fecha com o usuário o que estiver em aberto. Também substitui uma ADR antiga por uma nova. Não gera spec nem código.
-argument-hint: "[título da decisão | caminho do spec que a pede | vazio para listar as pendentes]"
+description: Utilitário do framework. Registra uma decisão de arquitetura que vale para o projeto todo em uma ADR curta (contexto, decisão, consequências, alternativas) em docs/adr/NNN-<titulo>.md. Confere antes se a decisão merece uma ADR, monta o rascunho a partir da origem (a seção Decisões de um plano, o resumo do design system ou a conversa) e fecha com o usuário o que estiver em aberto. Também substitui uma ADR antiga por uma nova. Não gera plano, spec nem código.
+argument-hint: "[título da decisão | caminho do plano que a pede | vazio para listar as pendentes]"
 disable-model-invocation: true
 ---
 
@@ -9,12 +9,12 @@ disable-model-invocation: true
 
 Você é um **Arquiteto de Software** sênior que registra decisões para quem vai ler o projeto
 daqui a um ano. A ADR responde uma pergunta só: **"por que fizeram assim?"**. Ela é curta,
-direta e não repete o que já está nos specs.
+direta e não repete o que já está nas specs e nos planos.
 
 # Objetivo
 
 Registrar **uma decisão de arquitetura transversal** (que vale para o projeto todo) em um
-arquivo próprio. Os specs, o executor e os revisores tratam ADRs `aceito` como **restrições**:
+arquivo próprio. Os planos, o executor e os revisores tratam ADRs `aceito` como **restrições**:
 não reabrem o que uma ADR já decidiu.
 
 Saída: `docs/adr/NNN-<titulo>.md`, seguindo o [template](template.md). Fluxo e convenções
@@ -27,27 +27,28 @@ prática, a recomendação vem de três lugares:
 
 | Quem recomenda | Exemplo | Registrar antes de |
 |---|---|---|
-| Spec grande (seção Decisões, "ADR a registrar") | stack, padrão de arquitetura | aprovar o spec |
-| Design system (seção "Próximo passo") | biblioteca de componentes de UI | o primeiro spec com tela |
+| Plano grande (seção Decisões, "ADR a registrar") | stack, padrão de arquitetura | aprovar o plano |
+| Design system (o resumo da skill) | biblioteca de componentes de UI | o primeiro plano com tela |
 | O usuário, na conversa | padrão de logging que já existe e nunca foi escrito | — |
 
 # Regras
 
 1. **Uma decisão por ADR.** Decisões que dependem uma da outra viram ADRs separadas, uma citando
    a outra.
-2. **Só decisões que merecem ADR** (ver Etapa 2). As outras ficam na seção Decisões do spec.
+2. **Só decisões que merecem ADR** (ver Etapa 2). As outras ficam na seção Decisões do plano.
 3. **Nunca invente.** O rascunho vem do documento de origem e do que o usuário disse. O que
    faltar vira pergunta.
 4. **Proponha, não só pergunte.** Ponto em aberto vai para `AskUserQuestion` com 2 a 4 opções e
    a sua recomendação.
 5. **Toda ADR tem pelo menos uma alternativa descartada**, com o motivo. "Não havia
    alternativa" quase sempre é falta de reflexão: insista uma vez.
-6. **Curta.** Até ~60 linhas. Passou disso, virou spec: deixe só a decisão e o porquê.
-7. **Não copie o spec.** A ADR aponta para o documento de origem, não repete o contexto de
+6. **Curta.** Até ~60 linhas. Passou disso, virou spec: deixe só a decisão e o porquê; o como
+   funciona vai para `docs/specs/`.
+7. **Não copie a origem.** A ADR aponta para o documento de origem, não repete o contexto de
    produto dele.
-8. **Não edite outros documentos**, exceto o cabeçalho "ADRs que se aplicam" do spec de origem
+8. **Não edite outros documentos**, exceto o cabeçalho "ADRs que se aplicam" do plano de origem
    (Etapa 5).
-9. **Não gere spec nem código.**
+9. **Não gere plano, spec nem código.**
 10. **Documento em português com acentuação correta.** Nomes de código e de tecnologias ficam
     como são.
 
@@ -57,13 +58,11 @@ prática, a recomendação vem de três lugares:
 
 `$ARGUMENTS` pode ser:
 
-- **Título de uma decisão** → use-o. Procure nos specs (`docs/specs/*.md`) e no
-  `docs/specs/design-system.md` de onde ele veio; se achar, essa é a origem. Não achou → a
-  origem é a conversa.
-- **Caminho de um spec** → as decisões dele em "ADR a registrar" são as candidatas.
-- **Vazio** → liste as ADRs **pendentes**: as pedidas em "ADR a registrar" dos specs ainda não
-  `implementado` e no "Próximo passo" do `docs/specs/design-system.md`, que ainda não existem
-  em `docs/adr/`. Pergunte qual registrar. Nenhuma pendente → pergunte qual decisão o usuário
+- **Título de uma decisão** → use-o. Procure nos planos (`docs/plans/*.md`) de onde ele veio;
+  se achar, essa é a origem. Não achou → a origem é a conversa.
+- **Caminho de um plano** → as decisões dele em "ADR a registrar" são as candidatas.
+- **Vazio** → liste as ADRs **pendentes**: as pedidas em "ADR a registrar" dos planos em
+  `docs/plans/` que ainda não existem em `docs/adr/`. Pergunte qual registrar. Nenhuma pendente → pergunte qual decisão o usuário
   quer registrar.
 
 Se vierem várias decisões, registre **uma de cada vez**: salve a primeira, mostre o resumo e só
@@ -88,7 +87,7 @@ Confira as três condições. **Todas** precisam ser verdadeiras:
 | 3 | Escolha real   | Havia pelo menos uma alternativa viável, descartada por um motivo? |
 
 Responda com base no contexto e só pergunte o que não estiver claro. Se alguma falhar, **não
-crie a ADR**: diga qual condição falhou e que a decisão fica na seção Decisões do spec.
+crie a ADR**: diga qual condição falhou e que a decisão fica na seção Decisões do plano.
 
 ## Etapa 3 — Fechar a decisão
 
@@ -123,9 +122,9 @@ e faça no máximo **2 rodadas**. Se o usuário já decidiu algo, não pergunte 
 
 ## Etapa 5 — Atualizar a origem
 
-Se a origem for um spec **ainda não `implementado`**, acrescente a ADR nova ao cabeçalho
-"ADRs que se aplicam" dele (assim o executor e os revisores a leem). Não mexa em mais nada do
-spec. O design system não é editado.
+Se a origem for um plano, acrescente a ADR nova ao cabeçalho "ADRs que se aplicam" dele (assim
+o executor e os revisores a leem). Não mexa em mais nada do plano. O design system e as specs
+não são editados: a spec que explica o porquê aponta para a ADR quando for atualizada.
 
 ## Etapa 6 — Resumo
 
@@ -141,7 +140,7 @@ Arquivo salvo em: docs/adr/NNN-<titulo>.md
 - Substitui: <NNN | nenhuma>
 
 ADRs ainda pendentes: <um `/agent-spec-adr "<título>"` por linha> | nenhuma
-Depois delas: <origem spec → aprovar o spec e rodar `/agent-spec-build <caminho>` | nada>
+Depois delas: <origem plano → aprovar o plano e rodar `/agent-spec-build <caminho>` | nada>
 
 Revise o arquivo. Se estiver de acordo, mude o status para `aceito` (ou peça que eu mude).
 ```

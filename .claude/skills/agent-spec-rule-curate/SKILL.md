@@ -19,7 +19,7 @@ Dois modos:
    vira, com que escopo, em que arquivo e em que forma. Grava depois da aprovação.
 2. **Auditar** — revisar as rules existentes (e o `CLAUDE.md`) e propor cortes e ajustes.
 
-Saída: edição em `.claude/rules/<tema>.md` ou no `CLAUDE.md`. Não é um spec: não tem status de
+Saída: edição em `.claude/rules/<tema>.md` ou no `CLAUDE.md`. Não é um plano: não tem status de
 aprovação nem pasta em `docs/`.
 
 | Preciso…                                                         | Skill                     |
@@ -47,7 +47,7 @@ Uma rule **sem** `paths` no frontmatter é global: carrega sempre, como o `CLAUD
 2. **Editar vence criar.** Se já existe regra sobre o assunto, ajuste-a; não crie uma segunda.
 3. **Todo fato tem fonte.** O exemplo sai do código real (ou da stack decidida, em projeto sem
    código); cada glob de `paths` é conferido com `Glob` contra arquivos que existem (ou contra a
-   pasta prevista numa spec ou ADR, citada).
+   pasta prevista num plano, spec ou ADR, citada).
 4. **Nada é gravado sem o diff aprovado** pelo usuário.
 5. **Não toca código** nem documentos de feature. Só rules e `CLAUDE.md`.
 
@@ -80,21 +80,21 @@ consegue escrever (ainda não está madura).
 
 **A armadilha: regra de produção com `paths` só de código.** Uma convenção que decide **como o
 código é escrito** (naming, camadas, tratamento de erro, formato de teste, contrato) é decidida
-já no spec, cujos passos escrevem nomes, assinaturas e exemplos antes de existir código. Se os
-`paths` apontam só para o código (`src/**`), a rule não carrega quando o spec é escrito: ele
+já no plano, cujos passos escrevem nomes, assinaturas e exemplos antes de existir código. Se
+os `paths` apontam só para o código (`src/**`), a rule não carrega quando o plano é escrito: ele
 nasce sem a convenção e o executor herda o erro.
 
-Por isso, rule por área que guia a produção inclui `docs/specs/**`. Quem escreve o spec, o
-executor e os revisores leem o spec, então a rule carrega na escrita e na execução:
+Por isso, rule por área que guia a produção inclui `docs/plans/**`. Quem escreve o plano, o
+executor e os revisores leem o plano, então a rule carrega na escrita e na execução:
 
 ```yaml
 paths:
   - "**/*.sql"        # onde o código do tema vive (execução)
-  - "docs/specs/**"   # specs (escrita do spec; executor e revisores lendo o passo)
+  - "docs/plans/**"   # planos (escrita do plano; executor e revisores lendo o passo)
 ```
 
-O custo é a rule carregar em todo spec; aceitável enquanto ela for curta. Rule **local** (um
-módulo só, que não muda o que a spec escreve) leva só o glob do código.
+O custo é a rule carregar em todo plano; aceitável enquanto ela for curta. Rule **local** (um
+módulo só, que não muda o que o plano escreve) leva só o glob do código.
 
 Ao escolher os globs: comece estreito e cubra só onde a regra se aplica; **nunca use `**`** (se
 vale sempre, é global); siga o formato das rules que já existem.
@@ -118,10 +118,10 @@ Frontmatter de uma rule por área (a `description` diz quando ela vale; escreva-
 
 ```markdown
 ---
-description: Convenções de <tema> — <o que cobre>. Carrega ao mexer em <arquivos> e nos documentos de feature.
+description: Convenções de <tema> — <o que cobre>. Carrega ao mexer em <arquivos> e nos planos.
 paths:
   - "<glob do código>"
-  - "docs/specs/**"
+  - "docs/plans/**"
 ---
 ```
 
@@ -176,7 +176,7 @@ Passe por cada rule com estes filtros:
 | Sem porquê       | regra crítica sem motivo                                               | Acrescente o motivo ou suavize o tom. |
 | Provisória       | `status: provisória` cujo tema já tem código                           | Confira os exemplos contra o código, ajuste e promova a `estável`. |
 | Escopo largo     | `paths` com `**` ou a raiz; regra global cujo conteúdo é de uma área só | Estreite, ou mova para uma rule por área. |
-| Escopo estreito  | regra de produção sem `docs/specs/**`; glob que não casa com nada      | Acrescente ou corrija. |
+| Escopo estreito  | regra de produção sem `docs/plans/**`; glob que não casa com nada      | Acrescente ou corrija. |
 
 Pergunta-âncora para cada linha: *"se eu apagar isto, alguém faria errado num cenário real?"*
 Se não, proponha apagar.
@@ -220,8 +220,8 @@ Próximo passo: revisar e commitar → /agent-spec-semantic-commit
 2. **Fricção:** (1) sem isto faria errado? Sim: hoje uns handlers retornam 422, outros 500.
    (2) dá para descobrir em 1 min? Em parte → o exemplo vai escrito na regra. (3) fica velha?
    Não, é contrato. (4) porquê? 400 o cliente corrige; 500 dispara alarme falso.
-3. **Escopo:** por área, de produção (a spec descreve os erros de cada endpoint), então os
-   `paths` precisam ter `docs/specs/**`; a rule só tinha o glob do código → acrescente.
+3. **Escopo:** por área, de produção (o plano descreve os erros de cada endpoint), então os
+   `paths` precisam ter `docs/plans/**`; a rule só tinha o glob do código → acrescente.
 4. **Destino:** a rule existente (edição, não arquivo novo).
 5. **Regra:**
 

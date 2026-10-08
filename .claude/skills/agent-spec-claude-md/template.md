@@ -42,7 +42,7 @@ registradas: linkar docs/adr/, não copiar. Segredos ficam no .env (nunca no có
 ## UI
 <!-- [OPCIONAL · só projeto com interface] Estilo traduzido em implementação: "espaçamento só
 pelos tokens de src/theme/tokens.ts", "botão novo = variant do Button, não componente novo".
-Nunca "deixe moderno". Se existe docs/specs/design-system.md, aponte para ele em vez de repetir. -->
+Nunca "deixe moderno". Se existe docs/design-system.md, aponte para ele em vez de repetir. -->
 - {{REGRA_DE_UI}}
 
 ## Pronto significa

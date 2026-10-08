@@ -1,7 +1,7 @@
 # AI Software Engineering
 
 > Um framework enxuto de skills e agents do Claude Code para desenvolver software com specs,
-> onde o processo cresce com o tamanho da mudança: nada de documento para mudar uma linha de CSS.
+> onde o processo cresce com o tamanho da mudança: nada de plano para mudar uma linha de CSS.
 
 ## Sobre
 
@@ -14,18 +14,30 @@ Este framework escolhe o processo pelo tamanho da mudança:
 
 | Tamanho | Exemplo | O que acontece |
 |---|---|---|
-| **Pequena** | CSS, bug, texto, ajuste de validação | implementa direto, roda os testes, mostra o resultado. Nenhum documento |
-| **Média** | feature contida, endpoint + tela | um `spec.md` curto → você aprova → implementação passo a passo, com revisão |
+| **Pequena** | CSS, bug, texto, ajuste de validação | implementa direto, roda os testes, mostra o resultado. Nenhum plano |
+| **Média** | feature contida, endpoint + tela | um plano curto → você aprova → implementação passo a passo, com revisão |
 | **Grande** | fundação, decisão de arquitetura | o mesmo, com ADR para as decisões que valem para o projeto todo |
 
 ```
 pedido ─► /agent-spec-change ─┬─ pequena ─► código testado
-                              └─ média/grande ─► spec.md ─► você aprova ─► /agent-spec-build ─► código revisado
+                              └─ média/grande ─► plano ─► você aprova ─► /agent-spec-build ─► código revisado
 ```
 
 Na revisão, só o que um sênior recusaria num PR volta para correção. O resto vira sugestão no
-relatório, e só vai para o backlog se você quiser. Mapa completo:
-[agent-spec-guide](.claude/skills/agent-spec-guide/SKILL.md).
+relatório. Mapa completo: [agent-spec-guide](.claude/skills/agent-spec-guide/SKILL.md).
+
+O plano é temporário: o build o apaga depois de executar. O que fica é a documentação viva em
+`docs/`, que o agente mantém sozinho, junto com o código:
+
+| Pasta | Guarda |
+|---|---|
+| `docs/specs/` | como cada módulo funciona hoje; o agente cria, edita e subdivide sem pedir permissão |
+| `docs/architecture.md` | a arquitetura base |
+| `docs/adr/` | por que cada decisão transversal foi tomada (com a sua aprovação) |
+| `docs/design-system.md` + `docs/design/` | a identidade visual, obrigatória em projeto com interface |
+| `docs/plans/` | o plano da mudança em andamento |
+
+As regras de cada pasta estão na rule [`docs.md`](.claude/rules/docs.md).
 
 ## Pré-requisitos
 
@@ -55,14 +67,15 @@ Dentro do Claude Code, na pasta do seu projeto, descreva a mudança:
 ```
 
 O primeiro é pequeno: a skill muda o CSS e mostra o resultado. O segundo é médio ou grande: ela
-pergunta o que o código não responde e salva `docs/specs/001-login-com-google.md`. Revise,
-mude o status para `aprovado` e rode:
+pergunta o que o código não responde e salva `docs/plans/2026-10-08-login-com-google.md`.
+Revise, mude o status para `aprovado` e rode:
 
 ```
-/agent-spec-build docs/specs/001-login-com-google.md
+/agent-spec-build docs/plans/2026-10-08-login-com-google.md
 ```
 
-Nada é commitado sozinho: no fim, `/agent-spec-semantic-commit`.
+O build implementa, atualiza as specs dos módulos tocados e apaga o plano. Nada é commitado
+sozinho: no fim, `/agent-spec-semantic-commit`.
 
 ## Skills e agents
 
@@ -70,8 +83,8 @@ Nada é commitado sozinho: no fim, `/agent-spec-semantic-commit`.
 
 | Skill | Faz |
 |---|---|
-| `/agent-spec-change` | Porta de entrada: classifica o pedido; implementa o pequeno, escreve o spec do médio e do grande. Também faz itens do backlog |
-| `/agent-spec-build` | Implementa um spec aprovado, passo a passo |
+| `/agent-spec-change` | Porta de entrada: classifica o pedido; implementa o pequeno, escreve o plano do médio e do grande |
+| `/agent-spec-build` | Implementa um plano aprovado, passo a passo, e o apaga no fim |
 
 O build coordena três agents: `agent-spec-executor` (implementa um passo),
 `agent-spec-reviewer` (roda os testes e revisa o diff) e `agent-spec-security-reviewer` (só nos
@@ -81,9 +94,9 @@ passos de risco alto).
 
 | Skill | Para quê |
 |---|---|
-| `/agent-spec-guide` | Tirar dúvidas: qual skill rodar, próximo passo de um spec, como funciona o build |
+| `/agent-spec-guide` | Tirar dúvidas: qual skill rodar, próximo passo de um plano, onde fica cada documento |
 | `/agent-spec-adr` | Registrar uma decisão de arquitetura que vale para o projeto todo |
-| `/agent-spec-design-system` | Criar ou atualizar o design system do produto (opcional) |
+| `/agent-spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface) |
 | `/agent-spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
 | `/agent-spec-readme` | Gerar ou completar o `README.md` |
 | `/agent-spec-claude-md` | Gerar ou enxugar o `CLAUDE.md` |

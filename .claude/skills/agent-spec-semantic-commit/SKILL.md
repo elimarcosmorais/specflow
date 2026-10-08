@@ -16,7 +16,7 @@ Transformar **todas as mudanças do projeto** em um commit (ou mais de um, se mi
 padrão [Conventional Commits](https://www.conventionalcommits.org/), com a mensagem em português,
 e enviá-lo ao remoto (`push`). Ao terminar, o `git status` fica limpo.
 
-No nosso fluxo, o `agent-spec-change` (mudança pequena) e o `agent-spec-build` (spec) **não
+No nosso fluxo, o `agent-spec-change` (mudança pequena) e o `agent-spec-build` (plano) **não
 commitam**: o commit é do usuário, e esta skill é a forma de fazê-lo.
 
 # Regras
@@ -95,7 +95,7 @@ alterado), marque com `!` depois do tipo/escopo **e** explique no rodapé `BREAK
 [corpo: o quê e por quê, não o como]
 
 [rodapé: BREAKING CHANGE: <o que quebra e como migrar>]
-[rodapé: Refs: docs/specs/<NNN-nome>.md]
+[rodapé: Refs: plano AAAA-MM-DD-<slug>]
 ```
 
 **Assunto (primeira linha):**
@@ -110,9 +110,10 @@ alterado), marque com `!` depois do tipo/escopo **e** explique no rodapé `BREAK
 **Corpo:** só quando o assunto não basta (o motivo não é óbvio, ou há um efeito colateral que vale
 registrar). Linhas de até 72 caracteres, separado do assunto por uma linha em branco.
 
-**Rodapé `Refs:`** — quando o commit implementa um spec (ex.: logo depois do
-`agent-spec-build`, ou quando o stage contém um spec de `docs/specs/`), cite-o:
-`Refs: docs/specs/003-login.md`. É o que liga o histórico do git ao spec.
+**Rodapé `Refs:`** — quando o commit fecha um plano (o stage apaga um arquivo de
+`docs/plans/`, como o `agent-spec-build` deixa no fim), cite-o pelo nome:
+`Refs: plano 2026-10-08-login-com-google`. É o que liga o histórico do git ao plano, que só
+continua existindo no git.
 
 ### Exemplos
 

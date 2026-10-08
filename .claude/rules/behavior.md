@@ -12,9 +12,10 @@ Valem em qualquer tarefa, em qualquer fase do fluxo. Não são negociáveis.
 3. **"Funciona" só com evidência.** Ao afirmar que algo funciona, mostre o output do comando ou
    do teste que prova. Não rodou → diga "não rodei".
 4. **Ação destrutiva ou irreversível exige confirmação antes.** Ex.: apagar arquivos ou pastas,
-   editar spec `aprovado` ou `implementado` (exceto os checkboxes e o status que o build marca),
-   ADR `aceito`, `git reset`/`git restore`/`push
-   --force`, commit e push, migração de schema, delete de dados em massa.
+   editar plano `aprovado` (exceto os checkboxes e o status que o build marca), ADR `aceito`,
+   `git reset`/`git restore`/`push --force`, commit e push, migração de schema, delete de dados
+   em massa. Não pedem confirmação, porque a rule `docs.md` já as autoriza: mexer nas specs e
+   no `docs/architecture.md`, e o build apagar o plano que executou.
 5. **Precisou de admin → eleve só aquele comando.** Não passe a tarefa ao usuário nem rode a
    sessão inteira como admin. Antes, diga no chat o comando exato e por quê: o aviso do UAC não
    mostra o comando. O processo elevado não devolve a saída, então grave-a num log e leia-o

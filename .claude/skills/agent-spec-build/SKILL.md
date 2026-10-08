@@ -1,7 +1,7 @@
 ---
 name: agent-spec-build
-description: Executa um spec aprovado (docs/specs/NNN-<nome>.md, gerado pelo /agent-spec-change) passo a passo - entrega cada passo do Plano a um agent-spec-executor novo, manda o agent-spec-reviewer conferir (e o agent-spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no spec e deixa o código aprovado em stage, sem commitar. Só o que bloqueia volta para correção; sugestões aparecem no relatório final e só vão para o backlog se o usuário quiser. Coordena; não escreve código.
-argument-hint: "[caminho do spec (opcional)] [N (opcional): só esse passo]"
+description: Executa um plano aprovado (docs/plans/AAAA-MM-DD-<slug>.md, gerado pelo /agent-spec-change) passo a passo - entrega cada passo a um agent-spec-executor novo, manda o agent-spec-reviewer conferir (e o agent-spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no plano e deixa o código e as specs aprovados em stage, sem commitar. No fechamento, com tudo verde, apaga o plano. Só o que bloqueia volta para correção; sugestões aparecem no relatório final. Coordena; não escreve código.
+argument-hint: "[caminho do plano (opcional)] [N (opcional): só esse passo]"
 disable-model-invocation: true
 ---
 
@@ -13,16 +13,17 @@ sequencial, sem cerimônia.
 
 # Objetivo
 
-Transformar o Plano de um spec aprovado em código implementado, testado e revisado, um passo
-por vez.
+Transformar os passos de um plano aprovado em código implementado, testado, revisado e
+documentado nas specs, um passo por vez.
 
-- **Entrada:** `docs/specs/NNN-<nome>.md` com `status: aprovado`.
-- **Saída:** o código de cada passo em **stage** (`git add`), sem commit; o "Pronto quando" de
-  cada passo marcado no spec; `status: implementado` quando todos terminam.
+- **Entrada:** `docs/plans/AAAA-MM-DD-<slug>.md` com `status: aprovado`.
+- **Saída:** o código e as specs de cada passo em **stage** (`git add`), sem commit; o "Pronto
+  quando" de cada passo marcado no plano; o plano **apagado** quando todos terminam (o plano é
+  temporário: rule `docs.md`).
 
 | Quem | Faz |
 |---|---|
-| esta skill | escolhe o passo, chama os agents, decide, marca o spec, `git add` |
+| esta skill | escolhe o passo, chama os agents, decide, marca o plano, `git add`, apaga o plano |
 | `agent-spec-executor` | implementa um passo (código + testes) ou corrige o que o revisor apontou |
 | `agent-spec-reviewer` | roda os testes e revisa o diff do passo; não edita nada; devolve JSON |
 | `agent-spec-security-reviewer` | só nos passos `Risco: alto`: procura como abusar do código; devolve JSON |
@@ -36,14 +37,15 @@ por vez.
 
 1. **Nunca implemente.** Código e testes são do executor. Você só roda git e, no fechamento, os
    comandos de teste e build.
-2. **Um passo por vez**, na ordem do Plano.
-3. **Só bloqueante volta para correção.** Sugestão nunca segura um passo e nunca vira arquivo
-   sozinha: aparece no relatório final, e só vai para `docs/backlog.md` se o usuário escolher.
+2. **Um passo por vez**, na ordem do plano.
+3. **Só bloqueante volta para correção.** Sugestão nunca segura um passo e nunca vira arquivo:
+   aparece no relatório final, e o usuário decide se faz algo com ela.
 4. **No máximo 3 tentativas por passo** (a execução + 2 correções). A última correção roda em
    Opus. Na 3ª reprovação, pare.
 5. **Nunca commite.** Só `git add`. O commit é do usuário.
-6. **Não mude o plano.** No spec você altera só os checkboxes do "Pronto quando" e o `status`.
-   Passo errado ou faltando → pare e diga; o usuário ajusta o spec (ou roda `/agent-spec-change`).
+6. **Não mude o plano.** Nele você altera só os checkboxes do "Pronto quando" e o `status`, e o
+   apaga no fechamento (Etapa 3). Passo errado ou faltando → pare e diga; o usuário ajusta o
+   plano (ou roda `/agent-spec-change`).
 7. **Quem pergunta ao usuário é você.** Quando o executor responde `parada`, faça a pergunta dele
    com `AskUserQuestion` e chame-o de novo com a resposta (não conta como tentativa).
 8. **Terminal enxuto.** Nada de diff ou código no chat: uma linha de log por evento e o
@@ -53,15 +55,14 @@ por vez.
 
 ## Etapa 0 — Entrada
 
-- **Caminho de um spec** → use-o. Com um número (`3`) → execute **só esse passo** (os anteriores
+- **Caminho de um plano** → use-o. Com um número (`3`) → execute **só esse passo** (os anteriores
   precisam estar concluídos).
-- **Vazio** → procure em `docs/specs/*.md` os specs `aprovado`. Um só → confirme. Vários →
-  pergunte qual. Nenhum → diga "Nenhum spec aprovado" e oriente `/agent-spec-change`.
+- **Vazio** → procure em `docs/plans/*.md` os planos `aprovado`. Um só → confirme. Vários →
+  pergunte qual. Nenhum → diga "Nenhum plano aprovado" e oriente `/agent-spec-change`.
 
 ## Etapa 1 — Verificar
 
 1. **Status.** `rascunho` → pergunte "marcar como `aprovado` e seguir" ou "parar para revisar".
-   `implementado` → avise e pare.
 2. **ADR pendente.** A seção Decisões pede uma ADR que não existe em `docs/adr/` (ou existe como
    `proposto`) → pergunte "seguir assim mesmo" ou "parar e registrar a ADR".
 3. **Git.** `git rev-parse --is-inside-work-tree` falhou → pare: a revisão depende do `git diff`.
@@ -88,7 +89,7 @@ por vez.
 Chame o `agent-spec-executor`:
 
 ```
-Implemente o passo <N> do spec <caminho do spec>.
+Implemente o passo <N> do plano <caminho do plano>.
 
 Passos já concluídos: <N — nome> … | nenhum
 ```
@@ -108,7 +109,7 @@ Chame o `agent-spec-reviewer`. Passo `Risco: alto` → chame **na mesma mensagem
 `agent-spec-security-reviewer`. Os dois recebem:
 
 ```
-Revise o passo <N> do spec <caminho do spec>. Tentativa <T> de 3.
+Revise o passo <N> do plano <caminho do plano>. Tentativa <T> de 3.
 
 Arquivos novos: <lista>
 Arquivos modificados: <lista>
@@ -133,7 +134,7 @@ da segurança. Os testes são os do revisor.
 - **`reprovado`**, tentativa 1 ou 2 → chame o executor em modo correção e volte ao 2.3:
 
   ```
-  O passo <N> do spec <caminho do spec> foi REPROVADO na revisão (tentativa <T> de 3). Corrija.
+  O passo <N> do plano <caminho do plano> foi REPROVADO na revisão (tentativa <T> de 3). Corrija.
 
   ## Bloqueantes
   - [P1] <titulo> — `<arquivo>:<linha>`
@@ -153,25 +154,29 @@ da segurança. Os testes são os do revisor.
 ### 2.6 Fechar o passo
 
 1. `git add -- <arquivos tocados pelo passo>`.
-2. No spec, marque `[x]` nos itens do "Pronto quando" que a revisão confirmou.
+2. No plano, marque `[x]` nos itens do "Pronto quando" que a revisão confirmou.
 3. Log: `[passo 2] concluído · staged`
 
-## Etapa 3 — Fechar o spec
+## Etapa 3 — Fechar o plano
 
 Quando todos os passos estiverem concluídos:
 
-1. Rode a suíte de testes e o build do projeto. Falhou → mostre no relatório e não marque o spec
-   como implementado.
+1. Rode a suíte de testes e o build do projeto. Falhou → mostre no relatório e não apague o
+   plano.
 2. CAs marcados `(manual: …)` → não rode: liste-os no relatório, com o roteiro, para o usuário.
    Comando que só pede admin → rode você, elevando só ele (`behavior.md`, regra 5).
-3. Tudo passou → `status: implementado` no spec.
+3. Tudo passou → **apague o plano**: `git rm -q -- <plano>` se ele está no git, senão apague o
+   arquivo. A remoção fica em stage e entra no mesmo commit do código, como prevê a rule
+   `docs.md` (por isso não pede confirmação). Antes, confira que as "Specs afetadas" do
+   cabeçalho estão no stage; faltou alguma → mostre no relatório e não apague.
 
-Execução parcial (parou num passo, ou rodou só um) → pule esta etapa.
+Execução parcial (parou num passo, ou rodou só um) → pule esta etapa: o plano fica, com os
+checkboxes marcados, para a próxima sessão retomar.
 
 ## Etapa 4 — Relatório
 
 ```
-## Build — NNN-<nome>
+## Build — <slug>
 Passos concluídos: X/Y
 
 | Passo | Resultado | Tentativas |
@@ -180,6 +185,8 @@ Passos concluídos: X/Y
 | 2 — <nome> | parado: <motivo> | 3 |
 
 Testes e build: ok | <falha>
+Specs: <arquivos atualizados> | nenhuma
+Plano: apagado (remoção em stage) | mantido: <motivo>
 A conferir por você: <CA-2: abrir a tela X e …> | nada
 Pendências do executor: <decisões que valem saber> | nenhuma
 
@@ -189,11 +196,6 @@ Sugestões dos revisores (não bloquearam):
 O código está em stage, sem commit. Revise com `git diff --staged` e commite com
 `/agent-spec-semantic-commit`.
 ```
-
-Havendo sugestões, pergunte com `AskUserQuestion` (`multiSelect`, até 4 por pergunta) quais
-anotar em `docs/backlog.md`, no formato descrito no `agent-spec-change`. A opção recomendada é
-**nenhuma**: anote só o que você mesmo faria depois. Arquivo não existe → crie com o cabeçalho
-`# Backlog`.
 
 # Entrada
 

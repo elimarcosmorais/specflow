@@ -5,7 +5,7 @@ status: proposto   # proposto | aceito | substituído
 # ADR NNN — <título da decisão>
 
 - **Data:** AAAA-MM-DD
-- **Origem:** [<spec ou design system>](../specs/<arquivo>.md) — <seção> | conversa
+- **Origem:** plano `AAAA-MM-DD-<slug>` (Decisões) | design system | conversa
 - **Substitui:** [ADR NNN](NNN-<titulo>.md) | nenhuma
 - **Substituída por:** nenhuma
 
@@ -13,7 +13,7 @@ status: proposto   # proposto | aceito | substituído
 
 <O problema técnico que pede uma decisão e as restrições que pesam nela, em 3 a 5 linhas.>
 
-<!-- LLM-ONLY: foco na questão técnica. Não repita o contexto de produto da feature: a Origem aponta para ele. -->
+<!-- LLM-ONLY: foco na questão técnica. Não repita o contexto de produto da feature: ele está na spec do módulo. A Origem não leva link: o plano é apagado depois do build e continua só no git. -->
 
 ## Decisão
 
