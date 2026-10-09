@@ -102,5 +102,6 @@ passos de risco alto).
 | `/agent-spec-claude-md` | Gerar ou enxugar o `CLAUDE.md` |
 | `/agent-spec-rule-create` | Definir as convenções de um tema (banco, erros HTTP…) em uma rule |
 | `/agent-spec-rule-curate` | Decidir se um item vira regra, e auditar as rules |
+| `/agent-windows-mcp` | Configurar o Windows-MCP para o agente ver e operar a tela (só Windows) |
 
 Argumentos de cada comando: [mapa de roteamento](.claude/skills/agent-spec-guide/SKILL.md#5-mapa-de-roteamento).

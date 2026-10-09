@@ -118,6 +118,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | Criar, auditar ou enxugar o CLAUDE.md | `/agent-spec-claude-md [pasta]` |
 | Definir as convenções de um tema (banco, erros HTTP…) | `/agent-spec-rule-create "<tema>"` |
 | Decidir se algo vira regra, ou auditar as rules | `/agent-spec-rule-curate "<item>"` · `/agent-spec-rule-curate auditar` |
+| Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/agent-windows-mcp [ferramentas extras]` |
 
 Documentar ou reorganizar specs não tem comando: o agente faz quando precisa (rule `docs.md`).
 
@@ -151,6 +152,8 @@ docs/
 - Nomes em kebab-case, sem acentos. ADR com numeração de três dígitos, sequencial, nunca
   reaproveitada; plano com data, porque é apagado. Pastas só são criadas quando usadas.
 - Skills, agents e rules com nome em inglês (prefixo `agent-spec-`); conteúdo em português.
+  Exceção: `agent-windows-mcp`, que configura uma ferramenta do ambiente e não faz parte do
+  fluxo de specs.
 
 **Ficou de fora de propósito** (o fluxo antigo de 8 fases foi abandonado por ser pesado demais):
 documento por fase (pre-refinement, PRD, tech alignment, task plan), aprovação entre fases,

@@ -33,6 +33,7 @@ Skills **utilitárias**:
 | CLAUDE.md do projeto | `agent-spec-claude-md` |
 | Rules de um tema | `agent-spec-rule-create` |
 | Curadoria das rules | `agent-spec-rule-curate` |
+| Windows-MCP: agente vê e opera a tela (só Windows) | `agent-windows-mcp` |
 
 ## Ao alterar o framework
 
