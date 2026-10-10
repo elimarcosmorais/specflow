@@ -37,7 +37,9 @@ você configura e verifica; quem usa é a próxima.
    `Snapshot`). `PowerShell`, `Registry`, `FileSystem`, `Process`, `Clipboard`,
    `Scrape` e as demais ficam de fora: dão ao agente um segundo caminho, sem as travas de
    permissão do Claude Code, para rodar comando e mexer no sistema. Liberar uma delas só com
-   pedido explícito do usuário (`$ARGUMENTS` ou na conversa), dizendo o risco.
+   pedido explícito do usuário (`$ARGUMENTS` ou na conversa), dizendo o risco. A partir da
+   `0.8.8` o pacote acrescenta o `ControlStatus` mesmo com `--tools`: é só leitura e não fere
+   esta regra.
 4. **Telemetria desligada:** `ANONYMIZED_TELEMETRY=false` no `env` do servidor.
 5. **Junte, não sobrescreva.** `.mcp.json` e `settings.local.json` podem já ter outros servidores
    e chaves (`permissions`, por exemplo). Leia antes e acrescente só o que falta.
@@ -64,7 +66,10 @@ A versão do `windows-mcp` depende do Python disponível:
 | Python | Versão | Observação |
 |---|---|---|
 | 3.13 | `0.8.5` | testada; a `0.8.7` passou a exigir Python 3.14 |
-| 3.14 | a mais nova | confirme na Etapa 5; se falhar, volte para a `0.8.5` com 3.13 |
+| 3.14 | a mais nova | `0.8.8` testada; confirme na Etapa 5; se falhar, volte para a `0.8.5` com 3.13 |
+
+Versão mais nova e Python exigido: `https://pypi.org/pypi/windows-mcp/json` (`info.version` e
+`info.requires_python`).
 
 O projeto já tem `windows-mcp` no `.mcp.json` → mantenha a versão e o Python dele, a não ser que
 o usuário peça para atualizar ou que a Etapa 5 falhe.
@@ -83,8 +88,8 @@ Na raiz do projeto. Sem o arquivo, crie; com ele, acrescente ou corrija só a en
       "args": [
         "--no-python-downloads",
         "--python",
-        "3.13",
-        "windows-mcp@0.8.5",
+        "3.14",
+        "windows-mcp@0.8.8",
         "serve",
         "--tools",
         "Screenshot,Snapshot,Click,Type,Scroll,Move,Shortcut,Wait,App"
@@ -115,6 +120,10 @@ Para uso local com o Claude Code, fique no `stdio` padrão.
 É configuração pessoal (aprova o servidor só para este usuário). Se o `.gitignore` não cobre
 `.claude/settings.local.json`, acrescente a linha.
 
+O `.mcp.json` vai para o git. Se o `.gitignore` o ignora (o starter kit do Laravel traz
+`/.mcp.json`), avise o usuário e tire a linha só com o ok dele. Confira com
+`git check-ignore -v .mcp.json`.
+
 Se o projeto exige uma quebra de linha (ex.: LF), grave os arquivos novos nela.
 
 ## Etapa 5 — Verificar
@@ -127,14 +136,19 @@ execução pode demorar: o `uvx` baixa o pacote para o cache (`%LOCALAPPDATA%\uv
 python -I .claude/skills/agent-windows-mcp/verificar.py .mcp.json
 ```
 
-Saída esperada (exit 0):
+Saída esperada (exit 0, com a `0.8.8`):
 
 ```
 server: windows-mcp 4.1.0
-tools (9): App, Click, Move, Screenshot, Scroll, Shortcut, Snapshot, Type, Wait
+tools (10): App, Click, ControlStatus, Move, Screenshot, Scroll, Shortcut, Snapshot, Type, Wait
 ```
 
-- A lista não bate com o `--tools` → corrija o `.mcp.json` e rode de novo.
+A `0.8.5` lista as mesmas, sem o `ControlStatus` (9 ferramentas).
+
+- `ControlStatus` a mais é esperado a partir da `0.8.8`: o pacote o mantém ligado mesmo com
+  `--tools` e não há opção para tirá-lo. Ele só lê quem controla a área de trabalho (ver
+  "Disputa pelo mouse e teclado" nas Dicas de uso). Avise o usuário.
+- Fora o `ControlStatus`, a lista não bate com o `--tools` → corrija o `.mcp.json` e rode de novo.
 - O projeto já tinha `WaitFor` no `--tools` → tire (Regra 3).
 - `No solution found when resolving tool dependencies` → a versão do pacote não aceita esse
   Python: volte à Etapa 2.
@@ -149,8 +163,11 @@ Mostre o output da Etapa 5 e diga o que o usuário precisa fazer, porque só ele
 3. se nada aparecer e as ferramentas não vierem, rodar `claude` num terminal na pasta do projeto
    e aceitar por lá.
 
-Primeiro teste na sessão nova: `Snapshot` com `use_vision: true` e `use_annotation: false`, que
-devolve a imagem da tela e a lista de janelas.
+Diga também como testar na sessão nova, em termos do usuário (ele não chama a ferramenta; pede
+ao agente): basta escrever algo como "tire um print da minha tela e liste as janelas abertas".
+O agente chama o `Snapshot` com `use_vision: true` (inclui a imagem) e `use_annotation: false`
+(sem os retângulos coloridos que o padrão desenha em volta dos elementos). Se o modo de
+permissão da sessão pedir aprovação, o Claude Code pergunta antes de cada ferramenta nova.
 
 # Dicas de uso
 
@@ -172,6 +189,11 @@ O que os testes mostraram ao operar um app desktop com estas ferramentas:
   clique no ícone dela na barra de tarefas (`Click` nas coordenadas que o `Snapshot` mostra).
 - **Esperar a tela mudar.** Use `Wait` com alguns segundos e confira com um `Snapshot` (com
   `use_ui_tree: false` se bastar a lista de janelas). Não use `WaitFor`: ele travava o VS Code.
+- **Disputa pelo mouse e teclado (a partir da `0.8.8`).** Enquanto o agente opera, o pacote
+  assume o mouse e o teclado físicos e mostra um aviso na tela. Se o usuário mexer, o agente
+  perde o controle e só o retoma depois de uma espera sem uso. Ação recusada nesse meio-tempo →
+  consulte o `ControlStatus` (dono atual e segundos que faltam), espere com `Wait` e tente de
+  novo. Avise o usuário para não mexer enquanto o agente trabalha.
 - **Coordenadas.** Se a imagem vier reduzida, multiplique as coordenadas da imagem pela razão
   entre o tamanho real da tela e o da imagem antes de clicar.
 - **Mostrar o print ao usuário.** O resultado do `Snapshot`/`Screenshot` diz onde a imagem foi
