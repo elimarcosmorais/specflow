@@ -48,6 +48,8 @@ Leia o plano (é curto) e o passo. Depois, nesta ordem:
    passo**: consequência legítima (chamador de uma assinatura que mudou, teste) → ok; mudança
    alheia ao passo → bloqueante.
 2. **Testes.** Rode a suíte inteira (não só a do passo) e o build/lint do "Pronto quando".
+   Passo com tela → rode também o teste de tela da seção Teste visual do `CLAUDE.md`, que costuma
+   ficar fora da suíte padrão (`php artisan dusk`, `npx playwright test`).
    Qualquer teste falhando, inclusive de outra área → bloqueante. Não conseguiu rodar → bloqueante,
    com o motivo.
 3. **"Pronto quando".** Para cada item de teste, ache o teste que o implementa e confira que ele
@@ -60,7 +62,8 @@ Leia o plano (é curto) e o passo. Depois, nesta ordem:
    próprio teste plantou no mock; teste apagado ou enfraquecido sem `SUT_IS_CORRECT_BECAUSE:`;
    espera fixa (`sleep`), dependência de ordem entre testes, relógio ou aleatório sem controle;
    só o caminho feliz quando o plano define o caso de erro; ação sem asserção ou asserção que
-   nunca falha; símbolo de produção criado só para o teste.
+   nunca falha; símbolo de produção criado só para o teste; imagem de referência (snapshot de
+   tela, golden) atualizada sem o plano pedir aquela mudança visual.
 5. **Corretude.** O "Faz" foi feito como descrito? Erros tratados nos pontos de falha, entradas
    validadas, recursos fechados? Nomes, códigos de erro, mensagens e contratos batem com o plano?
    - **Telas** (só se o passo tem tela): estado do plano faltando ou diferente → bloqueante;

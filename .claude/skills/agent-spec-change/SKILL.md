@@ -85,8 +85,9 @@ reclassifique.
 2. **Implemente** a menor mudança que resolve bem, com o teste que a cobre quando o projeto tem
    testes para aquela camada.
 3. **Prove.** Rode os comandos de teste, build e lint do projeto (do `CLAUDE.md` ou do
-   `README.md`) que cobrem o que mudou. Mudança visual que você não conferiu na tela → diga
-   "não conferi na tela".
+   `README.md`) que cobrem o que mudou. Mudança visual → confira-a como manda a seção Teste
+   visual do `CLAUDE.md` (o teste de tela ou o MCP que ela indica). Sem a seção, ou sem ter
+   conferido → diga "não conferi na tela".
 4. **Documente.** A mudança alterou o que uma spec descreve, ou criou algo que merece uma? Edite
    a spec agora, sem perguntar (rule `docs.md`).
 5. **Apareceu uma decisão** (regra 2)? Pare, mostre o que já mudou e pergunte: "promover para
@@ -119,7 +120,9 @@ Não commite.
    `/agent-spec-adr "<título>"`, a rodar antes de aprovar o plano.
 4. **Telas.** Use os componentes e tokens do design system (`docs/design-system.md` e os
    arquivos de `docs/design/` que ele indica). Componente ou token que ainda não existe →
-   diga no plano que o passo o acrescenta ao design system.
+   diga no plano que o passo o acrescenta ao design system. O `CLAUDE.md` tem a seção Teste
+   visual → o passo que muda uma tela leva o teste de tela no "Pronto quando"; olhar a tela só
+   vira CA `(manual: …)` quando o projeto não tem como o agente conferir.
 5. **Specs afetadas.** Liste as specs que a mudança cria ou altera, e o `docs/architecture.md`
    se a arquitetura base muda. Cada uma entra em "Arquivos" e no "Pronto quando" do passo que
    muda aquele comportamento: a documentação anda com o código, no mesmo diff.

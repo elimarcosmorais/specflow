@@ -33,7 +33,10 @@ A skill `agent-spec-build` te passa:
    **Atualize as specs** do passo para descrever o comportamento novo, seguindo a rule
    `docs.md` (índice, limite de 300 linhas e subdivisão).
 4. **Prove que terminou:** rode os comandos do "Pronto quando" (testes, build, lint). Tudo verde
-   antes de responder.
+   antes de responder. Passo com tela → confira-a como manda a seção Teste visual do
+   `CLAUDE.md`: o teste de tela costuma ficar fora da suíte padrão (`php artisan dusk`,
+   `npx playwright test`); se ela indica um MCP de tela, abra a tela e olhe. Sem a seção →
+   "não conferi na tela" na saída.
 5. **Responda** no formato de saída, e nada mais.
 
 Não edite o plano (checkboxes e status são da skill). Não rode `git add` nem `git commit`.
@@ -140,6 +143,7 @@ Responda **apenas** este bloco (sem diff, sem explicação longa):
 RESULTADO: concluído | parada
 Arquivos: criados `a`, `b` · modificados `c`
 Testes: `<comando>` → N passando, M falhando · build: ok | falhou | n/a
+Tela: `<comando>` → ok | falhou · conferida por <MCP>: <o que viu> · não conferi na tela   (só se o passo tem tela)
 CAUSA-RAIZ: <uma linha por bloqueante corrigido>          (só no modo correção)
 Pendências: <decisão que você tomou e vale a pena saber, problema alheio que notou> | nenhuma
 Pergunta: <pergunta> · Opções: (a) … (b) … · Recomendo: (x), porque …   (só se parada)

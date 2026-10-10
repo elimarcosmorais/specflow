@@ -45,6 +45,14 @@ pelos tokens de src/theme/tokens.ts", "botão novo = variant do Button, não com
 Nunca "deixe moderno". Se existe docs/design-system.md, aponte para ele em vez de repetir. -->
 - {{REGRA_DE_UI}}
 
+## Teste visual
+<!-- [OPCIONAL · só projeto com interface] Como o agente confere uma mudança de tela: a
+ferramenta (a do repo ou a de teste-visual.md), o comando, onde o teste nasce e a regra "toda
+mudança de tela passa por aqui antes de dizer que terminou". Ex.: "tela nova ou alterada → teste
+Dusk em tests/Browser/ e `php artisan dusk` verde; na falha, abrir o print de
+tests/Browser/screenshots/". -->
+- {{REGRA_DE_TESTE_VISUAL}}
+
 ## Pronto significa
 <!-- [OPCIONAL · projeto com testes ou CI] O que precisa passar antes de dizer que terminou, com
 os comandos reais: "testes verdes (`make test`) e lint limpo (`make lint`)". -->

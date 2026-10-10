@@ -1,6 +1,6 @@
 ---
 name: agent-spec-claude-md
-description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e, se já existe CLAUDE.md, enxuga e complementa com edições pontuais, mostrando o diff antes de gravar. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md), convenções de um tema inteiro (agent-spec-rule-create), decidir se um item solto vira regra (agent-spec-rule-curate) nem settings, hooks ou permissões.
+description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão, e em projeto com interface, como o agente confere uma mudança de tela (ex.: Dusk no Laravel, Playwright na web, Windows-MCP no desktop Windows) - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e, se já existe CLAUDE.md, enxuga e complementa com edições pontuais, mostrando o diff antes de gravar. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md), convenções de um tema inteiro (agent-spec-rule-create), decidir se um item solto vira regra (agent-spec-rule-curate) nem settings, hooks ou permissões.
 argument-hint: "[pasta do projeto (opcional; padrão: raiz do repositório)]"
 ---
 
@@ -87,7 +87,9 @@ mostrar ao usuário de onde veio cada regra (Etapa 5). Olhe por três ângulos:
   (scripts, `Makefile`, CI), variáveis de ambiente (`.env.example`).
 - **Estrutura:** layout de pastas e 1 ou 2 arquivos exemplares por camada → onde cada tipo de
   arquivo nasce, convenções de organização, código gerado que não se edita à mão. Tem interface
-  (componentes, CSS, tokens)? → habilita a seção UI.
+  (componentes, CSS, tokens, janelas)? → habilita as seções UI e Teste visual: procure a
+  ferramenta de teste de tela que o repo já usa e, sem nenhuma, a recomendada para a stack em
+  [teste-visual.md](teste-visual.md).
 - **Comportamento:** config de lint e testes, `git log` recente, rules já existentes → o que
   costuma quebrar e o que não usar.
 - **Documentos do framework**, se existirem: as specs (`docs/specs/README.md` e as que ele
@@ -103,6 +105,10 @@ Uma chamada de `AskUserQuestion`, com as perguntas agrupadas:
 - **Os anti-padrões que o time mais corrige em review** (até 3). Viram as regras negativas mais
   valiosas do arquivo, e quase nunca estão no código.
 - **A Visão em uma ou duas linhas**, com a sua proposta como opção recomendada.
+- **Teste visual** (só com interface e sem ferramenta no repo): a recomendada em
+  [teste-visual.md](teste-visual.md) como primeira opção, ou "sem teste visual por enquanto".
+  Web com Playwright e sem `@axe-core/playwright` → pergunte também se o teste checa
+  acessibilidade.
 - O que mais faltar: convenção de time que não vira lint, superfícies sensíveis, lib proibida.
 
 No idioma escolhido, traduza os títulos de seção e a prosa. Comandos, nomes de pacote e
@@ -112,8 +118,8 @@ identificadores nunca se traduzem.
 
 1. Parta do [template](template.md). Cada seção traz entre colchetes quando se aplica e se é
    `[OPCIONAL]`.
-2. **Remova** as seções que não se aplicam (UI num backend, "Pronto significa" sem testes) e as
-   que ficariam sem fato com fonte.
+2. **Remova** as seções que não se aplicam (UI e Teste visual num backend, "Pronto significa"
+   sem testes) e as que ficariam sem fato com fonte.
 3. **Preencha** cada `{{PLACEHOLDER}}` só com fatos que têm fonte (Regra 1), em bullets curtos.
 4. **Apague todos os comentários-guia** `<!-- -->`: são instrução para você, não para o agente.
 5. **Conte as linhas.** Passou de ~80 → corte prosa, regra óbvia da linguagem e seção fraca antes
@@ -142,6 +148,8 @@ Comandos extraídos de: <arquivos> (não executados)
 Varredura de {{ }} e <!-- -->: limpa
 behavior.md: <presente | ausente — copie a .claude/ do framework para o projeto>
 Convenções de área fora do CLAUDE.md: <tema → /agent-spec-rule-create "<tema>"> (ou: nenhuma)
+Teste visual: <ferramenta (no repo | a instalar → /agent-spec-change "instalar <ferramenta>")> (ou: sem interface)
+MCP de tela: <servidor no .mcp.json | a configurar → /agent-playwright-mcp (web) ou /agent-windows-mcp (desktop Windows)> (ou: sem interface)
 Próximo passo: revisar o CLAUDE.md e commitar → /agent-spec-semantic-commit
 ```
 
