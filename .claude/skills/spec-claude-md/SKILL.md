@@ -1,6 +1,6 @@
 ---
 name: spec-claude-md
-description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão, e em projeto com interface, como o agente confere uma mudança de tela (ex.: Dusk no Laravel, Playwright na web, Windows-MCP no desktop Windows) - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e, se já existe CLAUDE.md, enxuga e complementa com edições pontuais, mostrando o diff antes de gravar. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md), convenções de um tema inteiro (spec-rule-create), decidir se um item solto vira regra (spec-rule-curate) nem settings, hooks ou permissões.
+description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão, e em projeto com interface, como o agente confere uma mudança de tela (ex.: Dusk no Laravel, Playwright na web, Windows-MCP no desktop Windows) - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e grava direto, sem pedir confirmação: cria o CLAUDE.md se não existe ou, se existe, enxuga e complementa com edições pontuais. No fim, relata o que fez e a fonte de cada fato. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md), convenções de um tema inteiro (spec-rule-create), decidir se um item solto vira regra (spec-rule-curate) nem settings, hooks ou permissões.
 argument-hint: "[pasta do projeto (opcional; padrão: raiz do repositório)]"
 ---
 
@@ -30,7 +30,7 @@ Fronteiras:
   então fica com o transversal. Tema inteiro → `/spec-rule-create`; um item novo, depois que
   o `CLAUDE.md` existe → `/spec-rule-curate`.
 - **Specs, arquitetura, ADRs e design system** se apontam, não se copiam (`docs/specs/README.md`,
-  `docs/architecture.md`, `docs/adr/`, `docs/design-system.md`).
+  `docs/architecture.md`, `docs/adr/README.md`, `docs/design-system.md`).
 
 # Regras
 
@@ -48,8 +48,8 @@ Fronteiras:
    (perda de dado, falha de segurança); no resto, dê o porquê.
 5. **Só o que é deste projeto.** Nada que a linguagem ou o framework já impõem, nada de "boas
    práticas" genéricas, nada que já está em `.claude/rules/`.
-6. **CLAUDE.md existente se complementa, não se substitui.** Edições pontuais, com o diff mostrado
-   e aprovado antes de gravar (Etapa 5).
+6. **CLAUDE.md existente se complementa, não se substitui.** Edições pontuais, gravadas direto
+   (Etapa 5) e listadas uma a uma no relatório (Etapa 6).
 7. **Sem resto de template.** O arquivo final não tem nenhum `{{...}}` nem `<!-- -->`: ou a seção
    é preenchida com dado real, ou sai inteira.
 
@@ -84,7 +84,7 @@ de comportamento do framework: avise na Etapa 6 (não crie o arquivo).
 ## Etapa 2 — Ler o repositório
 
 Leia, não adivinhe. Anote a fonte (`arquivo:linha`) de cada fato encontrado: é ela que permite
-mostrar ao usuário de onde veio cada regra (Etapa 5). Olhe por três ângulos:
+mostrar ao usuário de onde veio cada regra (Etapa 6). Olhe por três ângulos:
 
 - **Configuração** (fatos mais firmes): linguagem e versão, framework e libs principais
   (manifest), gerenciador de pacotes (lockfile), comandos de install/dev/build/lint/test
@@ -108,7 +108,7 @@ mostrar ao usuário de onde veio cada regra (Etapa 5). Olhe por três ângulos:
 - **Comportamento:** config de lint e testes, `git log` recente, rules já existentes → o que
   costuma quebrar e o que não usar.
 - **Documentos do framework**, se existirem: as specs (`docs/specs/README.md` e as que ele
-  indica) e o `docs/architecture.md` alimentam a Visão; eles, `docs/adr/` e
+  indica) e o `docs/architecture.md` alimentam a Visão; eles, `docs/adr/README.md` e
   `docs/design-system.md` viram links.
 
 ## Etapa 3 — Perguntar só o que o repo não responde
@@ -138,37 +138,37 @@ identificadores nunca se traduzem.
 3. **Preencha** cada `{{PLACEHOLDER}}` só com fatos que têm fonte (Regra 1), em bullets curtos.
 4. **Apague todos os comentários-guia** `<!-- -->`: são instrução para você, não para o agente.
 5. **Conte as linhas.** Passou de ~80 → corte prosa, regra óbvia da linguagem e seção fraca antes
-   de mostrar. Convenções de uma área só também saem (vão para uma rule por área; liste o tema na
+   de gravar. Convenções de uma área só também saem (vão para uma rule por área; liste o tema na
    Etapa 6).
 
-## Etapa 5 — Mostrar e gravar
+## Etapa 5 — Gravar
 
-Mostre ao usuário, antes de gravar:
+Grave **direto, sem pedir confirmação**: rodar a skill já é a autorização. Modo gerar → crie o
+`CLAUDE.md`; modo complementar → aplique as edições pontuais no arquivo atual (o `git diff`
+mostra depois exatamente o que mudou).
 
-- o **diff** (modo gerar: o arquivo novo inteiro; modo complementar: só as edições);
-- a **lista de fontes**: cada fato do arquivo com a fonte dele (`package.json:12`, `Makefile:5`,
-  `usuário`). É onde o usuário pega um fato errado antes de virar regra;
-- a linha **MCP de tela** da Etapa 6, sempre que o projeto tem interface. Quando ela recomenda
-  uma skill (servidor inativo ou a configurar), o usuário precisa ver isso aqui, porque pode
-  não aprovar o diff e nunca chegar à Etapa 6.
+Depois, **faça a varredura final**: Grep por `\{\{|<!--` no `CLAUDE.md`. Sobrou algo → resolva e
+repita até zerar.
 
-Grave **só depois do OK**. Depois, **faça a varredura final**: Grep por `\{\{|<!--` no
-`CLAUDE.md`. Sobrou algo → resolva e repita até zerar.
+## Etapa 6 — Relatar
 
-## Etapa 6 — Entregar
-
-Mostre **apenas**:
+Mostre **apenas** o relatório. As **Fontes** são onde o usuário pega um fato errado antes que o
+agente confie nele, por isso nunca saem; as **Edições** só aparecem no modo complementar.
 
 ```
-CLAUDE.md: <caminho> (gerado | complementado: <seções alteradas>) · <N> linhas
+CLAUDE.md: <caminho> (gerado | complementado) · <N> linhas
 Idioma: <pt-BR | English>
+Edições:
+  - <seção>: <acrescentada | reescrita | corrigida | cortada> — <motivo em poucas palavras>
+Fontes:
+  - <arquivo:linha | usuário>: <fatos que saíram dele>
 Comandos extraídos de: <arquivos> (não executados)
 Varredura de {{ }} e <!-- -->: limpa
 behavior.md: <presente | ausente — copie a .claude/ do framework para o projeto>
 Convenções de área fora do CLAUDE.md: <tema → /spec-rule-create "<tema>"> (ou: nenhuma)
 Teste visual: <ferramenta (no repo | a instalar → /spec-change "instalar <ferramenta>")> (ou: sem interface)
 MCP de tela: <servidor ativo | declarado mas inativo nesta sessão → /spec-windows-mcp ou /spec-playwright-mcp (reativa e verifica) | a configurar → /spec-playwright-mcp (web) ou /spec-windows-mcp (desktop Windows), que já o registra no CLAUDE.md> (ou: sem interface)
-Próximo passo: revisar o CLAUDE.md e commitar → /spec-semantic-commit
+Próximo passo: revisar o CLAUDE.md (git diff CLAUDE.md) e commitar → /spec-semantic-commit
 ```
 
 # Entrada

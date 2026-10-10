@@ -1,6 +1,6 @@
 ---
 name: spec-readme
-description: Utilitário do framework (transversal). Gera ou atualiza o README.md de um projeto - a documentação para humanos (quem chega quer saber o que é, por que existe e como rodar) - a partir de um template único, com seções por tipo de projeto (lib, cli, app, service). Extrai do repositório os comandos reais e os fatos, pergunta só o que o repo não responde (sempre o idioma) e, se já existe README, audita e complementa com edições pontuais, mostrando o diff antes de gravar. Usar quando o usuário pedir para criar, gerar, melhorar ou atualizar o README, ou para documentar o projeto para pessoas (dev novo, usuário, contribuidor). Não serve para CLAUDE.md, rules ou instruções de agente.
+description: Utilitário do framework (transversal). Gera ou atualiza o README.md de um projeto - a documentação para humanos (quem chega quer saber o que é, por que existe e como rodar) - a partir de um template único, com seções por tipo de projeto (lib, cli, app, service). Extrai do repositório os comandos reais e os fatos, pergunta só o que o repo não responde (sempre o idioma) e grava direto, sem pedir confirmação: cria o README se não existe ou, se existe, audita e complementa com edições pontuais. No fim, relata o que fez e a fonte de cada fato. Usar quando o usuário pedir para criar, gerar, melhorar ou atualizar o README, ou para documentar o projeto para pessoas (dev novo, usuário, contribuidor). Não serve para CLAUDE.md, rules ou instruções de agente.
 argument-hint: "[pasta do projeto (opcional; padrão: raiz do repositório)]"
 ---
 
@@ -31,8 +31,8 @@ errado.
    inventado é o pior defeito que um README pode ter: o primeiro que falha destrói a confiança
    no resto.
 2. **Nunca invente feature, versão ou licença.** Extraia do repo ou pergunte.
-3. **README existente se complementa, não se substitui.** Edições pontuais, com o diff mostrado
-   e aprovado antes de gravar (Etapa 1).
+3. **README existente se complementa, não se substitui.** Edições pontuais, gravadas direto
+   (Etapa 4) e listadas uma a uma no relatório (Etapa 5).
 4. **Aponte, não copie.** Documentação extensa (API completa, ADRs, specs) vira link com um
    resumo de uma linha; cópia desatualiza.
 5. **Sem resto de template.** O arquivo final não tem nenhum `{{...}}` nem `<!-- -->`: ou a seção
@@ -55,7 +55,7 @@ A pasta do projeto é `$ARGUMENTS`; vazio → a raiz do repositório. Procure `R
   - seção que falta (sem "Sobre", sem comando de instalação real) → acrescente;
   - o que já está bom → mantenha, inclusive a ordem e o idioma.
 
-  Mostre o diff das mudanças e grave só depois do OK. Recomeçar do zero só se o usuário pedir.
+  Recomeçar do zero só se o usuário pedir.
 
 **Repositório com vários projetos** (ex.: `packages/*`, ou um app numa subpasta): o README da raiz
 apresenta o repositório e lista os projetos, com link para o README de cada um. Cada projeto tem o
@@ -63,7 +63,8 @@ seu README, gerado numa execução separada desta skill.
 
 ## Etapa 2 — Ler o repositório
 
-Leia, não adivinhe:
+Leia, não adivinhe. Anote a fonte (`arquivo:linha`) de cada fato encontrado: é ela que permite
+mostrar ao usuário de onde veio cada informação (Etapa 5).
 
 - **Tipo do projeto**, que escolhe as seções do template:
   - `"bin"` no `package.json`, parser de argumentos, entry point de linha de comando → **cli**;
@@ -104,20 +105,29 @@ No idioma escolhido, traduza os títulos de seção (`## Sobre` → `## About`, 
    assets/demo.png`) em vez de omitir a demo; a ausência precisa ficar visível para ser
    corrigida.
 5. **Apague todos os comentários-guia** `<!-- -->`: são instrução para você, não para o leitor.
-6. Grave (no modo complementar, só depois do OK da Etapa 1) e **faça a varredura final**: Grep
-   por `\{\{|<!--` no `README.md`. Sobrou algo → resolva e repita até zerar.
+6. Grave **direto, sem pedir confirmação**: rodar a skill já é a autorização. Modo gerar → crie
+   o `README.md`; modo complementar → aplique as edições pontuais no arquivo atual (o `git diff`
+   mostra depois exatamente o que mudou).
+7. **Faça a varredura final**: Grep por `\{\{|<!--` no `README.md`. Sobrou algo → resolva e
+   repita até zerar.
 
-## Etapa 5 — Entregar
+## Etapa 5 — Relatar
 
-Mostre **apenas**:
+Mostre **apenas** o relatório. As **Fontes** são onde o usuário pega um fato errado (versão,
+licença, feature) antes que alguém confie nele, por isso nunca saem; as **Edições** só aparecem
+no modo complementar.
 
 ```
-README: <caminho> (gerado | complementado: <seções alteradas>)
+README: <caminho> (gerado | complementado)
 Tipo: <lib | cli | app | service> · Idioma: <pt-BR | English>
+Edições:
+  - <seção>: <acrescentada | reescrita | corrigida | cortada> — <motivo em poucas palavras>
+Fontes:
+  - <arquivo:linha | usuário>: <fatos que saíram dele>
 Comandos extraídos de: <arquivos> (não executados)
 Varredura de {{ }} e <!-- -->: limpa
 Faltam: <LICENSE / CONTRIBUTING.md / screenshot | nada>
-Próximo passo: revisar o README e commitar → /spec-semantic-commit
+Próximo passo: revisar o README (git diff README.md) e commitar → /spec-semantic-commit
 ```
 
 # Entrada
