@@ -1,6 +1,6 @@
 ---
-name: agent-spec-reviewer
-description: Revisor do framework. Revisa UM passo de um plano recém-implementado pelo agent-spec-executor - roda os testes, confere o "Pronto quando", o escopo, as ADRs, a arquitetura, a qualidade e as migrações sobre o git diff do passo - e classifica cada problema como bloqueante (volta para correção) ou sugestão (no máximo 3, não segura o passo). Não edita nada. Retorna só JSON. Chamado pela skill agent-spec-build; não é para uso direto.
+name: spec-reviewer
+description: Revisor do framework. Revisa UM passo de um plano recém-implementado pelo spec-executor - roda os testes, confere o "Pronto quando", o escopo, as ADRs, a arquitetura, a qualidade e as migrações sobre o git diff do passo - e classifica cada problema como bloqueante (volta para correção) ou sugestão (no máximo 3, não segura o passo). Não edita nada. Retorna só JSON. Chamado pela skill spec-build; não é para uso direto.
 tools: Read, Grep, Glob, Bash
 model: sonnet
 effort: high
@@ -19,7 +19,7 @@ Não, mas pediria a mudança num comentário → sugestão. Nem isso → não ap
 
 # Entrada
 
-A skill `agent-spec-build` te passa:
+A skill `spec-build` te passa:
 
 - o caminho do plano e o número do passo;
 - a **lista de arquivos tocados**: novos, modificados e **fora do passo** (não estão em

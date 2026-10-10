@@ -19,12 +19,12 @@ Este framework escolhe o processo pelo tamanho da mudança:
 | **Grande** | fundação, decisão de arquitetura | o mesmo, com ADR para as decisões que valem para o projeto todo |
 
 ```
-pedido ─► /agent-spec-change ─┬─ pequena ─► código testado
-                              └─ média/grande ─► plano ─► você aprova ─► /agent-spec-build ─► código revisado
+pedido ─► /spec-change ─┬─ pequena ─► código testado
+                        └─ média/grande ─► plano ─► você aprova ─► /spec-build ─► código revisado
 ```
 
 Na revisão, só o que um sênior recusaria num PR volta para correção. O resto vira sugestão no
-relatório. Mapa completo: [agent-spec-guide](.claude/skills/agent-spec-guide/SKILL.md).
+relatório. Mapa completo: [spec-guide](.claude/skills/spec-guide/SKILL.md).
 
 O plano é temporário: o build o apaga depois de executar. O que fica é a documentação viva em
 `docs/`, que o agente mantém sozinho, junto com o código:
@@ -55,15 +55,15 @@ cp -r ai-software-engineering/.claude <seu-projeto>/
 ```
 
 O `CLAUDE.md` deste repositório descreve este repositório e não vai junto: gere o do seu projeto
-com `/agent-spec-claude-md`.
+com `/spec-claude-md`.
 
 ## Uso
 
 Dentro do Claude Code, na pasta do seu projeto, descreva a mudança:
 
 ```
-/agent-spec-change "o botão de salvar está azul, deveria ser verde"
-/agent-spec-change "quero que o usuário faça login com o Google"
+/spec-change "o botão de salvar está azul, deveria ser verde"
+/spec-change "quero que o usuário faça login com o Google"
 ```
 
 O primeiro é pequeno: a skill muda o CSS e mostra o resultado. O segundo é médio ou grande: ela
@@ -71,11 +71,11 @@ pergunta o que o código não responde e salva `docs/plans/2026-10-08-login-com-
 Revise, mude o status para `aprovado` e rode:
 
 ```
-/agent-spec-build docs/plans/2026-10-08-login-com-google.md
+/spec-build docs/plans/2026-10-08-login-com-google.md
 ```
 
 O build implementa, atualiza as specs dos módulos tocados e apaga o plano. Nada é commitado
-sozinho: no fim, `/agent-spec-semantic-commit`.
+sozinho: no fim, `/spec-semantic-commit`.
 
 ## Skills e agents
 
@@ -83,26 +83,26 @@ sozinho: no fim, `/agent-spec-semantic-commit`.
 
 | Skill | Faz |
 |---|---|
-| `/agent-spec-change` | Porta de entrada: classifica o pedido; implementa o pequeno, escreve o plano do médio e do grande |
-| `/agent-spec-build` | Implementa um plano aprovado, passo a passo, e o apaga no fim |
+| `/spec-change` | Porta de entrada: classifica o pedido; implementa o pequeno, escreve o plano do médio e do grande |
+| `/spec-build` | Implementa um plano aprovado, passo a passo, e o apaga no fim |
 
-O build coordena três agents: `agent-spec-executor` (implementa um passo),
-`agent-spec-reviewer` (roda os testes e revisa o diff) e `agent-spec-security-reviewer` (só nos
+O build coordena três agents: `spec-executor` (implementa um passo),
+`spec-reviewer` (roda os testes e revisa o diff) e `spec-security-reviewer` (só nos
 passos de risco alto).
 
 **Utilitários:**
 
 | Skill | Para quê |
 |---|---|
-| `/agent-spec-guide` | Tirar dúvidas: qual skill rodar, próximo passo de um plano, onde fica cada documento |
-| `/agent-spec-adr` | Registrar uma decisão de arquitetura que vale para o projeto todo |
-| `/agent-spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface) |
-| `/agent-spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
-| `/agent-spec-readme` | Gerar ou completar o `README.md` |
-| `/agent-spec-claude-md` | Gerar ou enxugar o `CLAUDE.md` |
-| `/agent-spec-rule-create` | Definir as convenções de um tema (banco, erros HTTP…) em uma rule |
-| `/agent-spec-rule-curate` | Decidir se um item vira regra, e auditar as rules |
-| `/agent-windows-mcp` | Configurar o Windows-MCP para o agente ver e operar a tela (só Windows) |
-| `/agent-playwright-mcp` | Configurar o Playwright MCP para o agente ver e operar páginas web |
+| `/spec-guide` | Tirar dúvidas: qual skill rodar, próximo passo de um plano, onde fica cada documento |
+| `/spec-adr` | Registrar uma decisão de arquitetura que vale para o projeto todo |
+| `/spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface) |
+| `/spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
+| `/spec-readme` | Gerar ou completar o `README.md` |
+| `/spec-claude-md` | Gerar ou enxugar o `CLAUDE.md` |
+| `/spec-rule-create` | Definir as convenções de um tema (banco, erros HTTP…) em uma rule |
+| `/spec-rule-curate` | Decidir se um item vira regra, e auditar as rules |
+| `/spec-windows-mcp` | Configurar o Windows-MCP para o agente ver e operar a tela (só Windows) |
+| `/spec-playwright-mcp` | Configurar o Playwright MCP para o agente ver e operar páginas web |
 
-Argumentos de cada comando: [mapa de roteamento](.claude/skills/agent-spec-guide/SKILL.md#5-mapa-de-roteamento).
+Argumentos de cada comando: [mapa de roteamento](.claude/skills/spec-guide/SKILL.md#5-mapa-de-roteamento).

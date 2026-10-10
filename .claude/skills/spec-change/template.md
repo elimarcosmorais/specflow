@@ -30,7 +30,7 @@ tamanho: média     # média | grande
 |---|---|---|
 | <o que precisou ser decidido> | <o que foi escolhido> | <motivo em 1 linha; alternativa descartada> |
 
-**ADR a registrar antes de aprovar:** `/agent-spec-adr "<título>"` | nenhuma
+**ADR a registrar antes de aprovar:** `/spec-adr "<título>"` | nenhuma
 
 <!-- LLM-ONLY: só decisões não óbvias, tomadas com o usuário ou que fogem do padrão do código. O que o código, uma spec ou uma ADR já respondem não entra. ADR só na grande, para decisão que vale para o projeto todo. -->
 

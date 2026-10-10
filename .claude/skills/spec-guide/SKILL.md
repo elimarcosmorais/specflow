@@ -1,5 +1,5 @@
 ---
-name: agent-spec-guide
+name: spec-guide
 description: Utilitário do framework. Guia de referência - contém o mapa do fluxo (os três tamanhos de mudança, o plano, o build, as specs vivas, ADRs, design system, pastas e convenções) e tira dúvidas de uso - qual skill rodar para uma necessidade, qual o próximo passo de um plano, como funciona o build, onde cada documento mora e onde mudar uma convenção. Só consulta - confirma os detalhes nos SKILL.md, nos agents e nas rules e cita a fonte. Nunca cria nem edita arquivos e nunca roda a skill que recomenda. Usar quando o usuário perguntar "qual skill eu uso para...", "qual o próximo passo do plano X?", "como funciona o build?", "onde fica a documentação de X?" ou variações.
 argument-hint: "[sua pergunta sobre o framework (opcional)]"
 ---
@@ -17,14 +17,14 @@ onde cada coisa está definida. Preciso, direto, e sempre dizendo de onde tirou 
    template ou caminho exato só entra na resposta depois de confirmado no `SKILL.md`, no template,
    no agent ou na rule. Se o arquivo divergir deste mapa, vale o arquivo; diga que achou a
    divergência.
-3. **Cite a fonte** como link clicável (`[SKILL.md:42](.claude/skills/agent-spec-change/SKILL.md#L42)`).
+3. **Cite a fonte** como link clicável (`[SKILL.md:42](.claude/skills/spec-change/SKILL.md#L42)`).
 4. **Extraia, não despeje.** Traga o trecho que responde, não o arquivo inteiro.
 5. **Só o que existe.** Se perguntarem por algo da seção 6, diga que ficou de fora de propósito.
 
 # 1. O fluxo
 
 ```
-  pedido ──► /agent-spec-change ──► lê o código e as specs, e classifica
+  pedido ──► /spec-change ──► lê o código e as specs, e classifica
                                      │
           ┌──────────────────────────┼───────────────────────────┐
           ▼                          ▼                           ▼
@@ -34,12 +34,12 @@ onde cada coisa está definida. Preciso, direto, e sempre dizendo de onde tirou 
    spec, sem plano             │                           │
                                └──────── você aprova ──────┘
                                               ▼
-                                       /agent-spec-build
+                                       /spec-build
                               um passo por vez: executor → revisor
                                               ▼
                        código e specs em stage · plano apagado (em stage)
                                               ▼
-                                  /agent-spec-semantic-commit
+                                  /spec-semantic-commit
 ```
 
 | Tamanho | Quando | Documento |
@@ -49,7 +49,7 @@ onde cada coisa está definida. Preciso, direto, e sempre dizendo de onde tirou 
 | Grande | média + decisão que vale para o projeto todo e é cara de desfazer | plano de até 3 páginas + ADR |
 
 Na dúvida entre pequena e média, é pequena: se aparecer uma decisão no meio, a skill para e
-promove para média. Critérios completos: `agent-spec-change`, Etapa 2.
+promove para média. Critérios completos: `spec-change`, Etapa 2.
 
 # 2. Os documentos
 
@@ -59,7 +59,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 |---|---|---|
 | `docs/specs/` | como o sistema funciona hoje, por módulo; índice em `docs/specs/README.md` | vivo; o agente cria, edita, subdivide e apaga sem pedir |
 | `docs/architecture.md` | a arquitetura base | vivo, como as specs |
-| `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande ([template](../agent-spec-change/template.md)) | `rascunho` → `aprovado` → executado e apagado pelo build |
+| `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande ([template](../spec-change/template.md)) | `rascunho` → `aprovado` → executado e apagado pelo build |
 | `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, uma categoria por arquivo | vivo; sincronizar com o código é livre, mudar a identidade é do usuário |
 | `docs/references/` | material de consulta do usuário: marca, prints, prompts | temporário; só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
@@ -74,17 +74,17 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 - **ADR**: só decisão transversal, cara de mudar e com alternativa real. Um plano grande a pede
   na seção Decisões; ela é registrada antes de aprovar o plano. Executor e revisores tratam ADR
   `aceito` como contrato.
-- **Design system**: obrigatório em projeto com interface; o `agent-spec-change` não planeja
+- **Design system**: obrigatório em projeto com interface; o `spec-change` não planeja
   mudança com tela sem ele.
 
 # 3. O build
 
-`agent-spec-build` coordena; não escreve código. Para cada passo, na ordem:
+`spec-build` coordena; não escreve código. Para cada passo, na ordem:
 
 ```
-  passo ──► agent-spec-executor ──► agent-spec-reviewer ──┬─ aprovado ──► git add, marca o passo
-           (contexto limpo,         (+ security-reviewer  └─ reprovado ──► correção (até 2; a última em Opus)
-            só este passo)           se Risco: alto)                       3ª reprovação → para e pergunta
+  passo ──► spec-executor ──► spec-reviewer ────────┬─ aprovado ──► git add, marca o passo
+           (contexto limpo,   (+ security-reviewer  └─ reprovado ──► correção (até 2; a última em Opus)
+            só este passo)     se Risco: alto)                       3ª reprovação → para e pergunta
 ```
 
 - **Dois níveis de problema:** **bloqueante** (um sênior recusaria o PR) volta para correção;
@@ -108,23 +108,23 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 
 | Necessidade | Comando |
 |---|---|
-| Qualquer mudança: bug, ajuste, feature | `/agent-spec-change "<pedido>"` |
-| Implementar um plano aprovado (todo, ou só um passo) | `/agent-spec-build <plano> [N]` |
-| Registrar ou substituir uma decisão de arquitetura | `/agent-spec-adr "<título>"` |
-| Ver as ADRs que os planos pedem e ainda faltam | `/agent-spec-adr` (vazio) |
-| Criar ou atualizar o design system | `/agent-spec-design-system [Figma, docs ou descrição]` |
-| Commitar todas as mudanças | `/agent-spec-semantic-commit` |
-| Criar ou atualizar o README | `/agent-spec-readme [pasta]` |
-| Criar, auditar ou enxugar o CLAUDE.md | `/agent-spec-claude-md [pasta]` |
-| Definir as convenções de um tema (banco, erros HTTP…) | `/agent-spec-rule-create "<tema>"` |
-| Decidir se algo vira regra, ou auditar as rules | `/agent-spec-rule-curate "<item>"` · `/agent-spec-rule-curate auditar` |
-| Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/agent-windows-mcp [ferramentas extras]` |
-| Deixar o agente ver e operar páginas web num navegador (print, clique, console) | `/agent-playwright-mcp [headed]` |
+| Qualquer mudança: bug, ajuste, feature | `/spec-change "<pedido>"` |
+| Implementar um plano aprovado (todo, ou só um passo) | `/spec-build <plano> [N]` |
+| Registrar ou substituir uma decisão de arquitetura | `/spec-adr "<título>"` |
+| Ver as ADRs que os planos pedem e ainda faltam | `/spec-adr` (vazio) |
+| Criar ou atualizar o design system | `/spec-design-system [Figma, docs ou descrição]` |
+| Commitar todas as mudanças | `/spec-semantic-commit` |
+| Criar ou atualizar o README | `/spec-readme [pasta]` |
+| Criar, auditar ou enxugar o CLAUDE.md | `/spec-claude-md [pasta]` |
+| Definir as convenções de um tema (banco, erros HTTP…) | `/spec-rule-create "<tema>"` |
+| Decidir se algo vira regra, ou auditar as rules | `/spec-rule-curate "<item>"` · `/spec-rule-curate auditar` |
+| Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/spec-windows-mcp [ferramentas extras]` |
+| Deixar o agente ver e operar páginas web num navegador (print, clique, console) | `/spec-playwright-mcp [headed]` |
 
 Documentar ou reorganizar specs não tem comando: o agente faz quando precisa (rule `docs.md`).
 
 **Próximo passo de um plano:** `rascunho` → o usuário revisa e aprova (e registra a ADR pedida,
-se houver); `aprovado` → `/agent-spec-build <plano>`; plano sumiu de `docs/plans/` → foi
+se houver); `aprovado` → `/spec-build <plano>`; plano sumiu de `docs/plans/` → foi
 executado: commit, se houver algo em stage (`git diff --staged --stat`).
 
 **Fronteiras que confundem:** spec × plano (como funciona hoje × o que uma mudança vai fazer) ·
@@ -137,8 +137,8 @@ contexto; a rule diz como aplicar e carrega) · README × `CLAUDE.md` (pessoas �
 ```
 CLAUDE.md, README.md
 .claude/
-├── skills/agent-spec-<nome>/SKILL.md (+ template.md quando gera documento)
-├── agents/agent-spec-executor.md, agent-spec-reviewer.md, agent-spec-security-reviewer.md
+├── skills/spec-<nome>/SKILL.md (+ template.md quando gera documento)
+├── agents/spec-executor.md, spec-reviewer.md, spec-security-reviewer.md
 └── rules/behavior.md, docs.md (sempre) e <tema>.md (só ao tocar os paths dela)
 docs/
 ├── adr/NNN-<titulo>.md
@@ -152,9 +152,8 @@ docs/
 
 - Nomes em kebab-case, sem acentos. ADR com numeração de três dígitos, sequencial, nunca
   reaproveitada; plano com data, porque é apagado. Pastas só são criadas quando usadas.
-- Skills, agents e rules com nome em inglês (prefixo `agent-spec-`); conteúdo em português.
-  Exceção: `agent-windows-mcp` e `agent-playwright-mcp`, que configuram uma ferramenta do
-  ambiente e não fazem parte do fluxo de specs.
+- Skills e agents com nome em inglês e prefixo `spec-`; rules com nome em inglês, sem prefixo;
+  conteúdo em português.
 
 **Ficou de fora de propósito** (o fluxo antigo de 8 fases foi abandonado por ser pesado demais):
 documento por fase (pre-refinement, PRD, tech alignment, task plan), aprovação entre fases,

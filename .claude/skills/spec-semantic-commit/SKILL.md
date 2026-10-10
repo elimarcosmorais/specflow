@@ -1,6 +1,6 @@
 ---
-name: agent-spec-semantic-commit
-description: Utilitário do framework (transversal). Commita TODAS as mudanças do projeto (modificados, novos e apagados, respeitando o .gitignore) - coloca tudo em stage, gera a mensagem em português seguindo o Conventional Commits (tipo, escopo, assunto no imperativo em até 72 caracteres, corpo e rodapé quando fazem falta), propõe ao usuário e, depois de aprovado, commita e faz push para o remoto. Nenhum arquivo fica sem commit no final. Usar quando o usuário pedir para commitar ("commita isso", "gera o commit", "qual seria o commit?"), inclusive depois do agent-spec-change ou do agent-spec-build, que deixam o código sem commit. Não faz amend nem push --force.
+name: spec-semantic-commit
+description: Utilitário do framework (transversal). Commita TODAS as mudanças do projeto (modificados, novos e apagados, respeitando o .gitignore) - coloca tudo em stage, gera a mensagem em português seguindo o Conventional Commits (tipo, escopo, assunto no imperativo em até 72 caracteres, corpo e rodapé quando fazem falta), propõe ao usuário e, depois de aprovado, commita e faz push para o remoto. Nenhum arquivo fica sem commit no final. Usar quando o usuário pedir para commitar ("commita isso", "gera o commit", "qual seria o commit?"), inclusive depois do spec-change ou do spec-build, que deixam o código sem commit. Não faz amend nem push --force.
 argument-hint: "[o que mudou, em poucas palavras (opcional)]"
 ---
 
@@ -16,7 +16,7 @@ Transformar **todas as mudanças do projeto** em um commit (ou mais de um, se mi
 padrão [Conventional Commits](https://www.conventionalcommits.org/), com a mensagem em português,
 e enviá-lo ao remoto (`push`). Ao terminar, o `git status` fica limpo.
 
-No nosso fluxo, o `agent-spec-change` (mudança pequena) e o `agent-spec-build` (plano) **não
+No nosso fluxo, o `spec-change` (mudança pequena) e o `spec-build` (plano) **não
 commitam**: o commit é do usuário, e esta skill é a forma de fazê-lo.
 
 # Regras
@@ -111,7 +111,7 @@ alterado), marque com `!` depois do tipo/escopo **e** explique no rodapé `BREAK
 registrar). Linhas de até 72 caracteres, separado do assunto por uma linha em branco.
 
 **Rodapé `Refs:`** — quando o commit fecha um plano (o stage apaga um arquivo de
-`docs/plans/`, como o `agent-spec-build` deixa no fim), cite-o pelo nome:
+`docs/plans/`, como o `spec-build` deixa no fim), cite-o pelo nome:
 `Refs: plano 2026-10-08-login-com-google`. É o que liga o histórico do git ao plano, que só
 continua existindo no git.
 

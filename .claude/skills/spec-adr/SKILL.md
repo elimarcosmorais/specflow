@@ -1,5 +1,5 @@
 ---
-name: agent-spec-adr
+name: spec-adr
 description: Utilitário do framework. Registra uma decisão de arquitetura que vale para o projeto todo em uma ADR curta (contexto, decisão, consequências, alternativas) em docs/adr/NNN-<titulo>.md. Confere antes se a decisão merece uma ADR, monta o rascunho a partir da origem (a seção Decisões de um plano, o resumo do design system ou a conversa) e fecha com o usuário o que estiver em aberto. Também substitui uma ADR antiga por uma nova. Não gera plano, spec nem código.
 argument-hint: "[título da decisão | caminho do plano que a pede | vazio para listar as pendentes]"
 disable-model-invocation: true
@@ -18,7 +18,7 @@ arquivo próprio. Os planos, o executor e os revisores tratam ADRs `aceito` como
 não reabrem o que uma ADR já decidiu.
 
 Saída: `docs/adr/NNN-<titulo>.md`, seguindo o [template](template.md). Fluxo e convenções
-completos: `agent-spec-guide`.
+completos: `spec-guide`.
 
 # Quando registrar
 
@@ -139,8 +139,8 @@ Arquivo salvo em: docs/adr/NNN-<titulo>.md
 - Origem: <documento e seção | conversa>
 - Substitui: <NNN | nenhuma>
 
-ADRs ainda pendentes: <um `/agent-spec-adr "<título>"` por linha> | nenhuma
-Depois delas: <origem plano → aprovar o plano e rodar `/agent-spec-build <caminho>` | nada>
+ADRs ainda pendentes: <um `/spec-adr "<título>"` por linha> | nenhuma
+Depois delas: <origem plano → aprovar o plano e rodar `/spec-build <caminho>` | nada>
 
 Revise o arquivo. Se estiver de acordo, mude o status para `aceito` (ou peça que eu mude).
 ```

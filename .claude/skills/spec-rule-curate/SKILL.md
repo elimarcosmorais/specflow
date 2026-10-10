@@ -1,6 +1,6 @@
 ---
-name: agent-spec-rule-curate
-description: Utilitário do framework (transversal). Decide se uma convenção, decisão ou feedback ("isso foi feito errado") merece virar regra do projeto e, se merece, onde ela fica (CLAUDE.md, rule global ou rule por área com paths), quando ela carrega e como é escrita (uma linha, o porquê e um micro-exemplo ✅/❌). Aplica o teste de fricção antes de escrever qualquer linha e mostra o diff antes de gravar. Também audita as rules existentes, procurando o que está desatualizado, duplicado, óbvio ou com escopo errado. Usar quando o usuário perguntar "isso vale uma regra?", pedir "documenta isso", "deixa isso registrado", "adiciona ao .claude/rules", ou pedir para revisar ou limpar as rules. Não serve para criar do zero as convenções de um tema inteiro (agent-spec-rule-create), gerar o CLAUDE.md inteiro (agent-spec-claude-md), registrar decisão de arquitetura (agent-spec-adr) nem conteúdo de feature.
+name: spec-rule-curate
+description: Utilitário do framework (transversal). Decide se uma convenção, decisão ou feedback ("isso foi feito errado") merece virar regra do projeto e, se merece, onde ela fica (CLAUDE.md, rule global ou rule por área com paths), quando ela carrega e como é escrita (uma linha, o porquê e um micro-exemplo ✅/❌). Aplica o teste de fricção antes de escrever qualquer linha e mostra o diff antes de gravar. Também audita as rules existentes, procurando o que está desatualizado, duplicado, óbvio ou com escopo errado. Usar quando o usuário perguntar "isso vale uma regra?", pedir "documenta isso", "deixa isso registrado", "adiciona ao .claude/rules", ou pedir para revisar ou limpar as rules. Não serve para criar do zero as convenções de um tema inteiro (spec-rule-create), gerar o CLAUDE.md inteiro (spec-claude-md), registrar decisão de arquitetura (spec-adr) nem conteúdo de feature.
 argument-hint: "[o item a registrar, ex.: \"handler valida o input e retorna 400\" | auditar [arquivo de rule]]"
 disable-model-invocation: true
 ---
@@ -25,9 +25,9 @@ aprovação nem pasta em `docs/`.
 | Preciso…                                                         | Skill                     |
 |------------------------------------------------------------------|---------------------------|
 | Decidir se um item vira regra, ou auditar as rules               | **esta**                  |
-| Estabelecer do zero as convenções de um tema (banco, erros, DI…) | `/agent-spec-rule-create` |
-| Gerar ou auditar o `CLAUDE.md` inteiro                           | `/agent-spec-claude-md`   |
-| Registrar uma decisão de arquitetura, com alternativas           | `/agent-spec-adr`         |
+| Estabelecer do zero as convenções de um tema (banco, erros, DI…) | `/spec-rule-create` |
+| Gerar ou auditar o `CLAUDE.md` inteiro                           | `/spec-claude-md`   |
+| Registrar uma decisão de arquitetura, com alternativas           | `/spec-adr`         |
 | Convenção que vale só para uma feature                           | Tech Alignment / Tech Spec da feature |
 
 # Onde as regras moram
@@ -125,7 +125,7 @@ paths:
 ---
 ```
 
-Rule criada sem código do tema (pela `agent-spec-rule-create`) traz `> status: provisória` abaixo
+Rule criada sem código do tema (pela `spec-rule-create`) traz `> status: provisória` abaixo
 do título: os exemplos são ilustrativos. Ela vira `estável` quando os exemplos são conferidos
 contra o código real (passe "Provisória" da auditoria).
 
@@ -140,7 +140,7 @@ contra o código real (passe "Provisória" da auditoria).
   e o `CLAUDE.md`).
 - **Vazio** → pergunte qual modo e, se for registrar, qual item.
 - **Um tema inteiro** ("as convenções de banco") em vez de um item → recomende
-  `/agent-spec-rule-create "<tema>"` e pare.
+  `/spec-rule-create "<tema>"` e pare.
 
 ## Etapa 1 — Ler as regras atuais
 
@@ -209,7 +209,7 @@ Mostre **apenas**:
 Modo: registrar | auditar
 Gravado: <arquivo> (rule nova | rule editada | CLAUDE.md) · escopo: <global | paths>
 Descartado: <item — pergunta do teste que falhou> (se houver)
-Próximo passo: revisar e commitar → /agent-spec-semantic-commit
+Próximo passo: revisar e commitar → /spec-semantic-commit
 ```
 
 # Exemplo

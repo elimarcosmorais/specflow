@@ -1,6 +1,6 @@
 ---
-name: agent-spec-build
-description: Executa um plano aprovado (docs/plans/AAAA-MM-DD-<slug>.md, gerado pelo /agent-spec-change) passo a passo - entrega cada passo a um agent-spec-executor novo, manda o agent-spec-reviewer conferir (e o agent-spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no plano e deixa o código e as specs aprovados em stage, sem commitar. No fechamento, com tudo verde, apaga o plano. Só o que bloqueia volta para correção; sugestões aparecem no relatório final. Coordena; não escreve código.
+name: spec-build
+description: Executa um plano aprovado (docs/plans/AAAA-MM-DD-<slug>.md, gerado pelo /spec-change) passo a passo - entrega cada passo a um spec-executor novo, manda o spec-reviewer conferir (e o spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no plano e deixa o código e as specs aprovados em stage, sem commitar. No fechamento, com tudo verde, apaga o plano. Só o que bloqueia volta para correção; sugestões aparecem no relatório final. Coordena; não escreve código.
 argument-hint: "[caminho do plano (opcional)] [N (opcional): só esse passo]"
 disable-model-invocation: true
 ---
@@ -24,9 +24,9 @@ documentado nas specs, um passo por vez.
 | Quem | Faz |
 |---|---|
 | esta skill | escolhe o passo, chama os agents, decide, marca o plano, `git add`, apaga o plano |
-| `agent-spec-executor` | implementa um passo (código + testes) ou corrige o que o revisor apontou |
-| `agent-spec-reviewer` | roda os testes e revisa o diff do passo; não edita nada; devolve JSON |
-| `agent-spec-security-reviewer` | só nos passos `Risco: alto`: procura como abusar do código; devolve JSON |
+| `spec-executor` | implementa um passo (código + testes) ou corrige o que o revisor apontou |
+| `spec-reviewer` | roda os testes e revisa o diff do passo; não edita nada; devolve JSON |
+| `spec-security-reviewer` | só nos passos `Risco: alto`: procura como abusar do código; devolve JSON |
 
 > **Por que um executor novo por passo:** cada um começa com contexto limpo e recebe só o passo
 > da vez, e a conversa principal não enche com o código de todos os passos. **Por que um revisor
@@ -45,7 +45,7 @@ documentado nas specs, um passo por vez.
 5. **Nunca commite.** Só `git add`. O commit é do usuário.
 6. **Não mude o plano.** Nele você altera só os checkboxes do "Pronto quando" e o `status`, e o
    apaga no fechamento (Etapa 3). Passo errado ou faltando → pare e diga; o usuário ajusta o
-   plano (ou roda `/agent-spec-change`).
+   plano (ou roda `/spec-change`).
 7. **Quem pergunta ao usuário é você.** Quando o executor responde `parada`, faça a pergunta dele
    com `AskUserQuestion` e chame-o de novo com a resposta (não conta como tentativa).
 8. **Terminal enxuto.** Nada de diff ou código no chat: uma linha de log por evento e o
@@ -58,7 +58,7 @@ documentado nas specs, um passo por vez.
 - **Caminho de um plano** → use-o. Com um número (`3`) → execute **só esse passo** (os anteriores
   precisam estar concluídos).
 - **Vazio** → procure em `docs/plans/*.md` os planos `aprovado`. Um só → confirme. Vários →
-  pergunte qual. Nenhum → diga "Nenhum plano aprovado" e oriente `/agent-spec-change`.
+  pergunte qual. Nenhum → diga "Nenhum plano aprovado" e oriente `/spec-change`.
 
 ## Etapa 1 — Verificar
 
@@ -86,7 +86,7 @@ documentado nas specs, um passo por vez.
 
 ### 2.2 Executor
 
-Chame o `agent-spec-executor`:
+Chame o `spec-executor`:
 
 ```
 Implemente o passo <N> do plano <caminho do plano>.
@@ -105,8 +105,8 @@ Log: `[passo 2] executando…` (risco alto: `[passo 2] executando… (risco alto
 
 ### 2.4 Revisão
 
-Chame o `agent-spec-reviewer`. Passo `Risco: alto` → chame **na mesma mensagem**, em paralelo, o
-`agent-spec-security-reviewer`. Os dois recebem:
+Chame o `spec-reviewer`. Passo `Risco: alto` → chame **na mesma mensagem**, em paralelo, o
+`spec-security-reviewer`. Os dois recebem:
 
 ```
 Revise o passo <N> do plano <caminho do plano>. Tentativa <T> de 3.
@@ -195,7 +195,7 @@ Sugestões dos revisores (não bloquearam):
 - [P3] <titulo> — `<arquivo>:<linha>` — <correção em 1 linha>
 
 O código está em stage, sem commit. Revise com `git diff --staged` e commite com
-`/agent-spec-semantic-commit`.
+`/spec-semantic-commit`.
 ```
 
 # Entrada

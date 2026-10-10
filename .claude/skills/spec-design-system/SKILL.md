@@ -1,6 +1,6 @@
 ---
-name: agent-spec-design-system
-description: Utilitário do framework (obrigatório em projeto com interface visual). Cria ou atualiza o design system do produto - docs/design-system.md (contexto geral e índice) e um arquivo por categoria em docs/design/ (cores, tipografia, espaçamento, ícones, layout, tema, componentes, padrões de feedback, acessibilidade visual e, sob demanda, botões, camadas, movimento e divergências). Deriva do código, do Figma e dos documentos do time tudo o que já existe e só pergunta o resto; em projeto novo, propõe o design system inicial com perguntas de direção, sempre com recomendação. Não especifica as telas de uma mudança, não cria ADR e não escreve código. Usar quando o usuário pedir para criar, consolidar ou atualizar o design system, ou quando o /agent-spec-change parar por falta dele.
+name: spec-design-system
+description: Utilitário do framework (obrigatório em projeto com interface visual). Cria ou atualiza o design system do produto - docs/design-system.md (contexto geral e índice) e um arquivo por categoria em docs/design/ (cores, tipografia, espaçamento, ícones, layout, tema, componentes, padrões de feedback, acessibilidade visual e, sob demanda, botões, camadas, movimento e divergências). Deriva do código, do Figma e dos documentos do time tudo o que já existe e só pergunta o resto; em projeto novo, propõe o design system inicial com perguntas de direção, sempre com recomendação. Não especifica as telas de uma mudança, não cria ADR e não escreve código. Usar quando o usuário pedir para criar, consolidar ou atualizar o design system, ou quando o /spec-change parar por falta dele.
 argument-hint: "[links de Figma | caminhos de documentos de design do time | descrição livre (opcional)]"
 disable-model-invocation: true
 ---
@@ -24,7 +24,7 @@ Saída (documentação viva, atualizada no lugar; o histórico fica no git):
 | `docs/design-system.md` | contexto geral (plataformas, stack, estilo, fontes) e o índice das categorias | [template.md](template.md) |
 | `docs/design/<categoria>.md` | uma categoria: tokens, componentes ou padrões | [categorias.md](categorias.md) |
 
-**Obrigatório em projeto com interface visual:** o `/agent-spec-change` não planeja mudança com
+**Obrigatório em projeto com interface visual:** o `/spec-change` não planeja mudança com
 tela sem ele. Rode-o:
 
 - **Projeto novo com interface**, antes do primeiro plano com tela.
@@ -51,9 +51,9 @@ Projeto sem interface (só backend, biblioteca, CLI) não precisa desta skill.
    [categorias.md](categorias.md); as sob demanda nascem quando aparece o que registrar. Cada
    arquivo segue o limite de 300 linhas da rule `docs.md`: passou, subdivida.
 8. **Não crie ADR.** Decisão transversal com trade-off real (biblioteca de UI, dark mode desde já,
-   skeleton em todo o produto) vira **recomendação** de `/agent-spec-adr` no resumo, e só lá.
+   skeleton em todo o produto) vira **recomendação** de `/spec-adr` no resumo, e só lá.
 9. **Não escreva código.** Os tokens de um projeto novo são implementados pelo fluxo normal
-   (`/agent-spec-change`).
+   (`/spec-change`).
 10. **Não exiba os documentos no terminal.** Salve os arquivos e mostre só o resumo.
 11. **Documentos em português com acentuação correta.** Nomes de código e termos de design
     consagrados (token, breakpoint, skeleton, dark mode) ficam como são.
@@ -166,7 +166,7 @@ Arquivos salvos: docs/design-system.md · docs/design/ (N arquivos)
 - Componentes: N · Tema: ...
 - Divergências conhecidas: N | nenhuma
 
-ADR recomendada: `/agent-spec-adr "<título>"` — <motivo> (uma por linha) | nenhuma
+ADR recomendada: `/spec-adr "<título>"` — <motivo> (uma por linha) | nenhuma
 
 Revise os arquivos; o que quiser mudar, peça.
 ```

@@ -15,26 +15,26 @@ Este repositório é o próprio framework: o que se edita aqui são as skills, o
 
 | Etapa | Skill |
 |---|---|
-| Entrada: classifica, implementa o pequeno, escreve o plano | `agent-spec-change` |
-| Executa um plano aprovado | `agent-spec-build` |
+| Entrada: classifica, implementa o pequeno, escreve o plano | `spec-change` |
+| Executa um plano aprovado | `spec-build` |
 
-Agents do build: `agent-spec-executor`, `agent-spec-reviewer` e `agent-spec-security-reviewer`
+Agents do build: `spec-executor`, `spec-reviewer` e `spec-security-reviewer`
 (só nos passos de risco alto).
 
 Skills **utilitárias**:
 
 | Utilitário | Skill |
 |---|---|
-| Guia do framework | `agent-spec-guide` |
-| Decisão de arquitetura (ADR) | `agent-spec-adr` |
-| Design system (obrigatório com interface) | `agent-spec-design-system` |
-| Commit semântico | `agent-spec-semantic-commit` |
-| README do projeto | `agent-spec-readme` |
-| CLAUDE.md do projeto | `agent-spec-claude-md` |
-| Rules de um tema | `agent-spec-rule-create` |
-| Curadoria das rules | `agent-spec-rule-curate` |
-| Windows-MCP: agente vê e opera a tela (só Windows) | `agent-windows-mcp` |
-| Playwright MCP: agente vê e opera páginas web | `agent-playwright-mcp` |
+| Guia do framework | `spec-guide` |
+| Decisão de arquitetura (ADR) | `spec-adr` |
+| Design system (obrigatório com interface) | `spec-design-system` |
+| Commit semântico | `spec-semantic-commit` |
+| README do projeto | `spec-readme` |
+| CLAUDE.md do projeto | `spec-claude-md` |
+| Rules de um tema | `spec-rule-create` |
+| Curadoria das rules | `spec-rule-curate` |
+| Windows-MCP: agente vê e opera a tela (só Windows) | `spec-windows-mcp` |
+| Playwright MCP: agente vê e opera páginas web | `spec-playwright-mcp` |
 
 ## Ao alterar o framework
 
@@ -44,12 +44,12 @@ Skills **utilitárias**:
 - **Uma mudança por vez.** Uma skill ou agent por vez, terminada antes de passar à próxima.
 - **Explicar as decisões.** Ao criar ou alterar uma skill, dizer o que mudou e por quê.
 - **Manter tudo em sincronia** ao criar, alterar ou remover uma skill, agent ou rule: as tabelas
-  deste arquivo, as do [README.md](README.md) e o mapa do framework (`agent-spec-guide`).
+  deste arquivo, as do [README.md](README.md) e o mapa do framework (`spec-guide`).
 - **Idioma:** conversar com o usuário e escrever skills e documentos em português.
 
 ## Estrutura de arquivos
 
-O fluxo, a estrutura de diretórios e as convenções estão na skill `agent-spec-guide`. Siga-a ao
+O fluxo, a estrutura de diretórios e as convenções estão na skill `spec-guide`. Siga-a ao
 criar skills e documentos, e atualize-a quando o fluxo mudar.
 
 - Skills: `.claude/skills/<nome-da-skill>/SKILL.md`

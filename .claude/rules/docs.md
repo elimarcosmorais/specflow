@@ -8,9 +8,9 @@ Onde cada documento mora, quem pode mexer nele e quando. Vale em qualquer tarefa
 |---|---|---|
 | `docs/specs/` | **como o sistema funciona hoje**, por módulo ou assunto | o agente, livremente |
 | `docs/architecture.md` | a arquitetura base: camadas, módulos, fluxos e integrações principais | o agente, livremente |
-| `docs/adr/NNN-<titulo>.md` | **por que** uma decisão transversal foi tomada | só `/agent-spec-adr`, com o usuário |
-| `docs/design-system.md` + `docs/design/` | a identidade visual: tokens, componentes e padrões | `/agent-spec-design-system`; sincronizar com o código é livre |
-| `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande, até ser executado | `/agent-spec-change` cria, o usuário aprova, `/agent-spec-build` executa e apaga |
+| `docs/adr/NNN-<titulo>.md` | **por que** uma decisão transversal foi tomada | só `/spec-adr`, com o usuário |
+| `docs/design-system.md` + `docs/design/` | a identidade visual: tokens, componentes e padrões | `/spec-design-system`; sincronizar com o código é livre |
+| `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande, até ser executado | `/spec-change` cria, o usuário aprova, `/spec-build` executa e apaga |
 | `docs/references/` | material de consulta temporário do usuário: marca, prints, prompts | o usuário |
 
 **Não duplique.** A spec diz **como funciona** e aponta para a ADR que diz **por quê**. O plano
@@ -51,7 +51,7 @@ A profundidade é livre: um pedaço que passar de 300 linhas se subdivide do mes
 
 Registrar o que o código **já implementa** é livre, como nas specs. Mudar a identidade (cor,
 token, componente ou padrão que o código ainda não tem) é decisão do usuário: pergunte antes, ou
-rode `/agent-spec-design-system`.
+rode `/spec-design-system`.
 
 ## Planos: temporários
 

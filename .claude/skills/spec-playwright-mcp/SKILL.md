@@ -1,5 +1,5 @@
 ---
-name: agent-playwright-mcp
+name: spec-playwright-mcp
 description: Utilitário (transversal). Configura o Playwright MCP no projeto para o agente ver e operar páginas web num navegador (abrir URL, árvore de acessibilidade, print, clique, formulário, console) - confere o Node e o navegador, fixa uma versão do pacote, registra o servidor no .mcp.json em modo headless e isolado, bloqueia a ferramenta browser_run_code_unsafe nas permissões do projeto, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe os arquivos locais no .gitignore e prova com um handshake MCP direto que o servidor sobe, abre uma página e tira um print. Também traz as dicas de uso. Não instala nada sem confirmação.
 argument-hint: "[headed | ferramentas extras a liberar (opcional)]"
 disable-model-invocation: true
@@ -104,7 +104,7 @@ Outras opções (`--viewport-size`, `--device`, `--browser`): `npx @playwright/m
 ```
 
 `.claude/settings.local.json`: inclua `"playwright"` em `enabledMcpjsonServers`, como na skill
-`agent-windows-mcp`. É configuração pessoal.
+`spec-windows-mcp`. É configuração pessoal.
 
 `.gitignore`: acrescente o que faltar entre `.claude/settings.local.json` e `.playwright-mcp/`
 (prints e arquivos que o servidor gera). Se ele ignora o `.mcp.json`, avise e tire a linha só
@@ -119,7 +119,7 @@ sobe, faz o handshake MCP, lista as ferramentas, abre uma página de teste, tira
 o navegador. A primeira execução pode demorar: o `npx` baixa o pacote.
 
 ```bash
-python -I .claude/skills/agent-playwright-mcp/verificar.py .mcp.json
+python -I .claude/skills/spec-playwright-mcp/verificar.py .mcp.json
 ```
 
 Saída esperada (exit 0, com a `0.0.83`):
@@ -147,7 +147,7 @@ Mostre o output da Etapa 5 e diga o que o usuário precisa fazer, porque só ele
 
 Diga como testar na sessão nova, em termos do usuário: "suba o projeto e me mostre um print da
 página inicial". Se o `CLAUDE.md` do projeto não tem a seção Teste visual citando o Playwright
-MCP → próximo passo: `/agent-spec-claude-md`.
+MCP → próximo passo: `/spec-claude-md`.
 
 # Dicas de uso
 

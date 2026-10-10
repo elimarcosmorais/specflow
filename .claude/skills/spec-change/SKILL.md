@@ -1,6 +1,6 @@
 ---
-name: agent-spec-change
-description: Porta de entrada do framework. Recebe um pedido (texto livre ou arquivo), lê o código e as specs que ele toca e classifica o tamanho - pequena, média ou grande. Pequena (CSS, bug, texto, ajuste localizado) → implementa direto, sem plano, roda os testes, atualiza a spec do módulo se o comportamento documentado mudou e mostra o resultado. Média ou grande → conversa só o que o código não responde e escreve um único plano curto em docs/plans/ (comportamento, decisões, specs afetadas, passos) para o usuário aprovar e depois executar com /agent-spec-build. O processo escala com a mudança - nunca gera plano para mudança pequena.
+name: spec-change
+description: Porta de entrada do framework. Recebe um pedido (texto livre ou arquivo), lê o código e as specs que ele toca e classifica o tamanho - pequena, média ou grande. Pequena (CSS, bug, texto, ajuste localizado) → implementa direto, sem plano, roda os testes, atualiza a spec do módulo se o comportamento documentado mudou e mostra o resultado. Média ou grande → conversa só o que o código não responde e escreve um único plano curto em docs/plans/ (comportamento, decisões, specs afetadas, passos) para o usuário aprovar e depois executar com /spec-build. O processo escala com a mudança - nunca gera plano para mudança pequena.
 argument-hint: "[pedido em texto livre | caminho de um .md/.txt]"
 disable-model-invocation: true
 ---
@@ -36,7 +36,7 @@ design system. Onde cada coisa mora: rule `docs.md`.
    recomendada primeiro). No máximo 2 rodadas de perguntas.
 4. **Escopo é o pedido.** O que você notar fora dele vai para a linha "Notei fora do escopo" do
    resumo, e não para o código.
-5. **Nunca commite.** O commit é do usuário (`/agent-spec-semantic-commit`).
+5. **Nunca commite.** O commit é do usuário (`/spec-semantic-commit`).
 6. **Plano curto.** Média cabe em cerca de 1 página; grande, em até 3. Seção que não se aplica é
    removida, não fica "N/A". Mais de 8 passos → proponha fatiar em planos menores, cada um
    entregável sozinho.
@@ -111,13 +111,13 @@ Não commite.
 
 1. **Design system.** A mudança tem tela, o projeto tem interface e não existe
    `docs/design-system.md`? **Pare antes de planejar:** o design system é obrigatório em projeto
-   com interface. Oriente `/agent-spec-design-system` e rodar esta skill de novo depois.
+   com interface. Oriente `/spec-design-system` e rodar esta skill de novo depois.
 2. **Conversar.** Junte as decisões que só o usuário pode tomar e pergunte (regra 3), sempre com
    a sua recomendação e o motivo. Decisão técnica que o código, uma spec ou uma ADR já respondem
    não é pergunta: registre e siga.
 3. **ADRs.** Leia as ADRs `aceito` em `docs/adr/` que tocam a mudança e respeite-as. Decisão
    nova que vale para o projeto todo (só na grande) → entra na seção "Decisões" com o comando
-   `/agent-spec-adr "<título>"`, a rodar antes de aprovar o plano.
+   `/spec-adr "<título>"`, a rodar antes de aprovar o plano.
 4. **Telas.** Use os componentes e tokens do design system (`docs/design-system.md` e os
    arquivos de `docs/design/` que ele indica). Componente ou token que ainda não existe →
    diga no plano que o passo o acrescenta ao design system. O `CLAUDE.md` tem a seção Teste
@@ -146,10 +146,10 @@ Plano salvo em: docs/plans/AAAA-MM-DD-<slug>.md
 - Decisões: <as principais, 1 linha cada>
 - Specs afetadas: <arquivos> | nenhuma
 - Plano: N passos (risco alto: passo X | nenhum)
-- ADR a registrar antes de aprovar: `/agent-spec-adr "<título>"` | nenhuma
+- ADR a registrar antes de aprovar: `/spec-adr "<título>"` | nenhuma
 
 Revise o plano. Aprovado → mude o status para `aprovado` (ou peça que eu mude) e rode
-`/agent-spec-build docs/plans/AAAA-MM-DD-<slug>.md`.
+`/spec-build docs/plans/AAAA-MM-DD-<slug>.md`.
 ```
 
 Não exiba o plano no terminal e não comece a implementar. Pediu ajuste → edite o arquivo e

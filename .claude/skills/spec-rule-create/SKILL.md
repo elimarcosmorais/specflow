@@ -1,6 +1,6 @@
 ---
-name: agent-spec-rule-create
-description: Utilitário do framework (transversal). Cria (ou completa) a rule de um TEMA técnico do projeto - ex.: acesso a banco, tratamento de erro HTTP, injeção de dependência, estado no front - tirando o usuário da página em branco. Divide o tema em 3 a 5 eixos de decisão, propõe 3 alternativas por eixo com recomendação, deriva do código o que já existe (brownfield) ou propõe a partir de boas práticas (greenfield, rule provisória), e grava uma rule enxuta em .claude/rules/<tema>.md (uma convenção + micro-exemplo ✅/❌ por item), com os paths que a fazem carregar na escrita do plano e na execução. Mostra a rule antes de gravar e aponta as decisões que valem ADR. Usar quando o usuário pedir para "criar a rule de X", "definir as convenções de banco/erros/testes", ou quiser fixar como um tema vai ser feito antes da primeira feature. Não serve para julgar um item solto nem auditar rules (agent-spec-rule-curate), nem para registrar a ADR (agent-spec-adr).
+name: spec-rule-create
+description: Utilitário do framework (transversal). Cria (ou completa) a rule de um TEMA técnico do projeto - ex.: acesso a banco, tratamento de erro HTTP, injeção de dependência, estado no front - tirando o usuário da página em branco. Divide o tema em 3 a 5 eixos de decisão, propõe 3 alternativas por eixo com recomendação, deriva do código o que já existe (brownfield) ou propõe a partir de boas práticas (greenfield, rule provisória), e grava uma rule enxuta em .claude/rules/<tema>.md (uma convenção + micro-exemplo ✅/❌ por item), com os paths que a fazem carregar na escrita do plano e na execução. Mostra a rule antes de gravar e aponta as decisões que valem ADR. Usar quando o usuário pedir para "criar a rule de X", "definir as convenções de banco/erros/testes", ou quiser fixar como um tema vai ser feito antes da primeira feature. Não serve para julgar um item solto nem auditar rules (spec-rule-curate), nem para registrar a ADR (spec-adr).
 argument-hint: "<tema, ex.: \"acesso a banco\", \"tratamento de erro HTTP\">"
 disable-model-invocation: true
 ---
@@ -22,10 +22,10 @@ um plano: não tem status de aprovação nem pasta em `docs/`.
 | Preciso…                                                         | Skill                     |
 |------------------------------------------------------------------|---------------------------|
 | Estabelecer do zero as convenções de um tema                     | **esta**                  |
-| Decidir se um item solto vira regra, ou auditar as rules         | `/agent-spec-rule-curate` |
-| Registrar uma decisão de arquitetura, com alternativas           | `/agent-spec-adr`         |
-| Gerar ou auditar o `CLAUDE.md` inteiro                           | `/agent-spec-claude-md`   |
-| Decisões técnicas de uma mudança só                              | `/agent-spec-change` (seção Decisões do plano) |
+| Decidir se um item solto vira regra, ou auditar as rules         | `/spec-rule-curate` |
+| Registrar uma decisão de arquitetura, com alternativas           | `/spec-adr`         |
+| Gerar ou auditar o `CLAUDE.md` inteiro                           | `/spec-claude-md`   |
+| Decisões técnicas de uma mudança só                              | `/spec-change` (seção Decisões do plano) |
 
 # Regras
 
@@ -40,7 +40,7 @@ um plano: não tem status de aprovação nem pasta em `docs/`.
    carrega no contexto, a ADR não.
 4. **Teste de fricção em cada item** (abaixo). Item que falha fica de fora.
 5. **Não contradiz ADR `aceito`.** Se a escolha do usuário conflita com uma, avise: mudar a
-   decisão é uma ADR nova que substitui a antiga (`/agent-spec-adr`), não uma linha na rule.
+   decisão é uma ADR nova que substitui a antiga (`/spec-adr`), não uma linha na rule.
 6. **Não toca código.** Só a rule: nada de scaffold, arquivo de exemplo ou edição de fonte.
 7. **Rule existente se completa, não se reescreve** (Etapa 2b).
 8. **Nada é gravado** sem o usuário ver o nome, os `paths` e o corpo, e dizer OK.
@@ -65,7 +65,7 @@ Antes de incluir cada item:
 - **Vazio** → pergunte o tema. Sugira os que a stack pede e ainda não têm rule (ex.: banco,
   erros HTTP, testes).
 - **Um item solto** ("handler retorna 400") em vez de um tema → é da
-  `/agent-spec-rule-curate`; recomende e pare.
+  `/spec-rule-curate`; recomende e pare.
 
 ## Etapa 1 — Descobrir (sem perguntar)
 
@@ -222,7 +222,7 @@ O cabeçalho é só da apresentação: **não** vai para o arquivo. Grave **só 
 
 Se algum eixo é uma decisão que vale para o projeto todo, com trade-off real (ex.: a camada de
 acesso a banco), liste-a com a escolha e as alternativas descartadas: rodando
-`/agent-spec-adr` na mesma sessão, a ADR aproveita esse material. A própria skill de ADR confere
+`/spec-adr` na mesma sessão, a ADR aproveita esse material. A própria skill de ADR confere
 se a decisão merece ADR.
 
 Depois mostre **apenas**:
@@ -232,9 +232,9 @@ Rule: .claude/rules/<nome>.md (criada | completada: <eixos>) · status: <provis�
 Modo: <greenfield | brownfield>
 Paths: <lista> (<produção | local | global>)
 Origem: derivado do código: <eixos> · escolhido pelo usuário: <eixos>
-ADR sugerida: /agent-spec-adr "<título>" (ou: nenhuma)
-Próximo passo: revisar e commitar → /agent-spec-semantic-commit
-               quando o tema tiver código → /agent-spec-rule-curate auditar .claude/rules/<nome>.md
+ADR sugerida: /spec-adr "<título>" (ou: nenhuma)
+Próximo passo: revisar e commitar → /spec-semantic-commit
+               quando o tema tiver código → /spec-rule-curate auditar .claude/rules/<nome>.md
 ```
 
 # Entrada

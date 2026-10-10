@@ -1,5 +1,5 @@
 ---
-name: agent-windows-mcp
+name: spec-windows-mcp
 description: Utilitário (transversal, só Windows). Configura o Windows-MCP no projeto para o agente ver e operar a tela do Windows (screenshot, árvore de acessibilidade, clique, teclado, janelas) - confere o uv e o Python, fixa uma versão do pacote compatível, registra o servidor no .mcp.json só com as ferramentas de tela, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe esse arquivo no .gitignore e prova com um handshake MCP direto que o servidor sobe e lista as ferramentas. Também traz as dicas de uso aprendidas nos testes. Não instala nada sem confirmação e não libera PowerShell, Registry, FileSystem nem Process.
 argument-hint: "[ferramentas extras a liberar (opcional)]"
 disable-model-invocation: true
@@ -133,7 +133,7 @@ sobe, faz o handshake MCP (`initialize` e `tools/list`) e imprime as ferramentas
 execução pode demorar: o `uvx` baixa o pacote para o cache (`%LOCALAPPDATA%\uv`).
 
 ```bash
-python -I .claude/skills/agent-windows-mcp/verificar.py .mcp.json
+python -I .claude/skills/spec-windows-mcp/verificar.py .mcp.json
 ```
 
 Saída esperada (exit 0, com a `0.8.8`):

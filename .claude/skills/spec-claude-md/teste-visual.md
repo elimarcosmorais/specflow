@@ -9,7 +9,7 @@ decide quando o repo não tem nenhuma, e aí vira a recomendação da pergunta d
 | Laravel com páginas no navegador (Blade, Livewire, Inertia) | `laravel/framework` no `composer.json` | Laravel Dusk (`laravel/dusk`) | teste em `tests/Browser/`, `php artisan dusk`; na falha, o print fica em `tests/Browser/screenshots/` e o agente o abre |
 | Rails | `rails` no `Gemfile` | system tests (Capybara) | teste em `test/system/`, `bin/rails test:system`; `take_screenshot` no ponto a conferir |
 | Web em JS/TS (React, Vue, Svelte, Angular, Next, Nuxt) ou backend web sem ferramenta própria (Django, Flask, Go, .NET) | `package.json` com o framework de front; ou templates HTML servidos pelo backend | Playwright (`@playwright/test`; em Python, `pytest-playwright`) | `npx playwright test`; `expect(page).toHaveScreenshot()` compara com a imagem aprovada (`--update-snapshots` só quando a mudança visual é a pedida) |
-| Desktop Windows (WPF, WinForms, WinUI, MAUI, Delphi, VB6) | `.csproj` com `UseWPF`/`UseWindowsForms`/`UseWinUI`, `.dproj`, `.vbp` | Windows-MCP (`/agent-windows-mcp`) | o agente abre o app e confere com `Snapshot`/`Screenshot`, clicando e digitando como o usuário |
+| Desktop Windows (WPF, WinForms, WinUI, MAUI, Delphi, VB6) | `.csproj` com `UseWPF`/`UseWindowsForms`/`UseWinUI`, `.dproj`, `.vbp` | Windows-MCP (`/spec-windows-mcp`) | o agente abre o app e confere com `Snapshot`/`Screenshot`, clicando e digitando como o usuário |
 | Electron ou Tauri | `electron` ou `@tauri-apps/api` no `package.json` | Playwright (Electron) ou Windows-MCP (os dois, no Windows) | Electron: `_electron.launch()` do Playwright; Tauri ou sem teste: Windows-MCP como no desktop |
 | Flutter | `flutter` no `pubspec.yaml` | golden tests | `matchesGoldenFile` em `test/`, `flutter test`; `--update-goldens` só quando a mudança visual é a pedida |
 | React Native ou Expo | `react-native` ou `expo` no `package.json` | Maestro | fluxo YAML em `.maestro/` com `assertVisible` e `takeScreenshot`, `maestro test .maestro/`; precisa de emulador ou aparelho ligado (iOS só no macOS) |
@@ -20,8 +20,8 @@ ferramenta → use a dele, com o comando que estiver nos scripts; não proponha 
 ## Ver a tela sem escrever teste
 
 Teste automatizado prova e fica no repo; às vezes o agente só precisa **olhar** a tela durante o
-trabalho (conferir um layout, reproduzir um bug). Web → Playwright MCP (`/agent-playwright-mcp`);
-desktop Windows → Windows-MCP (`/agent-windows-mcp`). Se o projeto tem o servidor no `.mcp.json`,
+trabalho (conferir um layout, reproduzir um bug). Web → Playwright MCP (`/spec-playwright-mcp`);
+desktop Windows → Windows-MCP (`/spec-windows-mcp`). Se o projeto tem o servidor no `.mcp.json`,
 a seção Teste visual diz quando usá-lo.
 
 ## Acessibilidade junto com o teste de tela
@@ -49,6 +49,6 @@ seção diz qual é, sem comando, e a instalação vai para a Etapa 6 como próx
 uma mudança no projeto, não trabalho desta skill.
 
 O MCP de tela (ver a tela sem escrever teste) entra na Etapa 6 quando o `.mcp.json` não tem o
-servidor: web sem `playwright` → `/agent-playwright-mcp`; desktop Windows sem `windows-mcp` →
-`/agent-windows-mcp`. Nenhuma skill de MCP é chamada daqui: elas só rodam pelo usuário, e as
+servidor: web sem `playwright` → `/spec-playwright-mcp`; desktop Windows sem `windows-mcp` →
+`/spec-windows-mcp`. Nenhuma skill de MCP é chamada daqui: elas só rodam pelo usuário, e as
 ferramentas só aparecem na sessão seguinte.

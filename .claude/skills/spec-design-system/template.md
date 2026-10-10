@@ -2,7 +2,7 @@
 
 > Identidade visual do produto: tokens, componentes e padrões que **toda feature com interface
 > segue**. Este arquivo dá o contexto geral e aponta para as categorias em `docs/design/`.
-> Gerado e atualizado por `/agent-spec-design-system`; sincronizar com o código é livre, mudar a
+> Gerado e atualizado por `/spec-design-system`; sincronizar com o código é livre, mudar a
 > identidade é decisão do usuário (rule `docs.md`).
 >
 > **Origem de cada valor:** `[código]` já implementado (com o caminho) · `[referência]` Figma ou

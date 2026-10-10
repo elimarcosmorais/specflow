@@ -1,5 +1,5 @@
 ---
-name: agent-spec-readme
+name: spec-readme
 description: Utilitário do framework (transversal). Gera ou atualiza o README.md de um projeto - a documentação para humanos (quem chega quer saber o que é, por que existe e como rodar) - a partir de um template único, com seções por tipo de projeto (lib, cli, app, service). Extrai do repositório os comandos reais e os fatos, pergunta só o que o repo não responde (sempre o idioma) e, se já existe README, audita e complementa com edições pontuais, mostrando o diff antes de gravar. Usar quando o usuário pedir para criar, gerar, melhorar ou atualizar o README, ou para documentar o projeto para pessoas (dev novo, usuário, contribuidor). Não serve para CLAUDE.md, rules ou instruções de agente.
 argument-hint: "[pasta do projeto (opcional; padrão: raiz do repositório)]"
 ---
@@ -19,7 +19,7 @@ Saída: `README.md` na pasta do projeto, seguindo o [template](template.md). Nã
 plano: não tem status nem pasta em `docs/`.
 
 Fronteira: `CLAUDE.md` e `.claude/rules/` são instruções para o **agente**; o README é para
-**pessoas** (o `CLAUDE.md` se gera com `/agent-spec-claude-md`). Nada de regra de comportamento
+**pessoas** (o `CLAUDE.md` se gera com `/spec-claude-md`). Nada de regra de comportamento
 de agente no README ("faça o menor delta", "rode os testes antes"): se aparecer, está no arquivo
 errado.
 
@@ -117,7 +117,7 @@ Tipo: <lib | cli | app | service> · Idioma: <pt-BR | English>
 Comandos extraídos de: <arquivos> (não executados)
 Varredura de {{ }} e <!-- -->: limpa
 Faltam: <LICENSE / CONTRIBUTING.md / screenshot | nada>
-Próximo passo: revisar o README e commitar → /agent-spec-semantic-commit
+Próximo passo: revisar o README e commitar → /spec-semantic-commit
 ```
 
 # Entrada
