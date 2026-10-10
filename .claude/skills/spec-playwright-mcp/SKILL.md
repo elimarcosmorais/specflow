@@ -145,7 +145,8 @@ MCP.
 
 - Sem `CLAUDE.md` no projeto → não crie. O `/spec-claude-md`, quando rodar, acha o servidor no
   `.mcp.json`.
-- A seção Teste visual já cita o Playwright MCP → nada a fazer.
+- O `CLAUDE.md` já cita o Playwright MCP, em qualquer seção → nada a fazer. Não mova a regra
+  para a seção Teste visual: reorganizar o arquivo é trabalho do `/spec-claude-md`.
 - Senão → acrescente este bullet à seção Teste visual, no idioma do arquivo. Sem a seção, crie-a
   na posição do [template](../spec-claude-md/template.md) (depois de UI, antes de "Pronto
   significa"):

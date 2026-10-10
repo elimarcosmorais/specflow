@@ -161,7 +161,8 @@ MCP.
 
 - Sem `CLAUDE.md` no projeto → não crie. O `/spec-claude-md`, quando rodar, acha o servidor no
   `.mcp.json`.
-- A seção Teste visual já cita o Windows-MCP → nada a fazer.
+- O `CLAUDE.md` já cita o Windows-MCP, em qualquer seção → nada a fazer. Não mova a regra para
+  a seção Teste visual: reorganizar o arquivo é trabalho do `/spec-claude-md`.
 - Senão → acrescente este bullet à seção Teste visual, no idioma do arquivo. Sem a seção, crie-a
   na posição do [template](../spec-claude-md/template.md) (depois de UI, antes de "Pronto
   significa"):
@@ -170,6 +171,9 @@ MCP.
   - Ver a tela (conferir layout, reproduzir bug) → Windows-MCP (`windows-mcp` no `.mcp.json`):
     abra o app e confira com `Snapshot`; o usuário não mexe no mouse enquanto o agente opera.
   ```
+
+  O trecho "o usuário não mexe no mouse…" só entra com a `0.8.8` ou mais nova no `.mcp.json`
+  (a disputa pelo mouse e teclado começou nela); numa versão anterior, termine em `Snapshot`.
 
   Mostre o diff e grave só depois do OK. Mexa só nessa linha, mesmo que o arquivo tenha outras
   alterações do usuário.

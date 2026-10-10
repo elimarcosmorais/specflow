@@ -69,6 +69,9 @@ A pasta do projeto é `$ARGUMENTS`; vazio → a raiz do repositório. Procure `C
   - bloco de convenções de uma área só, sem rule → corte e liste o tema na Etapa 6 (não crie a
     rule: é da `/spec-rule-create`);
   - comando ou versão que não bate com o repo → corrija;
+  - ferramenta citada que o repo não tem mais (servidor MCP fora do `.mcp.json`, pacote de teste
+    fora do manifest) → a regra sai, e a ferramenta vira recomendação na Etapa 6. O `CLAUDE.md`
+    atual nunca é fonte de que uma ferramenta existe;
   - seção que falta → acrescente;
   - o que é factual e específico do projeto → mantenha, inclusive a ordem e o idioma.
 
@@ -89,7 +92,9 @@ mostrar ao usuário de onde veio cada regra (Etapa 5). Olhe por três ângulos:
   arquivo nasce, convenções de organização, código gerado que não se edita à mão. Tem interface
   (componentes, CSS, tokens, janelas)? → habilita as seções UI e Teste visual: procure a
   ferramenta de teste de tela que o repo já usa e, sem nenhuma, a recomendada para a stack em
-  [teste-visual.md](teste-visual.md).
+  [teste-visual.md](teste-visual.md). Leia também o `.mcp.json` (se não existir, nenhum servidor
+  está configurado): os servidores `windows-mcp` e `playwright` que estão nele são a fonte da
+  linha "MCP de tela" da Etapa 6.
 - **Comportamento:** config de lint e testes, `git log` recente, rules já existentes → o que
   costuma quebrar e o que não usar.
 - **Documentos do framework**, se existirem: as specs (`docs/specs/README.md` e as que ele
