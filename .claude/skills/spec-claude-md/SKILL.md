@@ -71,7 +71,8 @@ A pasta do projeto é `$ARGUMENTS`; vazio → a raiz do repositório. Procure `C
   - comando ou versão que não bate com o repo → corrija;
   - ferramenta citada que o repo não tem mais (servidor MCP fora do `.mcp.json`, pacote de teste
     fora do manifest) → a regra sai, e a ferramenta vira recomendação na Etapa 6. O `CLAUDE.md`
-    atual nunca é fonte de que uma ferramenta existe;
+    atual nunca é fonte de que uma ferramenta existe. Servidor declarado mas inativo (Etapa 2) →
+    a regra fica, porque o `.mcp.json` vale para o time, e a Etapa 6 avisa;
   - seção que falta → acrescente;
   - o que é factual e específico do projeto → mantenha, inclusive a ordem e o idioma.
 
@@ -92,9 +93,18 @@ mostrar ao usuário de onde veio cada regra (Etapa 5). Olhe por três ângulos:
   arquivo nasce, convenções de organização, código gerado que não se edita à mão. Tem interface
   (componentes, CSS, tokens, janelas)? → habilita as seções UI e Teste visual: procure a
   ferramenta de teste de tela que o repo já usa e, sem nenhuma, a recomendada para a stack em
-  [teste-visual.md](teste-visual.md). Leia também o `.mcp.json` (se não existir, nenhum servidor
-  está configurado): os servidores `windows-mcp` e `playwright` que estão nele são a fonte da
-  linha "MCP de tela" da Etapa 6.
+  [teste-visual.md](teste-visual.md). Confira os servidores de tela (`windows-mcp`,
+  `playwright`) em dois níveis, porque o `.mcp.json` vai para o git mas ativar o servidor é
+  configuração local de cada pessoa:
+  - **declarado:** o servidor está no `.mcp.json` (sem o arquivo, nenhum está);
+  - **ativo:** declarado **e** habilitado no `.claude/settings.local.json` (o nome em
+    `enabledMcpjsonServers`, ou `enableAllProjectMcpServers: true`), que é o que as skills de MCP
+    gravam, **e** com as ferramentas dele nesta sessão (`mcp__windows-mcp__*`,
+    `mcp__playwright__*`). A fonte de "ativo" é a linha do `settings.local.json` mais o nome de
+    uma ferramenta que você vê. Faltou qualquer um dos três → inativo. Não deduza "ativo" do
+    `.mcp.json` nem do `CLAUDE.md`.
+
+  É daqui que sai a linha "MCP de tela" da Etapa 6, nunca do `CLAUDE.md` atual.
 - **Comportamento:** config de lint e testes, `git log` recente, rules já existentes → o que
   costuma quebrar e o que não usar.
 - **Documentos do framework**, se existirem: as specs (`docs/specs/README.md` e as que ele
@@ -137,7 +147,10 @@ Mostre ao usuário, antes de gravar:
 
 - o **diff** (modo gerar: o arquivo novo inteiro; modo complementar: só as edições);
 - a **lista de fontes**: cada fato do arquivo com a fonte dele (`package.json:12`, `Makefile:5`,
-  `usuário`). É onde o usuário pega um fato errado antes de virar regra.
+  `usuário`). É onde o usuário pega um fato errado antes de virar regra;
+- a linha **MCP de tela** da Etapa 6, sempre que o projeto tem interface. Quando ela recomenda
+  uma skill (servidor inativo ou a configurar), o usuário precisa ver isso aqui, porque pode
+  não aprovar o diff e nunca chegar à Etapa 6.
 
 Grave **só depois do OK**. Depois, **faça a varredura final**: Grep por `\{\{|<!--` no
 `CLAUDE.md`. Sobrou algo → resolva e repita até zerar.
@@ -154,7 +167,7 @@ Varredura de {{ }} e <!-- -->: limpa
 behavior.md: <presente | ausente — copie a .claude/ do framework para o projeto>
 Convenções de área fora do CLAUDE.md: <tema → /spec-rule-create "<tema>"> (ou: nenhuma)
 Teste visual: <ferramenta (no repo | a instalar → /spec-change "instalar <ferramenta>")> (ou: sem interface)
-MCP de tela: <servidor no .mcp.json | a configurar → /spec-playwright-mcp (web) ou /spec-windows-mcp (desktop Windows), que já o registra no CLAUDE.md> (ou: sem interface)
+MCP de tela: <servidor ativo | declarado mas inativo nesta sessão → /spec-windows-mcp ou /spec-playwright-mcp (reativa e verifica) | a configurar → /spec-playwright-mcp (web) ou /spec-windows-mcp (desktop Windows), que já o registra no CLAUDE.md> (ou: sem interface)
 Próximo passo: revisar o CLAUDE.md e commitar → /spec-semantic-commit
 ```
 
