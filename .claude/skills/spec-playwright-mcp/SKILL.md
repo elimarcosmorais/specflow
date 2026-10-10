@@ -1,6 +1,6 @@
 ---
 name: spec-playwright-mcp
-description: Utilitário (transversal). Configura o Playwright MCP no projeto para o agente ver e operar páginas web num navegador (abrir URL, árvore de acessibilidade, print, clique, formulário, console) - confere o Node e o navegador, fixa uma versão do pacote, registra o servidor no .mcp.json em modo headless e isolado, bloqueia a ferramenta browser_run_code_unsafe nas permissões do projeto, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe os arquivos locais no .gitignore e prova com um handshake MCP direto que o servidor sobe, abre uma página e tira um print. Também traz as dicas de uso. Não instala nada sem confirmação.
+description: Utilitário (transversal). Configura o Playwright MCP no projeto para o agente ver e operar páginas web num navegador (abrir URL, árvore de acessibilidade, print, clique, formulário, console) - confere o Node e o navegador, fixa uma versão do pacote, registra o servidor no .mcp.json em modo headless e isolado, bloqueia a ferramenta browser_run_code_unsafe nas permissões do projeto, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe os arquivos locais no .gitignore, prova com um handshake MCP direto que o servidor sobe, abre uma página e tira um print, e registra o servidor na seção Teste visual do CLAUDE.md do projeto (sem precisar voltar ao spec-claude-md). Também traz as dicas de uso. Não instala nada sem confirmação.
 argument-hint: "[headed | ferramentas extras a liberar (opcional)]"
 disable-model-invocation: true
 ---
@@ -138,16 +138,36 @@ screenshot: - [Screenshot of viewport](.playwright-mcp\page-….png)
 
 Apague o print de teste de `.playwright-mcp/` depois de mostrá-lo.
 
-## Etapa 6 — Entregar
+## Etapa 6 — Registrar no `CLAUDE.md`
 
-Mostre o output da Etapa 5 e diga o que o usuário precisa fazer, porque só ele pode:
+Esta skill fecha o próprio trabalho: não mande o usuário rodar `/spec-claude-md` por causa do
+MCP.
+
+- Sem `CLAUDE.md` no projeto → não crie. O `/spec-claude-md`, quando rodar, acha o servidor no
+  `.mcp.json`.
+- A seção Teste visual já cita o Playwright MCP → nada a fazer.
+- Senão → acrescente este bullet à seção Teste visual, no idioma do arquivo. Sem a seção, crie-a
+  na posição do [template](../spec-claude-md/template.md) (depois de UI, antes de "Pronto
+  significa"):
+
+  ```
+  - Ver a tela sem escrever teste (conferir layout, reproduzir bug) → Playwright MCP
+    (`playwright` no `.mcp.json`): suba o app em segundo plano e abra o endereço local.
+  ```
+
+  Mostre o diff e grave só depois do OK. Mexa só nessa linha, mesmo que o arquivo tenha outras
+  alterações do usuário.
+
+## Etapa 7 — Entregar
+
+Mostre o output da Etapa 5 e o que mudou no `CLAUDE.md` (ou que o projeto não tem um). Diga o
+que o usuário precisa fazer, porque só ele pode:
 
 1. recarregar o VS Code (`Ctrl+Shift+P` → "Developer: Reload Window") ou abrir uma conversa nova;
 2. aceitar o pedido de confiança no projeto ou de aprovação do `playwright`, se aparecer.
 
 Diga como testar na sessão nova, em termos do usuário: "suba o projeto e me mostre um print da
-página inicial". Se o `CLAUDE.md` do projeto não tem a seção Teste visual citando o Playwright
-MCP → próximo passo: `/spec-claude-md`.
+página inicial".
 
 # Dicas de uso
 

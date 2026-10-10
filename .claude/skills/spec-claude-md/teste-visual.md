@@ -51,4 +51,5 @@ uma mudança no projeto, não trabalho desta skill.
 O MCP de tela (ver a tela sem escrever teste) entra na Etapa 6 quando o `.mcp.json` não tem o
 servidor: web sem `playwright` → `/spec-playwright-mcp`; desktop Windows sem `windows-mcp` →
 `/spec-windows-mcp`. Nenhuma skill de MCP é chamada daqui: elas só rodam pelo usuário, e as
-ferramentas só aparecem na sessão seguinte.
+ferramentas só aparecem na sessão seguinte. Também não é preciso voltar a esta skill depois: a
+skill de MCP acrescenta ela mesma o bullet na seção Teste visual.

@@ -1,6 +1,6 @@
 ---
 name: spec-windows-mcp
-description: Utilitário (transversal, só Windows). Configura o Windows-MCP no projeto para o agente ver e operar a tela do Windows (screenshot, árvore de acessibilidade, clique, teclado, janelas) - confere o uv e o Python, fixa uma versão do pacote compatível, registra o servidor no .mcp.json só com as ferramentas de tela, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe esse arquivo no .gitignore e prova com um handshake MCP direto que o servidor sobe e lista as ferramentas. Também traz as dicas de uso aprendidas nos testes. Não instala nada sem confirmação e não libera PowerShell, Registry, FileSystem nem Process.
+description: Utilitário (transversal, só Windows). Configura o Windows-MCP no projeto para o agente ver e operar a tela do Windows (screenshot, árvore de acessibilidade, clique, teclado, janelas) - confere o uv e o Python, fixa uma versão do pacote compatível, registra o servidor no .mcp.json só com as ferramentas de tela, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe esse arquivo no .gitignore, prova com um handshake MCP direto que o servidor sobe e lista as ferramentas, e registra o servidor na seção Teste visual do CLAUDE.md do projeto (sem precisar voltar ao spec-claude-md). Também traz as dicas de uso aprendidas nos testes. Não instala nada sem confirmação e não libera PowerShell, Registry, FileSystem nem Process.
 argument-hint: "[ferramentas extras a liberar (opcional)]"
 disable-model-invocation: true
 ---
@@ -154,9 +154,30 @@ A `0.8.5` lista as mesmas, sem o `ControlStatus` (9 ferramentas).
   Python: volte à Etapa 2.
 - Timeout sem erro → rode o comando do `.mcp.json` à mão num terminal e leia o erro.
 
-## Etapa 6 — Entregar
+## Etapa 6 — Registrar no `CLAUDE.md`
 
-Mostre o output da Etapa 5 e diga o que o usuário precisa fazer, porque só ele pode:
+Esta skill fecha o próprio trabalho: não mande o usuário rodar `/spec-claude-md` por causa do
+MCP.
+
+- Sem `CLAUDE.md` no projeto → não crie. O `/spec-claude-md`, quando rodar, acha o servidor no
+  `.mcp.json`.
+- A seção Teste visual já cita o Windows-MCP → nada a fazer.
+- Senão → acrescente este bullet à seção Teste visual, no idioma do arquivo. Sem a seção, crie-a
+  na posição do [template](../spec-claude-md/template.md) (depois de UI, antes de "Pronto
+  significa"):
+
+  ```
+  - Ver a tela (conferir layout, reproduzir bug) → Windows-MCP (`windows-mcp` no `.mcp.json`):
+    abra o app e confira com `Snapshot`; o usuário não mexe no mouse enquanto o agente opera.
+  ```
+
+  Mostre o diff e grave só depois do OK. Mexa só nessa linha, mesmo que o arquivo tenha outras
+  alterações do usuário.
+
+## Etapa 7 — Entregar
+
+Mostre o output da Etapa 5 e o que mudou no `CLAUDE.md` (ou que o projeto não tem um). Diga o
+que o usuário precisa fazer, porque só ele pode:
 
 1. recarregar o VS Code (`Ctrl+Shift+P` → "Developer: Reload Window") ou abrir uma conversa nova;
 2. aceitar o pedido de confiança no projeto ou de aprovação do `windows-mcp`, se aparecer;

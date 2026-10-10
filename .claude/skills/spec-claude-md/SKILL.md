@@ -149,7 +149,7 @@ Varredura de {{ }} e <!-- -->: limpa
 behavior.md: <presente | ausente — copie a .claude/ do framework para o projeto>
 Convenções de área fora do CLAUDE.md: <tema → /spec-rule-create "<tema>"> (ou: nenhuma)
 Teste visual: <ferramenta (no repo | a instalar → /spec-change "instalar <ferramenta>")> (ou: sem interface)
-MCP de tela: <servidor no .mcp.json | a configurar → /spec-playwright-mcp (web) ou /spec-windows-mcp (desktop Windows)> (ou: sem interface)
+MCP de tela: <servidor no .mcp.json | a configurar → /spec-playwright-mcp (web) ou /spec-windows-mcp (desktop Windows), que já o registra no CLAUDE.md> (ou: sem interface)
 Próximo passo: revisar o CLAUDE.md e commitar → /spec-semantic-commit
 ```
 
