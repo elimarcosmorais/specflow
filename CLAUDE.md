@@ -34,6 +34,7 @@ Skills **utilitárias**:
 | Rules de um tema | `agent-spec-rule-create` |
 | Curadoria das rules | `agent-spec-rule-curate` |
 | Windows-MCP: agente vê e opera a tela (só Windows) | `agent-windows-mcp` |
+| Playwright MCP: agente vê e opera páginas web | `agent-playwright-mcp` |
 
 ## Ao alterar o framework
 
