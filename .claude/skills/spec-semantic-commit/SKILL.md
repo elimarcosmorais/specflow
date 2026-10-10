@@ -1,6 +1,6 @@
 ---
 name: spec-semantic-commit
-description: Utilitário do framework (transversal). Commita TODAS as mudanças do projeto (modificados, novos e apagados, respeitando o .gitignore) - coloca tudo em stage, gera a mensagem em português seguindo o Conventional Commits (tipo, escopo, assunto no imperativo em até 72 caracteres, corpo e rodapé quando fazem falta), propõe ao usuário e, depois de aprovado, commita e faz push para o remoto. Nenhum arquivo fica sem commit no final. Usar quando o usuário pedir para commitar ("commita isso", "gera o commit", "qual seria o commit?"), inclusive depois do spec-change ou do spec-build, que deixam o código sem commit. Não faz amend nem push --force.
+description: Utilitário do framework (transversal). Commita TODAS as mudanças do projeto (modificados, novos e apagados, respeitando o .gitignore) - coloca tudo em stage, gera a mensagem em português seguindo o Conventional Commits (tipo, escopo, assunto no imperativo em até 72 caracteres, corpo e rodapé quando fazem falta), commita e faz push para o remoto direto, sem pedir aprovação; se as mudanças misturam assuntos, divide em um commit por assunto. Só pergunta antes de commitar arquivo que parece segredo. Nenhum arquivo fica sem commit no final. Usar quando o usuário pedir para commitar ("commita isso", "gera o commit"), inclusive depois do spec-change ou do spec-build, que deixam o código sem commit, ou só quiser ver a mensagem ("qual seria o commit?"), caso em que mostra e não commita. Não faz amend nem push --force.
 argument-hint: "[o que mudou, em poucas palavras (opcional)]"
 ---
 
@@ -26,10 +26,12 @@ commitam**: o commit é do usuário, e esta skill é a forma de fazê-lo.
    que parece segredo e não está no `.gitignore` (`.env`, `*.pem`, `*.key`, credenciais) → tire de
    stage e pergunte ao usuário antes (Etapa 1). Dividir em mais de um commit pode, mas a soma das
    partes cobre todos os arquivos.
-2. **Proponha antes de commitar.** O commit e o push só acontecem depois que o usuário aprovar
-   a mensagem. A aprovação vale para os dois.
+2. **Commite e faça push sem perguntar.** O usuário aprova de antemão a mensagem, a divisão e o
+   push: não pergunte nada além do segredo (Regra 1). Duas exceções, só quando o usuário pede:
+   ele só quer ver a mensagem ("qual seria o commit?") → mostre e pare; ele disse para não fazer
+   push → só commite.
 3. **Um commit = um assunto.** Se o stage mistura assuntos (ex.: uma feature e um fix em outro
-   módulo), proponha dividir.
+   módulo), divida (Etapa 4).
 4. **Nunca** use `--amend`, `--no-verify` nem `push --force` (ou `--force-with-lease`), a não ser
    que o usuário peça. Se um hook do git ou o push falhar, mostre o erro e pare: não contorne
    (nada de `pull`, `rebase` ou `--force` por conta própria).
@@ -151,16 +153,14 @@ Refs: 001-projetos/v1 T1, T2, T3
 revert: reverte feat(auth): adiciona login social (abc1234)
 ```
 
-## Etapa 4 — Propor e confirmar
+## Etapa 4 — Mostrar e seguir
 
-Mostre a mensagem em um bloco de código e pergunte com `AskUserQuestion`:
+Não pergunte nada (Regra 2): mostre o que vai ser commitado e siga direto para a Etapa 5. Se o
+usuário só pediu para ver a mensagem, mostre e pare aqui.
 
-- **Commitar e fazer push** com esta mensagem (a opção recomendada);
-- **Só commitar**, sem push (ex.: o usuário quer revisar o `git log` antes de enviar);
-- **Ajustar** a mensagem (o usuário diz o quê; refaça e pergunte de novo);
-- **Dividir** — ofereça só quando o stage mistura assuntos.
+**Um assunto só:** mostre a mensagem em um bloco de código.
 
-**Dividir:** mostre a divisão por arquivo, cada parte com a sua mensagem:
+**Stage mistura assuntos:** mostre a divisão por arquivo, cada parte com a sua mensagem:
 
 ```
 Commit 1 — fix(auth): corrige validação do header Authorization em minúsculas
@@ -169,7 +169,7 @@ Commit 2 — chore(deps): atualiza dependências do go.sum
   go.sum
 ```
 
-Aprovada, faça um commit de cada vez: tire de stage os arquivos das outras partes
+Faça um commit de cada vez: tire de stage os arquivos das outras partes
 (`git restore --staged -- <arquivos>`: só tira de stage, não perde nada), commite, e devolva a
 stage os arquivos da próxima parte (`git add -- <arquivos>`). O push é um só, depois do último
 commit. Só divida **por arquivo inteiro**: todo arquivo entra em exatamente uma parte. Se um mesmo
@@ -198,7 +198,7 @@ EOF
 
 ## Etapa 6 — Push
 
-Pule esta etapa se o usuário escolheu **Só commitar**.
+Pule esta etapa se o usuário disse para não fazer push.
 
 ```bash
 git rev-parse --abbrev-ref --symbolic-full-name @{u}   # a branch tem upstream?
