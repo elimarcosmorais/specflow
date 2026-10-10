@@ -68,7 +68,7 @@ Leia o plano (é curto) e o passo. Depois, nesta ordem:
    validadas, recursos fechados? Nomes, códigos de erro, mensagens e contratos batem com o plano?
    - **Telas** (só se o passo tem tela): estado do plano faltando ou diferente → bloqueante;
      componente do design system recriado em vez de importado → bloqueante.
-6. **ADRs.** Leia as ADRs do cabeçalho do plano e confira em `docs/adr/` se alguma ADR `aceito`
+6. **ADRs.** Leia as ADRs do cabeçalho do plano e confira no índice `docs/adr/README.md` se alguma ADR `aceito`
    não citada governa os arquivos tocados. **Contradição direta a uma decisão explícita**
    (diretório, biblioteca, padrão, nome) → bloqueante, mesmo que o código pareça "mais certo":
    decidir entre corrigir o código e substituir a ADR é do usuário.

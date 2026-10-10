@@ -1,7 +1,7 @@
 ---
 name: spec-adr
-description: Utilitário do framework. Registra uma decisão de arquitetura que vale para o projeto todo em uma ADR curta (contexto, decisão, consequências, alternativas) em docs/adr/NNN-<titulo>.md. Confere antes se a decisão merece uma ADR, monta o rascunho a partir da origem (a seção Decisões de um plano, o resumo do design system ou a conversa) e fecha com o usuário o que estiver em aberto. Também substitui uma ADR antiga por uma nova. Não gera plano, spec nem código.
-argument-hint: "[título da decisão | caminho do plano que a pede | vazio para listar as pendentes]"
+description: Utilitário do framework. Registra uma decisão de arquitetura que vale para o projeto todo em uma ADR curta (contexto, decisão, consequências, alternativas) em docs/adr/NNN-<titulo>.md. Confere antes se a decisão merece uma ADR, monta o rascunho a partir da origem (a seção Decisões de um plano, o resumo do design system ou a conversa) e fecha com o usuário o que estiver em aberto. Também substitui uma ADR antiga por uma nova e mantém o índice docs/adr/README.md (atualizado a cada ADR salva; reconstruído e reorganizado por tema com o argumento "índice"). Não gera plano, spec nem código.
+argument-hint: "[título da decisão | caminho do plano que a pede | índice para organizar o índice | vazio para listar as pendentes]"
 disable-model-invocation: true
 ---
 
@@ -17,8 +17,8 @@ Registrar **uma decisão de arquitetura transversal** (que vale para o projeto t
 arquivo próprio. Os planos, o executor e os revisores tratam ADRs `aceito` como **restrições**:
 não reabrem o que uma ADR já decidiu.
 
-Saída: `docs/adr/NNN-<titulo>.md`, seguindo o [template](template.md). Fluxo e convenções
-completos: `spec-guide`.
+Saída: `docs/adr/NNN-<titulo>.md`, seguindo o [template](template.md), e a linha dela no
+índice `docs/adr/README.md` (ver "O índice"). Fluxo e convenções completos: `spec-guide`.
 
 # Quando registrar
 
@@ -46,8 +46,8 @@ prática, a recomendação vem de três lugares:
    funciona vai para `docs/specs/`.
 7. **Não copie a origem.** A ADR aponta para o documento de origem, não repete o contexto de
    produto dele.
-8. **Não edite outros documentos**, exceto o cabeçalho "ADRs que se aplicam" do plano de origem
-   (Etapa 5).
+8. **Não edite outros documentos**, exceto o índice `docs/adr/README.md` e o cabeçalho "ADRs
+   que se aplicam" do plano de origem (Etapa 5).
 9. **Não gere plano, spec nem código.**
 10. **Documento em português com acentuação correta.** Nomes de código e de tecnologias ficam
     como são.
@@ -61,6 +61,7 @@ prática, a recomendação vem de três lugares:
 - **Título de uma decisão** → use-o. Procure nos planos (`docs/plans/*.md`) de onde ele veio;
   se achar, essa é a origem. Não achou → a origem é a conversa.
 - **Caminho de um plano** → as decisões dele em "ADR a registrar" são as candidatas.
+- **`índice`** → não registra ADR: vá direto para "Organizar o índice".
 - **Vazio** → liste as ADRs **pendentes**: as pedidas em "ADR a registrar" dos planos em
   `docs/plans/` que ainda não existem em `docs/adr/`. Pergunte qual registrar. Nenhuma pendente → pergunte qual decisão o usuário
   quer registrar.
@@ -72,7 +73,8 @@ então passe à próxima.
 
 1. Leia o documento de origem (a decisão recomendada e o que ele diz sobre ela: rumos, dúvidas,
    restrições, alternativas).
-2. Liste `docs/adr/` e leia as ADRs `aceito` **relacionadas ao tema**. Se a nova decisão
+2. Leia o índice `docs/adr/README.md` (sem índice, liste `docs/adr/`) e abra as ADRs `aceito`
+   **relacionadas ao tema**. Se a nova decisão
    **contradiz** uma delas, trata-se de uma substituição (Etapa 4b).
 3. Se já existe uma ADR sobre a mesma decisão, avise e pare: não duplique.
 
@@ -111,6 +113,8 @@ e faça no máximo **2 rodadas**. Se o usuário já decidiu algo, não pergunte 
 2. **Nome:** `NNN-<titulo>.md`, com o título em kebab-case, minúsculas, sem acentos.
 3. Preencha o template, **remova os comentários `<!-- LLM-ONLY -->`** e salve com
    `status: proposto`, criando a pasta se preciso.
+4. **Índice:** acrescente a linha da ADR, no tema dela se o índice já está agrupado. Passou de 20 em vigor, agrupe por tema. Índice inexistente → crie-o; se já havia
+   outras ADRs, monte-o inteiro como em "Organizar o índice".
 
 ### 4b. Substituição (a decisão nova contradiz uma ADR `aceito`)
 
@@ -119,6 +123,7 @@ e faça no máximo **2 rodadas**. Se o usuário já decidiu algo, não pergunte 
    Alternativas a decisão antiga e o motivo da troca.
 3. Na ADR antiga, mude **só**: `status: substituído` e **Substituída por:** com a nova. O resto
    fica como está: é o histórico.
+4. **Índice:** tire a linha da antiga. A nova entrou no passo 2.
 
 ## Etapa 5 — Atualizar a origem
 
@@ -138,6 +143,7 @@ Arquivo salvo em: docs/adr/NNN-<titulo>.md
 - Alternativas descartadas: <lista curta>
 - Origem: <documento e seção | conversa>
 - Substitui: <NNN | nenhuma>
+- Índice: docs/adr/README.md <atualizado | criado> (tema: <tema> | sem agrupamento)
 
 ADRs ainda pendentes: <um `/spec-adr "<título>"` por linha> | nenhuma
 Depois delas: <origem plano → aprovar o plano e rodar `/spec-build <caminho>` | nada>
@@ -146,6 +152,60 @@ Revise o arquivo. Se estiver de acordo, mude o status para `aceito` (ou peça qu
 ```
 
 Se o usuário pedir ajustes, edite o arquivo e mostre o resumo de novo.
+
+# O índice
+
+`docs/adr/README.md` é por onde os outros agentes acham uma ADR: leem a tabela e abrem só as
+ADRs que a coluna "Abra quando" aponta. Formato:
+
+```markdown
+# ADRs
+
+Decisões que valem para o projeto todo. Abra só as ADRs cujo "Abra quando" toca a tarefa; o
+status que vale é o do arquivo.
+
+| ADR | Abra quando |
+|---|---|
+| [001 — Usar PostgreSQL como banco principal](001-usar-postgresql-como-banco-principal.md) | for criar tabela, consulta ou migração, ou escolher onde guardar um dado |
+```
+
+- **Só as em vigor:** as ADRs `proposto` e `aceito`, em ordem de número. Substituída sai do
+  índice: ninguém a consulta para decidir, e as substituições se acumulam. O histórico está nas
+  próprias ADRs (**Substitui** e **Substituída por**), e
+  `grep -l "status: substituído" docs/adr/` lista todas.
+- **Sem status:** o usuário aceita a ADR no próprio arquivo, e uma cópia aqui ficaria velha.
+- **Por tema:** passou de 20 ADRs → uma seção `## <tema>` por assunto (banco de dados,
+  segurança, front-end…), cada uma com a sua tabela, em ordem de número. Cada ADR fica num tema
+  só, o que mais pesa nela. Tema com uma ADR só vai para `## Outros`. Voltou a 20 ou menos →
+  desfaça o agrupamento.
+- **Abra quando:** a situação em que a ADR deve ser lida, com as palavras que o agente vai estar
+  usando na tarefa (camada, pasta, biblioteca, tipo de mudança), não a decisão repetida.
+  ❌ "decisão sobre o banco". ✅ "for criar tabela, consulta ou migração".
+
+## Organizar o índice (`/spec-adr índice`)
+
+Reconstrói o índice a partir dos arquivos, sem mexer em nenhuma ADR. Serve para quando o índice
+não existe (ADRs anteriores a ele), divergiu dos arquivos ou cresceu.
+
+1. Liste `docs/adr/NNN-*.md` e leia de cada uma o `status`, o título, a Decisão e o
+   **Substituída por**.
+2. Compare com o índice e corrija: ADR em vigor sem linha → acrescente; linha sem arquivo ou com
+   link quebrado → corrija ou tire; linha de ADR substituída → tire; "Abra quando" vago ou que
+   não bate com a Decisão → reescreva.
+3. Reorganize: ordem de número, agrupamento por tema conforme as regras acima, temas
+   redistribuídos se algum ficou largo demais ("Banco de dados" com metade das ADRs → divida).
+4. Inconsistência nas próprias ADRs (status `substituído` sem **Substituída por**, ou o
+   contrário; número repetido) → aponte no resumo, não corrija: ADR só muda pelo fluxo acima.
+5. Salve e mostre **apenas**:
+
+```
+Índice organizado: docs/adr/README.md (<N> ADRs em vigor)
+- Acrescentadas: <NNN, …> | nenhuma
+- Corrigidas ou removidas: <NNN — o quê, …> | nenhuma
+- "Abra quando" reescrito: <NNN, …> | nenhum
+- Temas: <tema (N), …> | sem agrupamento
+- Inconsistências nas ADRs: <NNN — o quê> | nenhuma
+```
 
 # Entrada
 

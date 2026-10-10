@@ -26,7 +26,7 @@ Skills **utilitárias**:
 | Utilitário | Skill |
 |---|---|
 | Guia do framework | `spec-guide` |
-| Decisão de arquitetura (ADR) | `spec-adr` |
+| Decisão de arquitetura (ADR) e o índice delas | `spec-adr` |
 | Design system (obrigatório com interface) | `spec-design-system` |
 | Commit semântico | `spec-semantic-commit` |
 | README do projeto | `spec-readme` |

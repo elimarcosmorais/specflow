@@ -115,7 +115,8 @@ Não commite.
 2. **Conversar.** Junte as decisões que só o usuário pode tomar e pergunte (regra 3), sempre com
    a sua recomendação e o motivo. Decisão técnica que o código, uma spec ou uma ADR já respondem
    não é pergunta: registre e siga.
-3. **ADRs.** Leia as ADRs `aceito` em `docs/adr/` que tocam a mudança e respeite-as. Decisão
+3. **ADRs.** Pelo índice `docs/adr/README.md`, ache e leia as ADRs `aceito` que tocam a
+   mudança e respeite-as. Decisão
    nova que vale para o projeto todo (só na grande) → entra na seção "Decisões" com o comando
    `/spec-adr "<título>"`, a rodar antes de aprovar o plano.
 4. **Telas.** Use os componentes e tokens do design system (`docs/design-system.md` e os

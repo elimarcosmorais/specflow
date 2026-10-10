@@ -33,7 +33,7 @@ O plano é temporário: o build o apaga depois de executar. O que fica é a docu
 |---|---|
 | `docs/specs/` | como cada módulo funciona hoje; o agente cria, edita e subdivide sem pedir permissão |
 | `docs/architecture.md` | a arquitetura base |
-| `docs/adr/` | por que cada decisão transversal foi tomada (com a sua aprovação) |
+| `docs/adr/` | por que cada decisão transversal foi tomada (com a sua aprovação); índice em `docs/adr/README.md` |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, obrigatória em projeto com interface |
 | `docs/plans/` | o plano da mudança em andamento |
 
@@ -95,7 +95,7 @@ passos de risco alto).
 | Skill | Para quê |
 |---|---|
 | `/spec-guide` | Tirar dúvidas: qual skill rodar, próximo passo de um plano, onde fica cada documento |
-| `/spec-adr` | Registrar uma decisão de arquitetura que vale para o projeto todo |
+| `/spec-adr` | Registrar uma decisão de arquitetura que vale para o projeto todo; `/spec-adr índice` organiza o índice das ADRs |
 | `/spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface) |
 | `/spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
 | `/spec-readme` | Gerar ou completar o `README.md` |

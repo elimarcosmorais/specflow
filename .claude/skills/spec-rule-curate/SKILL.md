@@ -146,7 +146,7 @@ contra o código real (passe "Provisória" da auditoria).
 
 Leia o `CLAUDE.md` e todos os `.claude/rules/*.md` (frontmatter e corpo): o que já está escrito,
 o formato dos `paths`, o idioma e o tom. Se o item é uma decisão, leia também as ADRs `aceito`
-relacionadas em `docs/adr/`: a regra não pode contradizê-las.
+relacionadas, pelo índice `docs/adr/README.md`: a regra não pode contradizê-las.
 
 ## Etapa 2a — Registrar
 

@@ -74,7 +74,7 @@ Antes de incluir cada item:
 | Rules existentes   | `.claude/rules/*.md` e `CLAUDE.md`             | Formato do frontmatter; se o tema já tem rule (→ completar) ou se parte dele já está no `CLAUDE.md`. |
 | Stack              | manifests do projeto                           | Exemplos na linguagem real. |
 | Pegada do tema     | pastas e arquivos do tema (ex.: banco: migrations, repositories, conexão) | **Brownfield** (há código) ou **greenfield** (não há). |
-| ADRs               | `docs/adr/` com status `aceito`                | Restrições: não reabra o que já foi decidido. |
+| ADRs               | as `aceito` do tema, pelo índice `docs/adr/README.md` | Restrições: não reabra o que já foi decidido. |
 | Specs e arquitetura | `docs/specs/`, `docs/architecture.md`         | Podem já descrever como o tema funciona hoje. |
 
 Diga ao usuário, numa linha, o modo: **greenfield** ou **brownfield**, e **criar** ou

@@ -53,7 +53,7 @@ note: ele vai apontar.
 
 # Exigências do projeto
 
-Leia o plano (é curto) e as ADRs do cabeçalho dele. Procure também em `docs/adr/` as ADRs
+Leia o plano (é curto) e as ADRs do cabeçalho dele. Procure também no índice `docs/adr/README.md` as ADRs
 `aceito` sobre segurança (autenticação, sessão e token, criptografia, pagamento, dados pessoais).
 É deles que vem o que **este** projeto exige além do básico desta lista. Código que contradiz uma
 decisão de segurança explícita → bloqueante, mesmo

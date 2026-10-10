@@ -60,7 +60,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | `docs/specs/` | como o sistema funciona hoje, por módulo; índice em `docs/specs/README.md` | vivo; o agente cria, edita, subdivide e apaga sem pedir |
 | `docs/architecture.md` | a arquitetura base | vivo, como as specs |
 | `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande ([template](../spec-change/template.md)) | `rascunho` → `aprovado` → executado e apagado pelo build |
-| `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova |
+| `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada; índice em `docs/adr/README.md` | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, uma categoria por arquivo | vivo; sincronizar com o código é livre, mudar a identidade é do usuário |
 | `docs/references/` | material de consulta do usuário: marca, prints, prompts | temporário; só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
 
@@ -73,7 +73,8 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
   pedaços em `assunto/`) e avisa no fim.
 - **ADR**: só decisão transversal, cara de mudar e com alternativa real. Um plano grande a pede
   na seção Decisões; ela é registrada antes de aprovar o plano. Executor e revisores tratam ADR
-  `aceito` como contrato.
+  `aceito` como contrato. Quem procura uma ADR lê o índice (só as em vigor, coluna "Abra quando",
+  agrupado por tema acima de 20) e abre só as que ele aponta; só `spec-adr` mexe no índice.
 - **Design system**: obrigatório em projeto com interface; o `spec-change` não planeja
   mudança com tela sem ele.
 
@@ -112,6 +113,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | Implementar um plano aprovado (todo, ou só um passo) | `/spec-build <plano> [N]` |
 | Registrar ou substituir uma decisão de arquitetura | `/spec-adr "<título>"` |
 | Ver as ADRs que os planos pedem e ainda faltam | `/spec-adr` (vazio) |
+| Criar, corrigir ou reorganizar o índice das ADRs | `/spec-adr índice` |
 | Criar ou atualizar o design system | `/spec-design-system [Figma, docs ou descrição]` |
 | Commitar todas as mudanças | `/spec-semantic-commit` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |
@@ -141,7 +143,7 @@ CLAUDE.md, README.md
 ├── agents/spec-executor.md, spec-reviewer.md, spec-security-reviewer.md
 └── rules/behavior.md, docs.md (sempre) e <tema>.md (só ao tocar os paths dela)
 docs/
-├── adr/NNN-<titulo>.md
+├── adr/README.md            índice; as ADRs NNN-<titulo>.md ao lado
 ├── references/              brand/, prompts/, screens/…
 ├── specs/README.md          índice; os assuntos ao lado, subdivididos em pastas
 ├── plans/AAAA-MM-DD-<slug>.md   só enquanto não executado

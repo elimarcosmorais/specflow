@@ -62,7 +62,7 @@ Projeto sem interface (só backend, biblioteca, CLI) não precisa desta skill.
 
 ## Etapa 0 — Entrada e modo
 
-1. **Tem interface?** Procure no código e nas ADRs (`docs/adr/`) sinais de UI: dependências de
+1. **Tem interface?** Procure no código e nas ADRs (pelo índice `docs/adr/README.md`) sinais de UI: dependências de
    frontend, telas, temas. Projeto sem código: veja nas ADRs, nas specs e no
    `docs/architecture.md` se o produto terá telas; na dúvida, pergunte. Sem interface → diga que
    esta skill não se aplica e pare, sem criar arquivo.
@@ -90,7 +90,7 @@ Anote o caminho de cada valor encontrado: ele vai para a coluna Origem.
 
 Leia também:
 
-- **ADRs `aceito`** em `docs/adr/` que tratem de UI (stack de frontend, organização do front).
+- **ADRs `aceito`** que tratem de UI, achadas pelo índice `docs/adr/README.md` (stack de frontend, organização do front).
   Elas são restrições: não reabra o que decidiram.
 - **Documentos do time** passados no argumento, e candidatos óbvios (`docs/**/design*`,
   `**/styleguide*`). Um prompt de `docs/references/prompts/` vale como documento do time: leia

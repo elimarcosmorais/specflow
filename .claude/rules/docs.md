@@ -8,7 +8,7 @@ Onde cada documento mora, quem pode mexer nele e quando. Vale em qualquer tarefa
 |---|---|---|
 | `docs/specs/` | **como o sistema funciona hoje**, por módulo ou assunto | o agente, livremente |
 | `docs/architecture.md` | a arquitetura base: camadas, módulos, fluxos e integrações principais | o agente, livremente |
-| `docs/adr/NNN-<titulo>.md` | **por que** uma decisão transversal foi tomada | só `/spec-adr`, com o usuário |
+| `docs/adr/NNN-<titulo>.md` + índice `docs/adr/README.md` | **por que** uma decisão transversal foi tomada | só `/spec-adr`, com o usuário |
 | `docs/design-system.md` + `docs/design/` | a identidade visual: tokens, componentes e padrões | `/spec-design-system`; sincronizar com o código é livre |
 | `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande, até ser executado | `/spec-change` cria, o usuário aprova, `/spec-build` executa e apaga |
 | `docs/references/` | material de consulta temporário do usuário: marca, prints, prompts | o usuário |
@@ -46,6 +46,14 @@ Vale para spec, `architecture.md`, `design-system.md` e os arquivos de `docs/des
 3. Os links que apontavam para o trecho movido passam a apontar para o arquivo novo.
 
 A profundidade é livre: um pedaço que passar de 300 linhas se subdivide do mesmo jeito.
+
+## ADRs: pelo índice
+
+`docs/adr/README.md` lista só as ADRs em vigor, com a coluna "Abra quando", agrupadas por tema
+quando passam de 20. Substituída sai do índice: o histórico fica nas próprias ADRs (a nova
+aponta a antiga em **Substitui**). Para achar a ADR de um assunto, leia o índice e abra só as
+que a coluna aponta; o status que vale é o do arquivo da ADR. Sem índice, liste `docs/adr/`.
+Só `/spec-adr` mexe no índice: atualiza a cada ADR salva e reorganiza com `/spec-adr índice`.
 
 ## Design system: livre para sincronizar
 

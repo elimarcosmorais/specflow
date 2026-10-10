@@ -36,7 +36,7 @@ quase-duplicata: "prefira editar o componente existente a criar um parecido". --
 ## Arquitetura
 <!-- [OPCIONAL · camadas ou decisões não óbvias] Regras de decisão, não nomes de pastas ("regra
 de negócio só em internal/<dominio>/service.go; handler não acessa o banco"). Decisões
-registradas: linkar docs/adr/, não copiar. Segredos ficam no .env (nunca no código). -->
+registradas: linkar o índice docs/adr/README.md, não copiar. Segredos ficam no .env (nunca no código). -->
 - {{REGRA_DE_ARQUITETURA}}
 
 ## UI
