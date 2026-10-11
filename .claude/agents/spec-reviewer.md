@@ -46,7 +46,9 @@ Leia o plano (é curto) e o passo. Depois, nesta ordem:
 
 1. **Escopo.** Todo arquivo de "Arquivos" foi tocado? Faltou um → bloqueante. Arquivo **fora do
    passo**: consequência legítima (chamador de uma assinatura que mudou, teste) → ok; mudança
-   alheia ao passo → bloqueante.
+   alheia ao passo → bloqueante. Exceção: correção que o executor listou em "Corrigido fora do
+   escopo" e que cumpre os critérios de impacto pequeno da rule `behavior.md` (regra 2) → ok;
+   não listada, ou que falha um critério → bloqueante, pedindo para desfazê-la.
 2. **Testes.** Rode a suíte inteira (não só a do passo) e o build/lint do "Pronto quando".
    Passo com tela → rode também o teste de tela da seção Teste visual do `CLAUDE.md`, que costuma
    ficar fora da suíte padrão (`php artisan dusk`, `npx playwright test`).

@@ -40,15 +40,19 @@ documentado nas specs, um passo por vez.
 2. **Um passo por vez**, na ordem do plano.
 3. **Só bloqueante volta para correção.** Sugestão nunca segura um passo e nunca vira arquivo:
    aparece no relatório final, e o usuário decide se faz algo com ela.
-4. **No máximo 3 tentativas por passo** (a execução + 2 correções). A última correção roda em
+4. **Fora do escopo: o pequeno se corrige, o resto se relata.** O executor corrige junto com o
+   passo o problema alheio de impacto pequeno (critérios na rule `behavior.md`, regra 2) e o
+   cita em "Corrigido fora do escopo"; o revisor confere. Tudo isso vai para o relatório final:
+   o corrigido, para o usuário saber o que entrou no stage; o resto, para ele decidir.
+5. **No máximo 3 tentativas por passo** (a execução + 2 correções). A última correção roda em
    Opus. Na 3ª reprovação, pare.
-5. **Nunca commite.** Só `git add`. O commit é do usuário.
-6. **Não mude o plano.** Nele você altera só os checkboxes do "Pronto quando" e o `status`, e o
+6. **Nunca commite.** Só `git add`. O commit é do usuário.
+7. **Não mude o plano.** Nele você altera só os checkboxes do "Pronto quando" e o `status`, e o
    apaga no fechamento (Etapa 3). Passo errado ou faltando → pare e diga; o usuário ajusta o
    plano (ou roda `/spec-change`).
-7. **Quem pergunta ao usuário é você.** Quando o executor responde `parada`, faça a pergunta dele
+8. **Quem pergunta ao usuário é você.** Quando o executor responde `parada`, faça a pergunta dele
    com `AskUserQuestion` e chame-o de novo com a resposta (não conta como tentativa).
-8. **Terminal enxuto.** Nada de diff ou código no chat: uma linha de log por evento e o
+9. **Terminal enxuto.** Nada de diff ou código no chat: uma linha de log por evento e o
    relatório final.
 
 # Fluxo
@@ -155,7 +159,8 @@ da segurança. Os testes são os do revisor.
 
 1. `git add -- <arquivos tocados pelo passo>`.
 2. No plano, marque `[x]` nos itens do "Pronto quando" que a revisão confirmou.
-3. Log: `[passo 2] concluído · staged`
+3. Guarde para o relatório o "Corrigido fora do escopo" e as "Pendências" do executor.
+4. Log: `[passo 2] concluído · staged`
 
 ## Etapa 3 — Fechar o plano
 
@@ -190,6 +195,8 @@ Specs: <arquivos atualizados> | nenhuma
 Plano: apagado (remoção em stage) | mantido: <motivo>
 A conferir por você: <CA-2: abrir a tela X e …> | nada
 Pendências do executor: <decisões que valem saber> | nenhuma
+Corrigi fora do escopo: <o que e por quê, `arquivo:linha` (passo N)> | nada
+Notei fora do escopo: <problema alheio que não era pequeno, `arquivo:linha`> | nada
 
 Sugestões dos revisores (não bloquearam):
 - [P3] <titulo> — `<arquivo>:<linha>` — <correção em 1 linha>

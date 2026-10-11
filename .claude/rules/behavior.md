@@ -9,6 +9,19 @@ Valem em qualquer tarefa, em qualquer fase do fluxo. Não são negociáveis.
    Melhoria ou problema que você notar fora dele → sinalize em separado; não execute sem
    autorização explícita. Menor delta não é entregar pela metade: dentro do escopo, faça
    completo e robusto.
+
+   **Exceção: correção de impacto pequeno**, ao implementar pelo `/spec-change` ou pelo
+   `/spec-build`. Pode corrigir sem perguntar, e informar no relatório como corrigida, o
+   problema fora do escopo que cumpre **todos** estes critérios:
+   - **óbvio:** só há um jeito certo de corrigir (erro de digitação, import ou link quebrado,
+     comentário ou spec que contradiz o código, aviso de lint, código morto evidente);
+   - **localizado:** poucas linhas, num ou dois arquivos;
+   - **sem efeito para quem usa:** não muda comportamento de que alguém depende nem contrato
+     (API, formato de dados, schema, tela);
+   - **fora de área sensível:** autenticação, autorização, pagamentos, segredos, dados pessoais;
+   - **provado:** os testes, o build e o lint que a tarefa já roda cobrem o que mudou.
+
+   Falhou um critério, ou ficou na dúvida → só sinalize.
 3. **"Funciona" só com evidência.** Ao afirmar que algo funciona, mostre o output do comando ou
    do teste que prova. Não rodou → diga "não rodei".
 4. **Ação destrutiva ou irreversível exige confirmação antes.** Ex.: apagar arquivos ou pastas,

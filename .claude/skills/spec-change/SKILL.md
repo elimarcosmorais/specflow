@@ -35,7 +35,9 @@ design system. Onde cada coisa mora: rule `docs.md`.
 3. **Pergunte só o que o código não responde**, com `AskUserQuestion` (2 a 4 opções, a
    recomendada primeiro). No máximo 2 rodadas de perguntas.
 4. **Escopo é o pedido.** O que você notar fora dele vai para a linha "Notei fora do escopo" do
-   resumo, e não para o código.
+   resumo, e não para o código. Exceção, só na pequena: problema de **impacto pequeno**
+   (critérios na rule `behavior.md`, regra 2) você corrige junto e informa na linha "Corrigi
+   fora do escopo". Na média e na grande você não mexe no código: tudo vai para o resumo.
 5. **Nunca commite.** O commit é do usuário (`/spec-semantic-commit`).
 6. **Plano curto.** Média cabe em cerca de 1 página; grande, em até 3. Seção que não se aplica é
    removida, não fica "N/A". Mais de 8 passos → proponha fatiar em planos menores, cada um
@@ -102,6 +104,7 @@ Arquivos: `<arquivo>` (+X −Y), …
 Prova: `<comando>` → <resultado> | não rodei: <motivo>
 Specs: <arquivo> (criado | atualizado | subdividido) | nenhuma
 
+Corrigi fora do escopo: <o que e por quê, `arquivo:linha`> | nada
 Notei fora do escopo: <item, `arquivo:linha`> | nada
 ```
 
@@ -148,6 +151,7 @@ Plano salvo em: docs/plans/AAAA-MM-DD-<slug>.md
 - Specs afetadas: <arquivos> | nenhuma
 - Plano: N passos (risco alto: passo X | nenhum)
 - ADR a registrar antes de aprovar: `/spec-adr "<título>"` | nenhuma
+- Notei fora do escopo: <item, `arquivo:linha`> | nada
 
 Revise o plano. Aprovado → mude o status para `aprovado` (ou peça que eu mude) e rode
 `/spec-build docs/plans/AAAA-MM-DD-<slug>.md`.

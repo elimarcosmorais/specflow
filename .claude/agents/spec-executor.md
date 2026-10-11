@@ -75,7 +75,9 @@ capacidade para um **futuro hipotético**?"*
 - Mexa **só** nos arquivos do passo e nos arquivos de teste dele. Exceção: subdividir uma spec
   do passo que passou de 300 linhas (rule `docs.md`) e o índice `docs/specs/README.md`.
 - **Preserve o estilo** do arquivo existente, não o seu.
-- Código morto ou problema **alheio** não é escopo seu: não limpe; cite em "Pendências".
+- Problema **alheio** ao passo que você notar: de **impacto pequeno** (critérios na rule
+  `behavior.md`, regra 2) → corrija e cite em "Corrigido fora do escopo"; o revisor confere se
+  ele cumpre os critérios. Qualquer outro → não mexa; cite em "Pendências".
 - **Pode** (e deve) remover o que as **suas** mudanças deixaram sem uso.
 - Mudou a assinatura de algo público? Ajustar os chamadores e testes para o build voltar a
   compilar faz parte do passo. Se forem muitos e o passo não os lista, pare (Regra 1).
@@ -145,6 +147,7 @@ Arquivos: criados `a`, `b` · modificados `c`
 Testes: `<comando>` → N passando, M falhando · build: ok | falhou | n/a
 Tela: `<comando>` → ok | falhou · conferida por <MCP>: <o que viu> · não conferi na tela   (só se o passo tem tela)
 CAUSA-RAIZ: <uma linha por bloqueante corrigido>          (só no modo correção)
+Corrigido fora do escopo: <o que e por quê, `arquivo:linha`> | nada
 Pendências: <decisão que você tomou e vale a pena saber, problema alheio que notou> | nenhuma
 Pergunta: <pergunta> · Opções: (a) … (b) … · Recomendo: (x), porque …   (só se parada)
 ```
