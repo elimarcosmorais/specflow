@@ -1,4 +1,4 @@
-# AI Software Engineering
+# SpecFlow
 
 > Um framework enxuto de skills e agents do Claude Code para desenvolver software com specs,
 > onde o processo cresce com o tamanho da mudança: nada de plano para mudar uma linha de CSS.
@@ -50,8 +50,8 @@ As regras de cada pasta estão na rule [`docs.md`](.claude/rules/docs.md).
 Copie a pasta `.claude/` (skills, agents e rules) para a raiz do seu projeto:
 
 ```bash
-git clone https://github.com/elimarcosmorais/ai-software-engineering.git
-cp -r ai-software-engineering/.claude <seu-projeto>/
+git clone https://github.com/elimarcosmorais/specflow.git
+cp -r specflow/.claude <seu-projeto>/
 ```
 
 O `CLAUDE.md` deste repositório descreve este repositório e não vai junto: gere o do seu projeto
