@@ -88,8 +88,11 @@ reclassifique.
    testes para aquela camada.
 3. **Prove.** Rode os comandos de teste, build e lint do projeto (do `CLAUDE.md` ou do
    `README.md`) que cobrem o que mudou. Mudança visual → confira-a como manda a seção Teste
-   visual do `CLAUDE.md` (o teste de tela ou o MCP que ela indica). Sem a seção, ou sem ter
-   conferido → diga "não conferi na tela".
+   visual do `CLAUDE.md` (o teste de tela ou o MCP que ela indica). Sem a seção → diga "não
+   conferi na tela". Com a seção, não pule a conferência nem a passe ao usuário: não conseguiu
+   operar a ferramenta (sem as ferramentas do MCP nesta sessão, mouse em uso com o Windows-MCP
+   depois de esperar e tentar de novo) → pergunte no chat que precisa conferir com ela e o que
+   impediu, e confira com a resposta.
 4. **Documente.** A mudança alterou o que uma spec descreve, ou criou algo que merece uma? Edite
    a spec agora, sem perguntar (rule `docs.md`).
 5. **Apareceu uma decisão** (regra 2)? Pare, mostre o que já mudou e pergunte: "promover para

@@ -161,19 +161,22 @@ MCP.
 
 - Sem `CLAUDE.md` no projeto → não crie. O `/spec-claude-md`, quando rodar, acha o servidor no
   `.mcp.json`.
-- O `CLAUDE.md` já cita o Windows-MCP, em qualquer seção → nada a fazer. Não mova a regra para
-  a seção Teste visual: reorganizar o arquivo é trabalho do `/spec-claude-md`.
+- O `CLAUDE.md` já cita o Windows-MCP, em qualquer seção → não mova a regra para a seção Teste
+  visual: reorganizar o arquivo é trabalho do `/spec-claude-md`. Só complete o bullet existente
+  com a frase "Não pule a conferência…" do bloco abaixo, se ela faltar.
 - Senão → acrescente este bullet à seção Teste visual, no idioma do arquivo. Sem a seção, crie-a
   na posição do [template](../spec-claude-md/template.md) (depois de UI, antes de "Pronto
   significa"):
 
   ```
   - Ver a tela (conferir layout, reproduzir bug) → Windows-MCP (`windows-mcp` no `.mcp.json`):
-    abra o app e confira com `Snapshot`; o usuário não mexe no mouse enquanto o agente opera.
+    abra o app e confira com `Snapshot`. Não pule a conferência nem a passe ao usuário: não
+    conseguiu operar (mouse em uso depois de esperar com `Wait`, ferramentas ausentes) →
+    pergunte no chat que precisa conferir com o Windows-MCP.
   ```
 
-  O trecho "o usuário não mexe no mouse…" só entra com a `0.8.8` ou mais nova no `.mcp.json`
-  (a disputa pelo mouse e teclado começou nela); numa versão anterior, termine em `Snapshot`.
+  O trecho "mouse em uso depois de esperar com `Wait`, " só entra com a `0.8.8` ou mais nova
+  no `.mcp.json` (a disputa pelo mouse e teclado começou nela); numa versão anterior, tire-o.
 
   Mostre o diff e grave só depois do OK. Mexa só nessa linha, mesmo que o arquivo tenha outras
   alterações do usuário.
@@ -218,7 +221,9 @@ O que os testes mostraram ao operar um app desktop com estas ferramentas:
   assume o mouse e o teclado físicos e mostra um aviso na tela. Se o usuário mexer, o agente
   perde o controle e só o retoma depois de uma espera sem uso. Ação recusada nesse meio-tempo →
   consulte o `ControlStatus` (dono atual e segundos que faltam), espere com `Wait` e tente de
-  novo. Avise o usuário para não mexer enquanto o agente trabalha.
+  novo. **Mouse em uso não é motivo para pular a conferência**, nem para passá-la ao usuário:
+  depois de umas 3 esperas sem conseguir, pergunte no chat ("Preciso conferir a tela com o
+  Windows-MCP. Solte o mouse e o teclado e me avise.") e, com a resposta, confira.
 - **Coordenadas.** Se a imagem vier reduzida, multiplique as coordenadas da imagem pela razão
   entre o tamanho real da tela e o da imagem antes de clicar.
 - **Mostrar o print ao usuário.** O resultado do `Snapshot`/`Screenshot` diz onde a imagem foi

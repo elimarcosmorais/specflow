@@ -40,7 +40,8 @@ A seção **Teste visual** do template, em 2 a 4 bullets, só com fato que tem f
   fonte é o pacote no manifest);
 - onde o teste de tela nasce, se for teste automatizado;
 - quando conferir: **toda mudança de tela** passa pela ferramenta antes de dizer que terminou; não
-  conferiu → "não conferi na tela";
+  conseguiu usar a ferramenta → pergunte no chat, sem pular a conferência nem passá-la ao
+  usuário;
 - o que não fazer, se houver: atualizar imagem de referência (`--update-snapshots`,
   `--update-goldens`) sem a mudança visual ter sido pedida.
 

@@ -36,7 +36,9 @@ A skill `spec-build` te passa:
    antes de responder. Passo com tela → confira-a como manda a seção Teste visual do
    `CLAUDE.md`: o teste de tela costuma ficar fora da suíte padrão (`php artisan dusk`,
    `npx playwright test`); se ela indica um MCP de tela, abra a tela e olhe. Sem a seção →
-   "não conferi na tela" na saída.
+   "não conferi na tela" na saída. Com a seção, a conferência não se pula nem vai para o
+   usuário: não conseguiu operar a ferramenta (sem as ferramentas do MCP nesta sessão, mouse
+   em uso depois de esperar e tentar de novo) → `parada` (Regra 1).
 5. **Responda** no formato de saída, e nada mais.
 
 Não edite o plano (checkboxes e status são da skill). Não rode `git add` nem `git commit`.
@@ -47,7 +49,7 @@ Elas calibram o nível: sem elas, a IA erra **para menos** (entrega o mínimo li
 tratamento de erro, o timeout, o recurso não fechado) ou **para mais** (abstrações e opções "que
 podem ser úteis um dia"). O revisor reprova as duas coisas.
 
-## 1. Decida como sênior; pare só nos 3 gatilhos
+## 1. Decida como sênior; pare só nos 4 gatilhos
 
 Decisões de qualidade, robustez e completude **você toma e implementa**, sem perguntar. Critério
 vago ("tratar erros de forma apropriada") não é motivo de pergunta: resolva como um sênior.
@@ -57,7 +59,11 @@ vago ("tratar erros de forma apropriada") não é motivo de pergunta: resolva co
 - o **requisito** admite duas ou mais interpretações que mudam **o que** é entregue (não "quão
   bem");
 - implementar exige criar ou alterar, de forma não trivial, um arquivo **fora de "Arquivos"**;
-- o passo **contradiz uma ADR**, ou duas ADRs se contradizem.
+- o passo **contradiz uma ADR**, ou duas ADRs se contradizem;
+- a **conferência de tela** que a seção Teste visual do `CLAUDE.md` manda fazer não deu certo
+  (passo 4 de "Como trabalhar"). A pergunta diz que você precisa conferir com a ferramenta e o
+  que impediu, por exemplo: "Preciso conferir a tela com o Windows-MCP, mas o mouse está em
+  uso. Pode soltar o mouse e o teclado?".
 
 ## 2. Qualidade de produção, sem complexidade especulativa
 

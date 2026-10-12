@@ -169,7 +169,10 @@ Quando todos os passos estiverem concluídos:
 1. Rode a suíte de testes e o build do projeto. Falhou → mostre no relatório e não apague o
    plano.
 2. CAs marcados `(manual: …)` → não rode: liste-os no relatório, com o roteiro, para o usuário.
-   Passo cujo executor respondeu `Tela: não conferi na tela` → a tela dele entra na mesma lista.
+   Passo cujo executor respondeu `Tela: não conferi na tela` → a tela dele entra na mesma lista,
+   mas só se o `CLAUDE.md` não tem como o agente conferir (sem a seção Teste visual). Com a
+   seção, conferir é do executor: ele para e pergunta quando não consegue (ex.: mouse em uso
+   com o Windows-MCP), e a tela não vira tarefa do usuário.
    Comando que só pede admin → rode você, elevando só ele (`behavior.md`, regra 5).
 3. Tudo passou → **apague o plano**: `git rm -q -- <plano>` se ele está no git, senão apague o
    arquivo. A remoção fica em stage e entra no mesmo commit do código, como prevê a rule
