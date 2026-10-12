@@ -122,6 +122,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | Decidir se algo vira regra, ou auditar as rules | `/spec-rule-curate "<item>"` · `/spec-rule-curate auditar` |
 | Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/spec-windows-mcp [ferramentas extras]` |
 | Deixar o agente ver e operar páginas web num navegador (print, clique, console) | `/spec-playwright-mcp [headed]` |
+| Trazer a versão nova do SpecFlow (skills, agents, rules) para o projeto | `/spec-upgrade [tag, branch ou commit]` |
 
 Documentar ou reorganizar specs não tem comando: o agente faz quando precisa (rule `docs.md`).
 

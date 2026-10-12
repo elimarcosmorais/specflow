@@ -35,6 +35,7 @@ Skills **utilitárias**:
 | Curadoria das rules | `spec-rule-curate` |
 | Windows-MCP: agente vê e opera a tela (só Windows) | `spec-windows-mcp` |
 | Playwright MCP: agente vê e opera páginas web | `spec-playwright-mcp` |
+| Atualizar o SpecFlow no projeto a partir do GitHub | `spec-upgrade` |
 
 ## Ao alterar o framework
 

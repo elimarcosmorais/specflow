@@ -57,6 +57,10 @@ cp -r specflow/.claude <seu-projeto>/
 O `CLAUDE.md` deste repositório descreve este repositório e não vai junto: gere o do seu projeto
 com `/spec-claude-md`.
 
+Para atualizar depois, rode `/spec-upgrade` no seu projeto: ele baixa a versão nova deste
+repositório, atualiza o que é do framework e pergunta antes de sobrescrever um arquivo que o
+projeto editou. Skills, agents e rules próprios do projeto ficam intocados.
+
 ## Uso
 
 Dentro do Claude Code, na pasta do seu projeto, descreva a mudança:
@@ -104,5 +108,6 @@ passos de risco alto).
 | `/spec-rule-curate` | Decidir se um item vira regra, e auditar as rules |
 | `/spec-windows-mcp` | Configurar o Windows-MCP para o agente ver e operar a tela (só Windows) |
 | `/spec-playwright-mcp` | Configurar o Playwright MCP para o agente ver e operar páginas web |
+| `/spec-upgrade` | Trazer as skills, os agents e as rules da versão nova do SpecFlow, preservando o que o projeto editou ou criou |
 
 Argumentos de cada comando: [mapa de roteamento](.claude/skills/spec-guide/SKILL.md#5-mapa-de-roteamento).
