@@ -1,6 +1,6 @@
 ---
 name: spec-windows-mcp
-description: Utilitário (transversal, só Windows). Configura o Windows-MCP no projeto para o agente ver e operar a tela do Windows (screenshot, árvore de acessibilidade, clique, teclado, janelas) - confere o uv e o Python, fixa uma versão do pacote compatível, registra o servidor no .mcp.json só com as ferramentas de tela, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe esse arquivo no .gitignore, prova com um handshake MCP direto que o servidor sobe e lista as ferramentas, e registra o servidor na seção Teste visual do CLAUDE.md do projeto (sem precisar voltar ao spec-claude-md). Também traz as dicas de uso aprendidas nos testes. Não instala nada sem confirmação e não libera PowerShell, Registry, FileSystem nem Process.
+description: Utilitário (transversal, só Windows). Configura o Windows-MCP no projeto para o agente ver e operar a tela do Windows (screenshot, árvore de acessibilidade, clique, teclado, janelas) - confere o uv e o Python, fixa uma versão do pacote compatível, registra o servidor no .mcp.json só com as ferramentas de tela, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe esse arquivo no .gitignore, prova com um handshake MCP direto que o servidor sobe e lista as ferramentas, e registra o servidor na seção Teste visual do CLAUDE.md do projeto (sem precisar voltar ao spec-claude). Também traz as dicas de uso aprendidas nos testes. Não instala nada sem confirmação e não libera PowerShell, Registry, FileSystem nem Process.
 argument-hint: "[ferramentas extras a liberar (opcional)]"
 disable-model-invocation: true
 ---
@@ -156,16 +156,16 @@ A `0.8.5` lista as mesmas, sem o `ControlStatus` (9 ferramentas).
 
 ## Etapa 6 — Registrar no `CLAUDE.md`
 
-Esta skill fecha o próprio trabalho: não mande o usuário rodar `/spec-claude-md` por causa do
+Esta skill fecha o próprio trabalho: não mande o usuário rodar `/spec-claude` por causa do
 MCP.
 
-- Sem `CLAUDE.md` no projeto → não crie. O `/spec-claude-md`, quando rodar, acha o servidor no
+- Sem `CLAUDE.md` no projeto → não crie. O `/spec-claude`, quando rodar, acha o servidor no
   `.mcp.json`.
 - O `CLAUDE.md` já cita o Windows-MCP, em qualquer seção → não mova a regra para a seção Teste
-  visual: reorganizar o arquivo é trabalho do `/spec-claude-md`. Só complete o bullet existente
+  visual: reorganizar o arquivo é trabalho do `/spec-claude`. Só complete o bullet existente
   com a frase "Não pule a conferência…" do bloco abaixo, se ela faltar.
 - Senão → acrescente este bullet à seção Teste visual, no idioma do arquivo. Sem a seção, crie-a
-  na posição do [template](../spec-claude-md/template.md) (depois de UI, antes de "Pronto
+  na posição do [template](../spec-claude/template.md) (depois de UI, antes de "Pronto
   significa"):
 
   ```

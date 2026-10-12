@@ -30,7 +30,7 @@ Skills **utilitárias**:
 | Design system (obrigatório com interface) | `spec-design-system` |
 | Commit semântico | `spec-semantic-commit` |
 | README do projeto | `spec-readme` |
-| CLAUDE.md do projeto | `spec-claude-md` |
+| CLAUDE.md do projeto | `spec-claude` |
 | Rules de um tema | `spec-rule-create` |
 | Curadoria das rules | `spec-rule-curate` |
 | Windows-MCP: agente vê e opera a tela (só Windows) | `spec-windows-mcp` |

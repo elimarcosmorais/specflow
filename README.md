@@ -55,7 +55,7 @@ cp -r specflow/.claude <seu-projeto>/
 ```
 
 O `CLAUDE.md` deste repositório descreve este repositório e não vai junto: gere o do seu projeto
-com `/spec-claude-md`.
+com `/spec-claude`.
 
 Para atualizar depois, rode `/spec-upgrade` no seu projeto: ele baixa a versão nova deste
 repositório, atualiza o que é do framework e pergunta antes de sobrescrever um arquivo que o
@@ -103,7 +103,7 @@ passos de risco alto).
 | `/spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface) |
 | `/spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
 | `/spec-readme` | Gerar ou completar o `README.md` |
-| `/spec-claude-md` | Gerar ou enxugar o `CLAUDE.md` |
+| `/spec-claude` | Gerar ou enxugar o `CLAUDE.md` |
 | `/spec-rule-create` | Definir as convenções de um tema (banco, erros HTTP…) em uma rule |
 | `/spec-rule-curate` | Decidir se um item vira regra, e auditar as rules |
 | `/spec-windows-mcp` | Configurar o Windows-MCP para o agente ver e operar a tela (só Windows) |

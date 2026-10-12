@@ -24,7 +24,7 @@ um plano: não tem status de aprovação nem pasta em `docs/`.
 | Estabelecer do zero as convenções de um tema                     | **esta**                  |
 | Decidir se um item solto vira regra, ou auditar as rules         | `/spec-rule-curate` |
 | Registrar uma decisão de arquitetura, com alternativas           | `/spec-adr`         |
-| Gerar ou auditar o `CLAUDE.md` inteiro                           | `/spec-claude-md`   |
+| Gerar ou auditar o `CLAUDE.md` inteiro                           | `/spec-claude`      |
 | Decisões técnicas de uma mudança só                              | `/spec-change` (seção Decisões do plano) |
 
 # Regras

@@ -117,7 +117,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | Criar ou atualizar o design system | `/spec-design-system [Figma, docs ou descrição]` |
 | Commitar todas as mudanças | `/spec-semantic-commit` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |
-| Criar, auditar ou enxugar o CLAUDE.md | `/spec-claude-md [pasta]` |
+| Criar, auditar ou enxugar o CLAUDE.md | `/spec-claude [pasta]` |
 | Definir as convenções de um tema (banco, erros HTTP…) | `/spec-rule-create "<tema>"` |
 | Decidir se algo vira regra, ou auditar as rules | `/spec-rule-curate "<item>"` · `/spec-rule-curate auditar` |
 | Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/spec-windows-mcp [ferramentas extras]` |

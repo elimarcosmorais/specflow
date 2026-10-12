@@ -1,6 +1,6 @@
 ---
 name: spec-rule-curate
-description: Utilitário do framework (transversal). Decide se uma convenção, decisão ou feedback ("isso foi feito errado") merece virar regra do projeto e, se merece, onde ela fica (CLAUDE.md, rule global ou rule por área com paths), quando ela carrega e como é escrita (uma linha, o porquê e um micro-exemplo ✅/❌). Aplica o teste de fricção antes de escrever qualquer linha e mostra o diff antes de gravar. Também audita as rules existentes, procurando o que está desatualizado, duplicado, óbvio ou com escopo errado. Usar quando o usuário perguntar "isso vale uma regra?", pedir "documenta isso", "deixa isso registrado", "adiciona ao .claude/rules", ou pedir para revisar ou limpar as rules. Não serve para criar do zero as convenções de um tema inteiro (spec-rule-create), gerar o CLAUDE.md inteiro (spec-claude-md), registrar decisão de arquitetura (spec-adr) nem conteúdo de feature.
+description: Utilitário do framework (transversal). Decide se uma convenção, decisão ou feedback ("isso foi feito errado") merece virar regra do projeto e, se merece, onde ela fica (CLAUDE.md, rule global ou rule por área com paths), quando ela carrega e como é escrita (uma linha, o porquê e um micro-exemplo ✅/❌). Aplica o teste de fricção antes de escrever qualquer linha e mostra o diff antes de gravar. Também audita as rules existentes, procurando o que está desatualizado, duplicado, óbvio ou com escopo errado. Usar quando o usuário perguntar "isso vale uma regra?", pedir "documenta isso", "deixa isso registrado", "adiciona ao .claude/rules", ou pedir para revisar ou limpar as rules. Não serve para criar do zero as convenções de um tema inteiro (spec-rule-create), gerar o CLAUDE.md inteiro (spec-claude), registrar decisão de arquitetura (spec-adr) nem conteúdo de feature.
 argument-hint: "[o item a registrar, ex.: \"handler valida o input e retorna 400\" | auditar [arquivo de rule]]"
 disable-model-invocation: true
 ---
@@ -26,7 +26,7 @@ aprovação nem pasta em `docs/`.
 |------------------------------------------------------------------|---------------------------|
 | Decidir se um item vira regra, ou auditar as rules               | **esta**                  |
 | Estabelecer do zero as convenções de um tema (banco, erros, DI…) | `/spec-rule-create` |
-| Gerar ou auditar o `CLAUDE.md` inteiro                           | `/spec-claude-md`   |
+| Gerar ou auditar o `CLAUDE.md` inteiro                           | `/spec-claude`      |
 | Registrar uma decisão de arquitetura, com alternativas           | `/spec-adr`         |
 | Convenção que vale só para uma feature                           | Tech Alignment / Tech Spec da feature |
 

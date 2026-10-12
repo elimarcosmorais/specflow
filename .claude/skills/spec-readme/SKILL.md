@@ -19,7 +19,7 @@ Saída: `README.md` na pasta do projeto, seguindo o [template](template.md). Nã
 plano: não tem status nem pasta em `docs/`.
 
 Fronteira: `CLAUDE.md` e `.claude/rules/` são instruções para o **agente**; o README é para
-**pessoas** (o `CLAUDE.md` se gera com `/spec-claude-md`). Nada de regra de comportamento
+**pessoas** (o `CLAUDE.md` se gera com `/spec-claude`). Nada de regra de comportamento
 de agente no README ("faça o menor delta", "rode os testes antes"): se aparecer, está no arquivo
 errado.
 

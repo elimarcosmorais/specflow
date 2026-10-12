@@ -1,6 +1,6 @@
 ---
 name: spec-playwright-mcp
-description: Utilitário (transversal). Configura o Playwright MCP no projeto para o agente ver e operar páginas web num navegador (abrir URL, árvore de acessibilidade, print, clique, formulário, console) - confere o Node e o navegador, fixa uma versão do pacote, registra o servidor no .mcp.json em modo headless e isolado, bloqueia a ferramenta browser_run_code_unsafe nas permissões do projeto, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe os arquivos locais no .gitignore, prova com um handshake MCP direto que o servidor sobe, abre uma página e tira um print, e registra o servidor na seção Teste visual do CLAUDE.md do projeto (sem precisar voltar ao spec-claude-md). Também traz as dicas de uso. Não instala nada sem confirmação.
+description: Utilitário (transversal). Configura o Playwright MCP no projeto para o agente ver e operar páginas web num navegador (abrir URL, árvore de acessibilidade, print, clique, formulário, console) - confere o Node e o navegador, fixa uma versão do pacote, registra o servidor no .mcp.json em modo headless e isolado, bloqueia a ferramenta browser_run_code_unsafe nas permissões do projeto, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe os arquivos locais no .gitignore, prova com um handshake MCP direto que o servidor sobe, abre uma página e tira um print, e registra o servidor na seção Teste visual do CLAUDE.md do projeto (sem precisar voltar ao spec-claude). Também traz as dicas de uso. Não instala nada sem confirmação.
 argument-hint: "[headed | ferramentas extras a liberar (opcional)]"
 disable-model-invocation: true
 ---
@@ -140,15 +140,15 @@ Apague o print de teste de `.playwright-mcp/` depois de mostrá-lo.
 
 ## Etapa 6 — Registrar no `CLAUDE.md`
 
-Esta skill fecha o próprio trabalho: não mande o usuário rodar `/spec-claude-md` por causa do
+Esta skill fecha o próprio trabalho: não mande o usuário rodar `/spec-claude` por causa do
 MCP.
 
-- Sem `CLAUDE.md` no projeto → não crie. O `/spec-claude-md`, quando rodar, acha o servidor no
+- Sem `CLAUDE.md` no projeto → não crie. O `/spec-claude`, quando rodar, acha o servidor no
   `.mcp.json`.
 - O `CLAUDE.md` já cita o Playwright MCP, em qualquer seção → nada a fazer. Não mova a regra
-  para a seção Teste visual: reorganizar o arquivo é trabalho do `/spec-claude-md`.
+  para a seção Teste visual: reorganizar o arquivo é trabalho do `/spec-claude`.
 - Senão → acrescente este bullet à seção Teste visual, no idioma do arquivo. Sem a seção, crie-a
-  na posição do [template](../spec-claude-md/template.md) (depois de UI, antes de "Pronto
+  na posição do [template](../spec-claude/template.md) (depois de UI, antes de "Pronto
   significa"):
 
   ```
