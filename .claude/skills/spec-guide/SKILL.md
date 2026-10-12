@@ -40,6 +40,8 @@ onde cada coisa está definida. Preciso, direto, e sempre dizendo de onde tirou 
                        código e specs em stage · plano apagado (em stage)
                                               ▼
                                   /spec-semantic-commit
+                                              ▼
+                          /spec-release (quando quiser lançar uma versão)
 ```
 
 | Tamanho | Quando | Documento |
@@ -63,6 +65,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada; índice em `docs/adr/README.md` | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, uma categoria por arquivo | vivo; sincronizar com o código é livre, mudar a identidade é do usuário |
 | `docs/references/` | material de consulta do usuário: marca, prints, prompts | temporário; só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
+| `CHANGELOG.md` | o que mudou para quem usa, por versão lançada | só `spec-release` escreve, uma seção por versão; a versão em si é a tag |
 
 - **Plano** junta problema, comportamento (CAs), decisões, telas, contratos, specs afetadas e os
   **passos**. Seção que não se aplica é removida. Mais de 8 passos → fatiar em planos menores.
@@ -116,6 +119,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | Criar, corrigir ou reorganizar o índice das ADRs | `/spec-adr índice` |
 | Criar ou atualizar o design system | `/spec-design-system [Figma, docs ou descrição]` |
 | Commitar todas as mudanças | `/spec-semantic-commit` |
+| Lançar uma versão (SemVer, CHANGELOG, tag, GitHub Release), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |
 | Criar, auditar ou enxugar o CLAUDE.md | `/spec-claude [pasta]` |
 | Definir as convenções de um tema (banco, erros HTTP…) | `/spec-rule-create "<tema>"` |
@@ -138,7 +142,7 @@ contexto; a rule diz como aplicar e carrega) · README × `CLAUDE.md` (pessoas �
 # 6. Estrutura e convenções
 
 ```
-CLAUDE.md, README.md
+CLAUDE.md, README.md, CHANGELOG.md (só depois da primeira versão)
 .claude/
 ├── skills/spec-<nome>/SKILL.md (+ template.md quando gera documento)
 ├── agents/spec-executor.md, spec-reviewer.md, spec-security-reviewer.md

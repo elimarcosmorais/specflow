@@ -79,7 +79,8 @@ Revise, mude o status para `aprovado` e rode:
 ```
 
 O build implementa, atualiza as specs dos módulos tocados e apaga o plano. Nada é commitado
-sozinho: no fim, `/spec-semantic-commit`.
+sozinho: no fim, `/spec-semantic-commit`. Para lançar uma versão com o que já foi commitado,
+`/spec-release`.
 
 ## Skills e agents
 
@@ -102,6 +103,7 @@ passos de risco alto).
 | `/spec-adr` | Registrar uma decisão de arquitetura que vale para o projeto todo; `/spec-adr índice` organiza o índice das ADRs |
 | `/spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface) |
 | `/spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
+| `/spec-release` | Lançar uma versão: calcula o número pelos commits, atualiza o `CHANGELOG.md`, cria a tag e o GitHub Release |
 | `/spec-readme` | Gerar ou completar o `README.md` |
 | `/spec-claude` | Gerar ou enxugar o `CLAUDE.md` |
 | `/spec-rule-create` | Definir as convenções de um tema (banco, erros HTTP…) em uma rule |

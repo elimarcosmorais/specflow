@@ -12,6 +12,7 @@ Onde cada documento mora, quem pode mexer nele e quando. Vale em qualquer tarefa
 | `docs/design-system.md` + `docs/design/` | a identidade visual: tokens, componentes e padrões | `/spec-design-system`; sincronizar com o código é livre |
 | `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande, até ser executado | `/spec-change` cria, o usuário aprova, `/spec-build` executa e apaga |
 | `docs/references/` | material de consulta temporário do usuário: marca, prints, prompts | o usuário |
+| `CHANGELOG.md` | o que mudou para quem usa, em cada versão lançada | `/spec-release`, a cada versão |
 
 **Não duplique.** A spec diz **como funciona** e aponta para a ADR que diz **por quê**. O plano
 diz o que uma mudança vai fazer e some depois dela: o que sobrevive vai para a spec (como

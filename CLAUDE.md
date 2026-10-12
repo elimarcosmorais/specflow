@@ -29,6 +29,7 @@ Skills **utilitárias**:
 | Decisão de arquitetura (ADR) e o índice delas | `spec-adr` |
 | Design system (obrigatório com interface) | `spec-design-system` |
 | Commit semântico | `spec-semantic-commit` |
+| Versão: SemVer, CHANGELOG, tag e GitHub Release | `spec-release` |
 | README do projeto | `spec-readme` |
 | CLAUDE.md do projeto | `spec-claude` |
 | Rules de um tema | `spec-rule-create` |
