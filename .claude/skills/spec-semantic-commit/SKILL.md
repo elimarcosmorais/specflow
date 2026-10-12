@@ -146,7 +146,7 @@ BREAKING CHANGE: clientes que leem `preco` devem passar a ler `valor`.
 ```
 feat(projects): implementa cadastro e listagem de projetos
 
-Refs: 001-projetos/v1 T1, T2, T3
+Refs: plano 2026-10-08-cadastro-de-projetos
 ```
 
 ```
@@ -191,7 +191,7 @@ tipo(escopo): descrição
 
 Corpo explicando o porquê.
 
-Refs: 001-<feature>/v1 T1, T2
+Refs: plano AAAA-MM-DD-<slug>
 EOF
 )"
 ```
