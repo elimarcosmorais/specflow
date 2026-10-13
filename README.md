@@ -23,8 +23,8 @@ pedido ─► /spec-change ─┬─ pequena ─► código testado
                         └─ média/grande ─► plano ─► você aprova ─► /spec-build ─► código revisado
 ```
 
-Na revisão, só o que um sênior recusaria num PR volta para correção. O resto vira sugestão no
-relatório. Mapa completo: [spec-guide](.claude/skills/spec-guide/SKILL.md).
+Na revisão, só o que um sênior recusaria num PR volta para correção. O resto vira sugestão: o
+executor a aplica numa rodada revisada à parte, e o que ele recusar fica no relatório. Mapa completo: [spec-guide](.claude/skills/spec-guide/SKILL.md).
 
 O plano é temporário: o build o apaga depois de executar. O que fica é a documentação viva em
 `docs/`, que o agente mantém sozinho, junto com o código:

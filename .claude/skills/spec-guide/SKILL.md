@@ -87,13 +87,21 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 
 ```
   passo ──► spec-executor ──► spec-reviewer ────────┬─ aprovado ──► git add, marca o passo
-           (contexto limpo,   (+ security-reviewer  └─ reprovado ──► correção (até 2; a última em Opus)
-            só este passo)     se Risco: alto)                       3ª reprovação → para e pergunta
+           (contexto limpo,   (+ security-reviewer  │               └► rodada de sugestões (uma vez)
+            só este passo)     se Risco: alto)      └─ reprovado ──► correção (até 2; a última em Opus)
+                                                                     3ª reprovação → para e pergunta
 ```
 
 - **Dois níveis de problema:** **bloqueante** (um sênior recusaria o PR) volta para correção;
-  **sugestão** (no máximo 3 por revisão) não segura o passo e aparece só no relatório final.
-  Estilo, gosto e otimização sem medição não são apontados.
+  **sugestão** (no máximo 3 por revisão) não segura o passo. Estilo, gosto e otimização sem
+  medição não são apontados.
+- **Rodada de sugestões:** depois da aprovação, o executor tenta as sugestões uma vez, podendo
+  recusar com o motivo, e os revisores conferem só esse delta. Se reprovar, a rodada é
+  descartada, sem correção, e o passo aprovado continua em stage. O que não entrou vai para o
+  relatório.
+- **Relatório:** separa **Para você** (conferir, decidir, problemas fora do escopo, sugestões que
+  não entraram) de **Só para saber** (decisões do executor, o que difere do plano, o que ele
+  corrigiu e as sugestões aplicadas).
 - **Git:** o passo aprovado fica em stage, nunca commitado. Como os anteriores já estão em stage,
   `git diff` mostra só o passo da vez: é assim que a revisão isola o passo.
 - **Fechamento:** suíte e build verdes → o build apaga o plano (remoção em stage, entra no mesmo

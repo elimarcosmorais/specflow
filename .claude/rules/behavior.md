@@ -28,7 +28,9 @@ Valem em qualquer tarefa, em qualquer fase do fluxo. Não são negociáveis.
    editar plano `aprovado` (exceto os checkboxes e o status que o build marca), ADR `aceito`,
    `git reset`/`git restore`/`push --force`, commit e push, migração de schema, delete de dados
    em massa. Não pedem confirmação, porque a rule `docs.md` já as autoriza: mexer nas specs e
-   no `docs/architecture.md`, e o build apagar o plano que executou.
+   no `docs/architecture.md`, e o build apagar o plano que executou. Também não pede o build
+   descartar a rodada de sugestões que a revisão reprovou: ela desfaz só o que o próprio build
+   acabou de fazer, e o passo aprovado continua em stage.
 5. **Precisou de admin → eleve só aquele comando.** Não passe a tarefa ao usuário nem rode a
    sessão inteira como admin. Antes, diga no chat o comando exato e por quê: o aviso do UAC não
    mostra o comando. O processo elevado não devolve a saída, então grave-a num log e leia-o

@@ -25,7 +25,9 @@ A skill `spec-build` te passa:
 - a **lista de arquivos tocados**: novos, modificados e **fora do passo** (não estão em
   "Arquivos");
 - o resumo do executor;
-- numa nova tentativa: o número dela e os bloqueantes da tentativa anterior.
+- numa nova tentativa: o número dela e os bloqueantes da tentativa anterior;
+- numa **rodada de sugestões**: as sugestões que o executor aplicou e as que recusou (ver
+  "Rodada de sugestões").
 
 # Como ver o que mudou
 
@@ -83,8 +85,10 @@ Leia o plano (é curto) e o passo. Depois, nesta ordem:
    migração destrutiva sem a volta ou o plano "irreversível" descrito no plano; código gerado ("DO NOT
    EDIT", "Code generated") editado à mão; fonte de código gerado mudou e o gerado não aparece no
    diff.
-9. **Pendências do executor.** Se ele citou um problema real **deste passo**, aplique as mesmas
-   regras.
+9. **O que o executor relatou** ("Decisões", "Difere do plano", "A decidir", "Notei fora do
+   escopo"). Se ele citou um problema real **deste passo**, aplique as mesmas regras. Bloqueante:
+   "Difere do plano" que muda o que o "Pronto quando" pede; "A decidir" que o executor resolveria
+   dentro do passo sem mudar um valor que o plano fixou.
 
 # Sugestões
 
@@ -95,8 +99,22 @@ exato, complexidade especulativa localizada.
 - **No máximo 3 por revisão**, as mais importantes. Uma revisão sem sugestão é normal e boa.
 - **Não aponte:** estilo, gosto, nome que "poderia ser melhor", otimização sem medição, melhoria
   fora do diff, nem nada que o plano não pediu. Isso não vira sugestão: simplesmente não entra.
-- Sugestão não volta para o executor. Ela aparece no relatório final, e o usuário decide o que fazer
-  com ela.
+- Sugestão não segura o passo. Depois da aprovação, a skill a entrega ao executor numa rodada
+  única, e o que ele recusar ou não passar vai para o relatório final. Por isso a correção
+  sugerida tem de ser concreta o bastante para ser aplicada sem perguntar.
+
+# Rodada de sugestões
+
+Quando o prompt diz **"rodada de sugestões"**, o passo já foi aprovado e está em stage. O
+`git diff -- <arquivo>` mostra só o que o executor mudou para aplicar as sugestões. Revise esse
+delta como um passo, com estas diferenças:
+
+- **Escopo:** cada mudança corresponde a uma sugestão que o executor diz ter aplicado. O resto é
+  bloqueante, assim como um arquivo existente fora de "Arquivos" que foi alterado. Não se
+  aplica a pergunta "todo arquivo de 'Arquivos' foi tocado?".
+- **Testes:** rode a suíte inteira e o build/lint, como sempre.
+- **Sem sugestões novas:** aponte só bloqueantes, porque a rodada não se repete. Uma sugestão
+  que o executor recusou não é problema seu.
 
 # Status
 

@@ -29,7 +29,8 @@ A skill `spec-build` te passa:
 - o caminho do plano e o número do passo;
 - a **lista de arquivos tocados**, separados em: novos, modificados e **fora do passo** (não
   estão em "Arquivos");
-- o resumo do executor (arquivos, testes, pendências);
+- o resumo do executor (arquivos, testes, decisões, riscos a decidir e o que ele notou fora do
+  escopo);
 - numa nova tentativa: o número dela e os bloqueantes da tentativa anterior. Confira se cada
   problema de segurança foi corrigido na causa, e não só deslocado para outro ponto.
 
@@ -131,7 +132,7 @@ Aplique as áreas que o passo toca e liste-as em `areas_revisadas`.
 | Nível | Quando | Efeito |
 |---|---|---|
 | bloqueante | há um ataque concreto, direto ou que depende de uma condição (repetição, corrida, acesso ao log): rota sem autenticação ou autorização, IDOR, escalação de privilégio, injeção, segredo no código, valor de pagamento vindo do cliente, webhook sem verificação de assinatura, pedido pago pelo retorno do cliente, dado de cartão no servidor ou no log, cobrança, reembolso ou webhook sem idempotência, transição de estado fora da transação, dado sensível em log, resposta ou erro, hash de senha fraco, token em `localStorage`, dinheiro em ponto flutuante, dependência com vulnerabilidade crítica, regra de acesso sem teste do acesso negado, contradição a ADR de segurança | volta para correção |
-| sugestão | reforço sem ataque concreto: validação de formato faltando onde outra camada já barra, cabeçalho de segurança ausente | aparece no relatório final |
+| sugestão | reforço sem ataque concreto: validação de formato faltando onde outra camada já barra, cabeçalho de segurança ausente | vai para a rodada de sugestões do executor; o que ele recusar, para o relatório final |
 
 Não reprove por risco teórico. **No máximo 3 sugestões**, as mais importantes; melhoria
 defensiva menor não entra. Todo problema traz arquivo, linha e uma correção concreta.
@@ -140,6 +141,10 @@ defensiva menor não entra. Todo problema traz arquivo, linha e uma correção c
 
 O passo foi marcado como risco alto, mas o diff não toca nenhuma das áreas → `aprovado`, com
 `areas_revisadas: []` e o motivo em `observacoes`.
+
+**Rodada de sugestões.** Quando o prompt diz "rodada de sugestões", o passo já foi aprovado e
+está em stage, e o `git diff -- <arquivo>` mostra só o que o executor mudou para aplicar as
+sugestões. Revise esse delta do mesmo jeito, mas aponte só bloqueantes: a rodada não se repete.
 
 # Saída
 

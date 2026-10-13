@@ -1,6 +1,6 @@
 ---
 name: spec-build
-description: Executa um plano aprovado (docs/plans/AAAA-MM-DD-<slug>.md, gerado pelo /spec-change) passo a passo - entrega cada passo a um spec-executor novo, manda o spec-reviewer conferir (e o spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no plano e deixa o código e as specs aprovados em stage, sem commitar. No fechamento, com tudo verde, apaga o plano. Só o que bloqueia volta para correção; sugestões aparecem no relatório final. Coordena; não escreve código.
+description: Executa um plano aprovado (docs/plans/AAAA-MM-DD-<slug>.md, gerado pelo /spec-change) passo a passo - entrega cada passo a um spec-executor novo, manda o spec-reviewer conferir (e o spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no plano e deixa o código e as specs aprovados em stage, sem commitar. No fechamento, com tudo verde, apaga o plano. Só o que bloqueia volta para correção. As sugestões dos revisores, o executor aplica numa rodada única depois da aprovação, revisada à parte e descartada se reprovar; o que ele recusar vai para o relatório final. Coordena; não escreve código.
 argument-hint: "[caminho do plano (opcional)] [N (opcional): só esse passo]"
 disable-model-invocation: true
 ---
@@ -24,7 +24,7 @@ documentado nas specs, um passo por vez.
 | Quem | Faz |
 |---|---|
 | esta skill | escolhe o passo, chama os agents, decide, marca o plano, `git add`, apaga o plano |
-| `spec-executor` | implementa um passo (código + testes) ou corrige o que o revisor apontou |
+| `spec-executor` | implementa um passo (código + testes), corrige o que o revisor apontou ou aplica as sugestões |
 | `spec-reviewer` | roda os testes e revisa o diff do passo; não edita nada; devolve JSON |
 | `spec-security-reviewer` | só nos passos `Risco: alto`: procura como abusar do código; devolve JSON |
 
@@ -38,8 +38,10 @@ documentado nas specs, um passo por vez.
 1. **Nunca implemente.** Código e testes são do executor. Você só roda git e, no fechamento, os
    comandos de teste e build.
 2. **Um passo por vez**, na ordem do plano.
-3. **Só bloqueante volta para correção.** Sugestão nunca segura um passo e nunca vira arquivo:
-   aparece no relatório final, e o usuário decide se faz algo com ela.
+3. **Só bloqueante volta para correção.** Sugestão nunca segura um passo e nunca vira arquivo.
+   Ela tem **uma** rodada com o executor depois que o passo é aprovado (2.7). A rodada não conta
+   como tentativa e não tem correção: se a revisão reprovar, ela é descartada. O que o executor
+   recusou ou o que foi descartado vai para o relatório, e o usuário decide.
 4. **Fora do escopo: o pequeno se corrige, o resto se relata.** O executor corrige junto com o
    passo o problema alheio de impacto pequeno (critérios na rule `behavior.md`, regra 2) e o
    cita em "Corrigido fora do escopo"; o revisor confere. Tudo isso vai para o relatório final:
@@ -78,6 +80,10 @@ documentado nas specs, um passo por vez.
    arquivos dele (`git status --porcelain`)? Uma sessão anterior caiu no meio. Pergunte:
    **retomar na revisão** (vá ao 2.3 com os arquivos fora de stage), **refazer** (mostre o que
    será desfeito com `git restore` e os arquivos novos a apagar, e confirme) ou **parar**.
+6. **Rodada de sugestões interrompida.** O último passo concluído tem mudanças fora de stage nos
+   arquivos dele, ou arquivos novos não rastreados que ele citava? A sessão caiu durante a rodada
+   (2.7). O passo aprovado está em stage. Mostre o que será descartado e pergunte **descartar a
+   rodada** (as sugestões vão para o relatório) ou **parar**.
 
 ## Etapa 2 — Executar cada passo
 
@@ -134,7 +140,7 @@ Com revisão de segurança, junte os dois: **reprovado** se qualquer um reprovou
 dois (`P…` e `S…`); mesmo problema apontado pelos dois (mesmo arquivo, linha e causa) → fica o
 da segurança. Os testes são os do revisor.
 
-- **`aprovado`** → guarde as sugestões para o relatório e vá ao 2.6.
+- **`aprovado`** → guarde as sugestões para a rodada (2.7) e vá ao 2.6.
 - **`reprovado`**, tentativa 1 ou 2 → chame o executor em modo correção e volte ao 2.3:
 
   ```
@@ -159,8 +165,45 @@ da segurança. Os testes são os do revisor.
 
 1. `git add -- <arquivos tocados pelo passo>`.
 2. No plano, marque `[x]` nos itens do "Pronto quando" que a revisão confirmou.
-3. Guarde para o relatório o "Corrigido fora do escopo" e as "Pendências" do executor.
+3. Guarde para o relatório, com o número do passo, o que o executor pôs em "Corrigido fora do
+   escopo", "Decisões", "Difere do plano", "A decidir" e "Notei fora do escopo".
 4. Log: `[passo 2] concluído · staged`
+5. Teve sugestões → 2.7. Sem sugestões → próximo passo.
+
+### 2.7 Rodada de sugestões
+
+O passo aprovado já está em stage, então o `git diff` mostra só esta rodada, e descartá-la não
+toca no passo.
+
+1. Guarde a **foto de antes** (como no 2.1) e chame o `spec-executor`:
+
+   ```
+   O passo <N> do plano <caminho do plano> foi APROVADO, com sugestões. Rodada de sugestões:
+   aplique as que melhoram o passo e recuse as outras, com o motivo.
+
+   ## Sugestões
+   - [P3] <titulo> — `<arquivo>:<linha>`
+     Problema: <problema> · Correção sugerida: <correcao_sugerida>
+   - [S2] (segurança) <titulo> — `<arquivo>:<linha>`
+     Problema: <problema> · Correção sugerida: <correcao_sugerida>
+   ```
+
+   Log: `[passo 2] rodada de sugestões (2)…`
+2. Apure o que a rodada tocou, como no 2.3. Ela não tocou nada (todas recusadas) → vá ao 5.
+3. Chame os revisores como no 2.4 (o de segurança só em passo `Risco: alto`). No prompt, troque
+   a primeira linha por `Revise a rodada de sugestões do passo <N> do plano <caminho do plano>.`
+   e mande o resumo do executor desta rodada, sem tentativa nem bloqueantes anteriores.
+4. Decida:
+   - **`aprovado`** → `git add -- <arquivos tocados pela rodada>`. Log:
+     `[passo 2] sugestões: 1 aplicada, 1 recusada · staged`.
+   - **`reprovado`** → **descarte a rodada inteira**, sem correção: `git restore -- <modificados>`
+     e apague os arquivos novos dela (`git rm -q --cached -- <novos>` e o arquivo). Só descarte
+     o que estava limpo na foto de antes; se algum arquivo já estava sujo, pare e pergunte. Log:
+     `[passo 2] sugestões: rodada reprovada, descartada`.
+5. Guarde para o relatório:
+   - as aplicadas, em "Só para saber";
+   - as recusadas, com o motivo do executor, e as da rodada descartada, com o bloqueante que a
+     derrubou, em "Para você".
 
 ## Etapa 3 — Fechar o plano
 
@@ -196,17 +239,29 @@ Passos concluídos: X/Y
 Testes e build: ok | <falha>
 Specs: <arquivos atualizados> | nenhuma
 Plano: apagado (remoção em stage) | mantido: <motivo>
-A conferir por você: <CA-2: abrir a tela X e …> | nada
-Pendências do executor: <decisões que valem saber> | nenhuma
-Corrigi fora do escopo: <o que e por quê, `arquivo:linha` (passo N)> | nada
-Notei fora do escopo: <problema alheio que não era pequeno, `arquivo:linha`> | nada
 
-Sugestões dos revisores (não bloquearam):
-- [P3] <titulo> — `<arquivo>:<linha>` — <correção em 1 linha>
+### Para você
+- **Conferir:** <CA-2: abrir a tela X e …>
+- **Decidir:** <risco ou limite, `arquivo:linha` (passo N)> · Recomendo: <…>
+- **Não corrigi, fora do escopo:** <problema, `arquivo:linha`> → `/spec-change <pedido pronto>`
+- **Sugestões que não entraram** (opcionais, não bloquearam):
+  - [P3] <titulo> — `<arquivo>:<linha>` — <correção em 1 linha> · <recusada: motivo | rodada
+    reprovada: bloqueante>
+
+### Só para saber
+- **Sugestões aplicadas:** [P1] <titulo> (passo N)
+- **Difere do plano:** <o que e por quê (passo N)>
+- **Decisões do executor:** <o que e por quê (passo N)>
+- **Corrigi fora do escopo:** <o que e por quê, `arquivo:linha` (passo N)>
 
 O código está em stage, sem commit. Revise com `git diff --staged` e commite com
 `/spec-semantic-commit`.
 ```
+
+As duas seções separam o que pede ação do que é só informação. Linha sem item sai do relatório,
+e seção sem nenhuma linha vira `Para você: nada.` ou `Só para saber: nada.`. Cada item vem do
+campo de mesmo nome do executor (2.6) e fica em uma linha só. Não reclassifique: um item que
+pareça estar no campo errado é problema do passo, e o revisor já o conferiu.
 
 # Entrada
 
