@@ -4,6 +4,16 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.3.0] - 2026-10-13
+
+### Adicionado
+
+- adiciona a varredura fora do escopo com o agent `spec-fixer` (5c398c4)
+
+### Corrigido
+
+- **windows-mcp:** volta para a `0.8.5`, que não congela a tela (30ee7b6)
+
 ## [0.2.0] - 2026-10-13
 
 ### Incompatível
@@ -65,5 +75,6 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[0.3.0]: https://github.com/elimarcosmorais/specflow/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/elimarcosmorais/specflow/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/elimarcosmorais/specflow/releases/tag/v0.1.0
