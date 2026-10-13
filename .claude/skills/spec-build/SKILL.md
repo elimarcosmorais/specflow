@@ -1,6 +1,6 @@
 ---
 name: spec-build
-description: Executa um plano aprovado (docs/plans/AAAA-MM-DD-<slug>.md, gerado pelo /spec-change) passo a passo - entrega cada passo a um spec-executor novo, manda o spec-reviewer conferir (e o spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no plano e deixa o código e as specs aprovados em stage, sem commitar. No fechamento, com tudo verde, apaga o plano. Só o que bloqueia volta para correção. As sugestões dos revisores, o executor aplica numa rodada única depois da aprovação, revisada à parte e descartada se reprovar; o que ele recusar vai para o relatório final. Coordena; não escreve código.
+description: Executa um plano aprovado (docs/plans/AAAA-MM-DD-<slug>.md, gerado pelo /spec-change) passo a passo - entrega cada passo a um spec-executor novo, manda o spec-reviewer conferir (e o spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no plano e deixa o código e as specs aprovados em stage, sem commitar. No fechamento, com tudo verde, faz a varredura fora do escopo - tria o que os executores só anotaram em "Notei fora do escopo" e delega o item isolado a um spec-fixer por item, até 3 em paralelo, com a suíte e o build como gate - e apaga o plano. Só o que bloqueia volta para correção. As sugestões dos revisores, o executor aplica numa rodada única depois da aprovação, revisada à parte e descartada se reprovar; o que ele recusar vai para o relatório final. Coordena; não escreve código.
 argument-hint: "[caminho do plano (opcional)] [N (opcional): só esse passo]"
 disable-model-invocation: true
 ---
@@ -27,6 +27,7 @@ documentado nas specs, um passo por vez.
 | `spec-executor` | implementa um passo (código + testes), corrige o que o revisor apontou ou aplica as sugestões |
 | `spec-reviewer` | roda os testes e revisa o diff do passo; não edita nada; devolve JSON |
 | `spec-security-reviewer` | só nos passos `Risco: alto`: procura como abusar do código; devolve JSON |
+| `spec-fixer` | só na varredura do fechamento: resolve um item isolado fora do escopo |
 
 > **Por que um executor novo por passo:** cada um começa com contexto limpo e recebe só o passo
 > da vez, e a conversa principal não enche com o código de todos os passos. **Por que um revisor
@@ -42,10 +43,13 @@ documentado nas specs, um passo por vez.
    Ela tem **uma** rodada com o executor depois que o passo é aprovado (2.7). A rodada não conta
    como tentativa e não tem correção: se a revisão reprovar, ela é descartada. O que o executor
    recusou ou o que foi descartado vai para o relatório, e o usuário decide.
-4. **Fora do escopo: o pequeno se corrige, o resto se relata.** O executor corrige junto com o
-   passo o problema alheio de impacto pequeno (critérios na rule `behavior.md`, regra 2) e o
-   cita em "Corrigido fora do escopo"; o revisor confere. Tudo isso vai para o relatório final:
-   o corrigido, para o usuário saber o que entrou no stage; o resto, para ele decidir.
+4. **Fora do escopo: o pequeno se corrige junto, o isolado vai para a varredura, o resto se
+   relata.** O executor corrige junto com o passo o problema alheio de impacto pequeno
+   (critérios na rule `behavior.md`, regra 2, Exceção) e o cita em "Corrigido fora do escopo"; o
+   revisor confere. O que ele só anotou em "Notei fora do escopo" você junta de **todos** os
+   passos e tria no fechamento (Etapa 3, item 2): o item isolado vai para um `spec-fixer`
+   (Exceção 2 da mesma regra), e o resto vai para o relatório com a recomendação e o comando
+   pronto. Nada de varredura no meio dos passos: ela roda uma vez, com a suíte verde.
 5. **No máximo 3 tentativas por passo** (a execução + 2 correções). A última correção roda em
    Opus. Na 3ª reprovação, pare.
 6. **Nunca commite.** Só `git add`. O commit é do usuário.
@@ -211,19 +215,52 @@ Quando todos os passos estiverem concluídos:
 
 1. Rode a suíte de testes e o build do projeto. Falhou → mostre no relatório e não apague o
    plano.
-2. CAs marcados `(manual: …)` → não rode: liste-os no relatório, com o roteiro, para o usuário.
+2. **Varredura fora do escopo.** Com a suíte e o build verdes, tria os itens que você guardou em
+   "Notei fora do escopo" de todos os passos (2.6, item 3), juntando os repetidos. A faixa de
+   impacto pequeno não aparece aqui: o executor já a corrigiu dentro do passo.
+
+   | Faixa | O que é | Quem resolve |
+   |---|---|---|
+   | **B — delegado** | cumpre a Exceção 2 da regra 2 (`behavior.md`) | um `spec-fixer` por item |
+   | **C — do usuário** | tem decisão, muda contrato, toca área sensível ou precisa de mais de uma passada | ninguém: vai para o relatório |
+
+   - **Nada em B → pule para o item 3.** A varredura não é etapa obrigatória: sem item que
+     cumpra os critérios, ela não acontece.
+   - **Feche o contrato de cada item de B:** `Problema` (com `arquivo:linha`), `Arquivos` (lista
+     fechada) e `Pronto quando` (resultado concreto). Não soube fechar a lista de arquivos → é C.
+   - **Até 3 por rodada**, na prioridade quebrado > risco > sujeira; o resto é C, com o motivo
+     `fila cheia`. Dois itens no mesmo arquivo → delegue um só, o outro é C. Arquivo com
+     mudança fora de stage não é do build (os passos já estão em stage) → não delegue nele.
+   - **Guarde a foto** (`git status --porcelain --untracked-files=all`) e chame os `spec-fixer`
+     **em paralelo**, na mesma mensagem, cada um com só o contrato dele. Log:
+     `[varredura] 3 itens → fixers…`.
+   - **Um nível só.** O que um fixer trouxer em "Notei fora do escopo" vira C no relatório,
+     **nunca** um item novo nesta rodada. É esta trava que faz a varredura terminar.
+   - **Sem revisão, de propósito.** O gate é a suíte: item que precisaria de um revisor não é
+     faixa B, é C. Não chame o `spec-reviewer`: ele revisa um passo do plano, e estes itens não
+     estão no plano.
+   - **Gate.** Rode a suíte e o build de novo. Verde → `git add` dos arquivos dos fixers; log
+     `[varredura] 2 resolvidos, 1 recusado · staged`. Vermelho → desfaça: `git restore` nos
+     modificados do item culpado e apague os que ele criou (só os que estavam limpos na foto),
+     rode de novo e passe o item para C, com a falha como motivo. A falha não aponta de qual
+     item veio → desfaça a rodada inteira e passe todos para C. Não pede confirmação
+     (`behavior.md`, regra 4): desfaz só o que o fixer acabou de fazer, e os passos aprovados
+     continuam em stage.
+   - Fixer que respondeu `recusado` → o item vira C, com o motivo dele.
+3. CAs marcados `(manual: …)` → não rode: liste-os no relatório, com o roteiro, para o usuário.
    Passo cujo executor respondeu `Tela: não conferi na tela` → a tela dele entra na mesma lista,
    mas só se o `CLAUDE.md` não tem como o agente conferir (sem a seção Teste visual). Com a
    seção, conferir é do executor: ele para e pergunta quando não consegue (ex.: mouse em uso
    com o Windows-MCP), e a tela não vira tarefa do usuário.
    Comando que só pede admin → rode você, elevando só ele (`behavior.md`, regra 5).
-3. Tudo passou → **apague o plano**: `git rm -q -- <plano>` se ele está no git, senão apague o
+4. Tudo passou → **apague o plano**: `git rm -q -- <plano>` se ele está no git, senão apague o
    arquivo. A remoção fica em stage e entra no mesmo commit do código, como prevê a rule
    `docs.md` (por isso não pede confirmação). Antes, confira que as "Specs afetadas" do
    cabeçalho estão no stage; faltou alguma → mostre no relatório e não apague.
 
-Execução parcial (parou num passo, ou rodou só um) → pule esta etapa: o plano fica, com os
-checkboxes marcados, para a próxima sessão retomar.
+Execução parcial (parou num passo, ou rodou só um) → pule esta etapa inteira, varredura
+incluída: o plano fica, com os checkboxes marcados, para a próxima sessão retomar, e os itens
+fora do escopo vão só para o relatório.
 
 ## Etapa 4 — Relatório
 
@@ -243,7 +280,8 @@ Plano: apagado (remoção em stage) | mantido: <motivo>
 ### Para você
 - **Conferir:** <CA-2: abrir a tela X e …>
 - **Decidir:** <risco ou limite, `arquivo:linha` (passo N)> · Recomendo: <…>
-- **Não corrigi, fora do escopo:** <problema, `arquivo:linha`> → `/spec-change <pedido pronto>`
+- **Deixei para você, fora do escopo:** <problema, `arquivo:linha`> · <por que ficou> →
+  `/spec-change <pedido pronto>`
 - **Sugestões que não entraram** (opcionais, não bloquearam):
   - [P3] <titulo> — `<arquivo>:<linha>` — <correção em 1 linha> · <recusada: motivo | rodada
     reprovada: bloqueante>
@@ -253,6 +291,7 @@ Plano: apagado (remoção em stage) | mantido: <motivo>
 - **Difere do plano:** <o que e por quê (passo N)>
 - **Decisões do executor:** <o que e por quê (passo N)>
 - **Corrigi fora do escopo:** <o que e por quê, `arquivo:linha` (passo N)>
+- **Resolvi na varredura:** <item> — `<arquivo>` · <prova> (achado no passo N)
 
 O código está em stage, sem commit. Revise com `git diff --staged` e commite com
 `/spec-semantic-commit`.
@@ -260,7 +299,9 @@ O código está em stage, sem commit. Revise com `git diff --staged` e commite c
 
 As duas seções separam o que pede ação do que é só informação. Linha sem item sai do relatório,
 e seção sem nenhuma linha vira `Para você: nada.` ou `Só para saber: nada.`. Cada item vem do
-campo de mesmo nome do executor (2.6) e fica em uma linha só. Não reclassifique: um item que
+campo de mesmo nome do executor (2.6), ou da triagem da varredura (Etapa 3, item 2), e fica em
+uma linha só. Em "Deixei para você", "por que ficou" é o que o tirou da triagem: decisão,
+contrato, área sensível, mais de uma passada, fila cheia, recusado pelo fixer ou gate vermelho. Não reclassifique: um item que
 pareça estar no campo errado é problema do passo, e o revisor já o conferiu.
 
 # Entrada

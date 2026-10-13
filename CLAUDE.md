@@ -19,7 +19,9 @@ Este repositório é o próprio framework: o que se edita aqui são as skills, o
 | Executa um plano aprovado | `spec-build` |
 
 Agents do build: `spec-executor`, `spec-reviewer` e `spec-security-reviewer`
-(só nos passos de risco alto).
+(só nos passos de risco alto). Agent da varredura fora do escopo: `spec-fixer`, um por item
+isolado e até 3 em paralelo — no fim da mudança pequena da `spec-change` e no fechamento do
+`spec-build`.
 
 Skills **utilitárias**:
 

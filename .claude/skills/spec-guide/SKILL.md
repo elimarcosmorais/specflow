@@ -53,6 +53,17 @@ onde cada coisa está definida. Preciso, direto, e sempre dizendo de onde tirou 
 Na dúvida entre pequena e média, é pequena: se aparecer uma decisão no meio, a skill para e
 promove para média. Critérios completos: `spec-change`, Etapa 2.
 
+**Varredura fora do escopo**, sempre depois de a mudança pedida estar pronta e provada: no fim da
+pequena (`spec-change`, Etapa 3, item 6) e no fechamento do plano (`spec-build`, Etapa 3, item 2),
+com os itens juntados de todos os passos. O problema alheio de impacto pequeno é corrigido junto
+(a skill, na pequena; o executor, dentro do passo); o item isolado, com uma só correção certa,
+vai para um `spec-fixer` (até 3 em paralelo, um por item, arquivos disjuntos, um nível só — o que
+o fixer notar não vira outro item, e é isso que faz a varredura terminar); suíte e build no fim
+como gate, e o item que ficar vermelho é desfeito e volta para o relatório. Sem revisor, de
+propósito: item que precisaria de um não cumpre os critérios. O que tem decisão, contrato ou área
+sensível não é delegado: fica no relatório com a recomendação e o comando `/spec-change` pronto.
+Critérios das duas faixas: rule [`behavior.md`](../../rules/behavior.md), regra 2.
+
 # 2. Os documentos
 
 Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
@@ -104,6 +115,8 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
   corrigiu e as sugestões aplicadas).
 - **Git:** o passo aprovado fica em stage, nunca commitado. Como os anteriores já estão em stage,
   `git diff` mostra só o passo da vez: é assim que a revisão isola o passo.
+- **Varredura fora do escopo:** com a suíte verde, antes de apagar o plano, o build tria o que os
+  executores só anotaram e delega o item isolado aos `spec-fixer` (detalhes na seção 1).
 - **Fechamento:** suíte e build verdes → o build apaga o plano (remoção em stage, entra no mesmo
   commit). Execução parcial → o plano fica, com os checkboxes, para retomar.
 - **Modelos:** executor e revisor em Sonnet (`effort: high`); revisor de segurança em Opus; a
@@ -153,7 +166,7 @@ contexto; a rule diz como aplicar e carrega) · README × `CLAUDE.md` (pessoas �
 CLAUDE.md, README.md, CHANGELOG.md (só depois da primeira versão)
 .claude/
 ├── skills/spec-<nome>/SKILL.md (+ template.md quando gera documento)
-├── agents/spec-executor.md, spec-reviewer.md, spec-security-reviewer.md
+├── agents/spec-executor.md, spec-reviewer.md, spec-security-reviewer.md, spec-fixer.md
 └── rules/behavior.md, docs.md (sempre) e <tema>.md (só ao tocar os paths dela)
 docs/
 ├── adr/README.md            índice; as ADRs NNN-<titulo>.md ao lado

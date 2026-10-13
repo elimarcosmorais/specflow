@@ -93,7 +93,11 @@ sozinho: no fim, `/spec-semantic-commit`. Para lançar uma versão com o que já
 
 O build coordena três agents: `spec-executor` (implementa um passo),
 `spec-reviewer` (roda os testes e revisa o diff) e `spec-security-reviewer` (só nos
-passos de risco alto).
+passos de risco alto). O quarto é o `spec-fixer`, da **varredura fora do escopo**: terminada a
+mudança pedida — no fim da pequena, na `spec-change`, e no fechamento do plano, no `spec-build` —
+os problemas achados pelo caminho que têm uma só correção certa vão para ele, um por item e até
+3 em paralelo; teste e build no fim provam que nada quebrou, e o que depende de uma decisão sua
+fica no relatório com a recomendação e o comando pronto.
 
 **Utilitários:**
 

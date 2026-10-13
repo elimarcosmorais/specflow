@@ -1,6 +1,6 @@
 ---
 name: spec-change
-description: Porta de entrada do framework. Recebe um pedido (texto livre ou arquivo), lê o código e as specs que ele toca e classifica o tamanho - pequena, média ou grande. Pequena (CSS, bug, texto, ajuste localizado) → implementa direto, sem plano, roda os testes, atualiza a spec do módulo se o comportamento documentado mudou e mostra o resultado. Média ou grande → conversa só o que o código não responde e escreve um único plano curto em docs/plans/ (comportamento, decisões, specs afetadas, passos) para o usuário aprovar e depois executar com /spec-build. O processo escala com a mudança - nunca gera plano para mudança pequena.
+description: Porta de entrada do framework. Recebe um pedido (texto livre ou arquivo), lê o código e as specs que ele toca e classifica o tamanho - pequena, média ou grande. Pequena (CSS, bug, texto, ajuste localizado) → implementa direto, sem plano, roda os testes, atualiza a spec do módulo se o comportamento documentado mudou e, por fim, faz a varredura fora do escopo: corrige junto o problema alheio de impacto pequeno, delega o item isolado a um spec-fixer por item (até 3 em paralelo, com teste e build no fim como gate) e deixa no resumo, com recomendação e comando pronto, só o que tem decisão, contrato ou área sensível. Média ou grande → conversa só o que o código não responde e escreve um único plano curto em docs/plans/ (comportamento, decisões, specs afetadas, passos) para o usuário aprovar e depois executar com /spec-build. O processo escala com a mudança - nunca gera plano para mudança pequena.
 argument-hint: "[pedido em texto livre | caminho de um .md/.txt]"
 disable-model-invocation: true
 ---
@@ -34,10 +34,12 @@ design system. Onde cada coisa mora: rule `docs.md`.
    planejar o que não precisava.
 3. **Pergunte só o que o código não responde**, com `AskUserQuestion` (2 a 4 opções, a
    recomendada primeiro). No máximo 2 rodadas de perguntas.
-4. **Escopo é o pedido.** O que você notar fora dele vai para a linha "Notei fora do escopo" do
-   resumo, e não para o código. Exceção, só na pequena: problema de **impacto pequeno**
-   (critérios na rule `behavior.md`, regra 2) você corrige junto e informa na linha "Corrigi
-   fora do escopo". Na média e na grande você não mexe no código: tudo vai para o resumo.
+4. **Escopo é o pedido; o que sobra tem triagem.** A mudança que você entrega é a pedida, e nada
+   mais. Na **pequena**, o que notar pelo caminho passa pela varredura (Etapa 3, item 6), depois
+   de a mudança pedida estar pronta: impacto pequeno você corrige junto, item isolado você
+   delega a um `spec-fixer`, e o resto vai para o resumo **com a recomendação e o comando
+   pronto** — nunca uma nota solta. Critérios das duas faixas: rule `behavior.md`, regra 2. Na
+   **média e na grande** você não mexe no código: tudo vai para o resumo, do mesmo jeito.
 5. **Nunca commite.** O commit é do usuário (`/spec-semantic-commit`).
 6. **Plano curto.** Média cabe em cerca de 1 página; grande, em até 3. Seção que não se aplica é
    removida, não fica "N/A". Mais de 8 passos → proponha fatiar em planos menores, cada um
@@ -97,7 +99,39 @@ reclassifique.
    a spec agora, sem perguntar (rule `docs.md`).
 5. **Apareceu uma decisão** (regra 2)? Pare, mostre o que já mudou e pergunte: "promover para
    média e escrever o plano" (recomendado) ou "decidir aqui e seguir".
-6. Mostre o resumo:
+6. **Varredura fora do escopo.** Com a mudança pedida feita e provada — nunca antes, para que
+   ela fique pronta e separável se um fixer quebrar algo —, triagem do que você notou pelo
+   caminho:
+
+   | Faixa | O que é | Quem resolve |
+   |---|---|---|
+   | **A — junto** | impacto pequeno (`behavior.md`, regra 2, Exceção) | você, inline, agora |
+   | **B — delegado** | falha A só por tamanho ou por precisar de teste próprio, e cumpre a Exceção 2 | um `spec-fixer` por item |
+   | **C — do usuário** | tem decisão, muda contrato, toca área sensível ou precisa de mais de uma passada | ninguém: vai para o resumo |
+
+   - **Nada em B → pule a varredura.** Ela não é etapa obrigatória nem passa a existir sozinha:
+     sem item que cumpra os critérios, você só preenche as linhas do resumo.
+   - **Feche o contrato de cada item de B** antes de chamar ninguém: `Problema` (com
+     `arquivo:linha`), `Arquivos` (lista fechada) e `Pronto quando` (resultado concreto). Não
+     soube fechar a lista de arquivos sem explorar meio projeto → é C.
+   - **Até 3 por rodada**, nesta prioridade: quebrado > risco > sujeira. O resto é C, com o
+     motivo `fila cheia`. Dois itens que tocam o mesmo arquivo → delegue um só; o outro é C.
+     Arquivo que já estava sujo e não é da mudança pedida → não delegue nele (é C): não daria
+     para desfazer só o que o fixer fez.
+   - **Guarde a foto** (`git status --porcelain --untracked-files=all`) antes de delegar: é ela
+     que diz o que desfazer no gate.
+   - **Chame os `spec-fixer` em paralelo**, todos na mesma mensagem, um por item, cada um com só
+     o contrato dele. Log de uma linha por item: `[fora do escopo] <item> → fixer`.
+   - **Um nível só.** O que um fixer trouxer em "Notei fora do escopo" vira C no resumo, **nunca**
+     um item novo nesta rodada. É esta trava que faz a varredura terminar.
+   - **Gate.** Com todos de volta, rode uma vez os comandos de teste, build e lint do projeto,
+     sobre tudo. Verde → pronto. Vermelho → `git restore` nos arquivos modificados **daquele**
+     item e apague os que ele criou (só os que estavam limpos na foto), rode de novo e passe o
+     item para C, com a falha como motivo. A falha não aponta de qual item veio → desfaça a
+     rodada inteira e passe todos para C. Não pede confirmação (`behavior.md`, regra 4): desfaz
+     só o que o fixer acabou de fazer, e a mudança pedida não é tocada.
+   - Fixer que respondeu `recusado` → o item vira C, com o motivo dele.
+7. Mostre o resumo:
 
 ```
 Tamanho: pequena — <motivo>
@@ -108,8 +142,13 @@ Prova: `<comando>` → <resultado> | não rodei: <motivo>
 Specs: <arquivo> (criado | atualizado | subdividido) | nenhuma
 
 Corrigi fora do escopo: <o que e por quê, `arquivo:linha`> | nada
-Notei fora do escopo: <item, `arquivo:linha`> | nada
+Resolvi em paralelo: <item> — `<arquivo>` · <prova> | nada
+Deixei para você: <item, `arquivo:linha`> · <por que ficou> · Recomendo: <…> →
+  `/spec-change "<pedido pronto>"` | nada
 ```
+
+Um item por linha. Em "Deixei para você", "por que ficou" é o que o tirou da triagem: decisão,
+contrato, área sensível, mais de uma passada, fila cheia, recusado pelo fixer ou gate vermelho.
 
 Não commite.
 
@@ -154,7 +193,7 @@ Plano salvo em: docs/plans/AAAA-MM-DD-<slug>.md
 - Specs afetadas: <arquivos> | nenhuma
 - Plano: N passos (risco alto: passo X | nenhum)
 - ADR a registrar antes de aprovar: `/spec-adr "<título>"` | nenhuma
-- Notei fora do escopo: <item, `arquivo:linha`> | nada
+- Deixei para você: <item, `arquivo:linha`> · Recomendo: <…> → `/spec-change "<pedido pronto>"` | nada
 
 Revise o plano. Aprovado → mude o status para `aprovado` (ou peça que eu mude) e rode
 `/spec-build docs/plans/AAAA-MM-DD-<slug>.md`.
