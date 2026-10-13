@@ -29,17 +29,23 @@ você configura e verifica; quem usa é a próxima.
    instalar e espere o ok. Programa baixado segue as instruções globais do usuário (no padrão
    atual: `C:\dev\programs\<programa>\<programa>-vX.X.X`, junction `current` e `PATH` apontando
    para `current`). Confira essas instruções antes; não as repita de memória.
-2. **Versão fixa e Python fixo.** Use `windows-mcp@X.Y.Z`, nunca sem versão, e
-   `--no-python-downloads --python <versão>`, para o `uvx` não baixar um Python por conta própria
-   nem trocar de pacote sozinho.
+2. **Versão fixa do pacote, Python pinado mas provisionável.** Use `windows-mcp@X.Y.Z`, nunca sem
+   versão, e `--python <versão>`. O pin do pacote é o que impede o `uvx` de trocar de versão
+   sozinho; o `--python` diz qual interpretador usar. **Não use `--no-python-downloads`:** ele não
+   acrescenta determinismo (quem o dá é o pin do pacote) e amarra o `.mcp.json` a um Python
+   pré-instalado — numa máquina sem ele o servidor não sobe
+   (`error: No interpreter found for Python <versão>` … `Python downloads are set to 'never'`).
+   Sem o flag, o `uv` baixa o interpretador na área dele, sem admin, e o mesmo `.mcp.json`
+   funciona em qualquer máquina.
 3. **Só as ferramentas de tela.** O padrão é `Screenshot,Snapshot,Click,Type,Scroll,Move,Shortcut,Wait,App`
    (`WaitFor` **não** entra: ele travava o VS Code; para esperar, use `Wait` e confira com um
    `Snapshot`). `PowerShell`, `Registry`, `FileSystem`, `Process`, `Clipboard`,
    `Scrape` e as demais ficam de fora: dão ao agente um segundo caminho, sem as travas de
    permissão do Claude Code, para rodar comando e mexer no sistema. Liberar uma delas só com
-   pedido explícito do usuário (`$ARGUMENTS` ou na conversa), dizendo o risco. A partir da
-   `0.8.8` o pacote acrescenta o `ControlStatus` mesmo com `--tools`: é só leitura e não fere
-   esta regra.
+   pedido explícito do usuário (`$ARGUMENTS` ou na conversa), dizendo o risco. Numa `0.8.8` ou
+   mais nova o pacote acrescenta o `ControlStatus` mesmo com `--tools`: é só leitura e não fere
+   esta regra. Na `0.8.5` ele não existe, porque o subsistema de controle que ele relata também
+   não existe (ver Etapa 2).
 4. **Telemetria desligada:** `ANONYMIZED_TELEMETRY=false` no `env` do servidor.
 5. **Junte, não sobrescreva.** `.mcp.json` e `settings.local.json` podem já ter outros servidores
    e chaves (`permissions`, por exemplo). Leia antes e acrescente só o que falta.
@@ -57,22 +63,55 @@ uv python list --only-installed       # quais Python existem
 
 - Não é Windows → pare: o pacote só roda no Windows.
 - Sem `uv` → Regra 1.
-- Sem Python 3.13 ou mais novo → Regra 1. Python mais antigo não serve.
+- **Python não bloqueia.** A versão que a Etapa 2 escolher pede Python `>=3.12`, e sem o
+  `--no-python-downloads` (Regra 2) o `uv` provisiona o interpretador sozinho. Isso não cai na
+  Regra 1: não é programa instalado na máquina, é um interpretador descartável no cache do `uv`
+  (`%LOCALAPPDATA%\uv`), sem admin e sem entrar no `PATH`. Só avise que a primeira execução baixa
+  uns 20 MB. Prefira um Python que `uv python list --only-installed` já mostre, para nem baixar;
+  entre os instalados, prefira os gerenciados pelo `uv` aos que vêm embutidos em outro programa
+  (ex.: o Python do laragon sai se o laragon sair).
 
 ## Etapa 2 — Escolher a versão do pacote
 
-A versão do `windows-mcp` depende do Python disponível:
+**Use a `0.8.5`. Não use a `0.8.8`**, e não pegue "a mais nova" sem fazer a checagem abaixo.
 
-| Python | Versão | Observação |
+| Versão | Python exigido | Usar? |
 |---|---|---|
-| 3.13 | `0.8.5` | testada; a `0.8.7` passou a exigir Python 3.14 |
-| 3.14 | a mais nova | `0.8.8` testada; confirme na Etapa 5; se falhar, volte para a `0.8.5` com 3.13 |
+| `0.8.5` | `>=3.12` | **sim**, é o padrão desta skill |
+| `0.8.8` | `>=3.14` | **não**: congela a máquina e não tem como desligar |
+| qualquer outra (`0.8.6`, `0.8.7`, `0.8.9`+) | ver no PyPI | só se passar na checagem do `--no-control` |
+
+A `0.8.8` instala um hook global de mouse e teclado
+(`SetWindowsHookExW(14/13, …, 0)`, em `desktop/control_hooks.py`) que **engole o input físico do
+Windows inteiro** enquanto o agente opera a tela, renovado de 1 em 1 segundo durante toda a
+operação. O sintoma é "o VS Code travou", mas ele só parou de receber mouse e teclado. Não é
+problema de um cliente: o hook é do processo do servidor e vale para a área de trabalho toda, então
+o VS Code, o app do Claude Code e o Claude Desktop travam igual. A `0.8.5` não tem nada desse
+código — nenhum arquivo `control*.py`.
+
+O projeto `Windows-MCP` resolveu isso, mas **depois** da `0.8.8`: o `main` documenta
+`--no-control`, `WINDOWS_MCP_CONTROL=false` e `[control] enabled = false` ("to run background tasks
+while using the computer yourself, disable it"), e nada disso existe na `0.8.8`. Ou seja, a `0.8.8`
+é a única versão com o bloqueio e sem a chave.
+
+**Checagem antes de subir para uma `0.8.9` ou mais nova.** Pergunte ao próprio CLI, que é a fonte
+autoritativa: o README documenta o `main`, não a versão lançada, e por isso descreve o
+`--no-control` como se já existisse.
+
+```bash
+uvx --python 3.14 windows-mcp@<versão> serve --help | grep -- --no-control
+```
+
+Imprimiu a opção → pode usar essa versão, acrescentando `--no-control` depois do `serve`
+(mantenha o `--tools`). Não imprimiu nada → a chave não está comprovada nessa versão: **fique na
+`0.8.5`**. Na `0.8.8` esse comando não imprime nada.
 
 Versão mais nova e Python exigido: `https://pypi.org/pypi/windows-mcp/json` (`info.version` e
 `info.requires_python`).
 
-O projeto já tem `windows-mcp` no `.mcp.json` → mantenha a versão e o Python dele, a não ser que
-o usuário peça para atualizar ou que a Etapa 5 falhe.
+O projeto já tem `windows-mcp` no `.mcp.json` → mantenha a versão dele, **exceto se for a `0.8.8`
+ou mais nova sem `--no-control`**: nesse caso avise o usuário do congelamento e volte para a
+`0.8.5`.
 
 ## Etapa 3 — `.mcp.json`
 
@@ -86,10 +125,9 @@ Na raiz do projeto. Sem o arquivo, crie; com ele, acrescente ou corrija só a en
       "type": "stdio",
       "command": "uvx",
       "args": [
-        "--no-python-downloads",
         "--python",
         "3.14",
-        "windows-mcp@0.8.8",
+        "windows-mcp@0.8.5",
         "serve",
         "--tools",
         "Screenshot,Snapshot,Click,Type,Scroll,Move,Shortcut,Wait,App"
@@ -136,18 +174,19 @@ execução pode demorar: o `uvx` baixa o pacote para o cache (`%LOCALAPPDATA%\uv
 python -I .claude/skills/spec-windows-mcp/verificar.py .mcp.json
 ```
 
-Saída esperada (exit 0, com a `0.8.8`):
+Saída esperada (exit 0, com a `0.8.5`):
 
 ```
 server: windows-mcp 4.1.0
-tools (10): App, Click, ControlStatus, Move, Screenshot, Scroll, Shortcut, Snapshot, Type, Wait
+tools (9): App, Click, Move, Screenshot, Scroll, Shortcut, Snapshot, Type, Wait
 ```
 
-A `0.8.5` lista as mesmas, sem o `ControlStatus` (9 ferramentas).
+Nove ferramentas, sem `ControlStatus`: essa ausência é a prova de que o subsistema de controle —
+o do hook que congela a tela (Etapa 2) — não está no pacote que subiu.
 
-- `ControlStatus` a mais é esperado a partir da `0.8.8`: o pacote o mantém ligado mesmo com
-  `--tools` e não há opção para tirá-lo. Ele só lê quem controla a área de trabalho (ver
-  "Disputa pelo mouse e teclado" nas Dicas de uso). Avise o usuário.
+- Apareceu `ControlStatus` (10 ferramentas) → você está numa `0.8.8` ou mais nova. Confira a
+  Etapa 2: ou a versão passa na checagem do `--no-control` e você o acrescenta depois do `serve`,
+  ou volte para a `0.8.5`.
 - Fora o `ControlStatus`, a lista não bate com o `--tools` → corrija o `.mcp.json` e rode de novo.
 - O projeto já tinha `WaitFor` no `--tools` → tire (Regra 3).
 - `No solution found when resolving tool dependencies` → a versão do pacote não aceita esse
@@ -171,12 +210,13 @@ MCP.
   ```
   - Ver a tela (conferir layout, reproduzir bug) → Windows-MCP (`windows-mcp` no `.mcp.json`):
     abra o app e confira com `Snapshot`. Não pule a conferência nem a passe ao usuário: não
-    conseguiu operar (mouse em uso depois de esperar com `Wait`, ferramentas ausentes) →
-    pergunte no chat que precisa conferir com o Windows-MCP.
+    conseguiu operar (ferramentas ausentes) → pergunte no chat que precisa conferir com o
+    Windows-MCP.
   ```
 
-  O trecho "mouse em uso depois de esperar com `Wait`, " só entra com a `0.8.8` ou mais nova
-  no `.mcp.json` (a disputa pelo mouse e teclado começou nela); numa versão anterior, tire-o.
+  Só se o `.mcp.json` estiver numa `0.8.8` ou mais nova, acrescente "mouse em uso depois de
+  esperar com `Wait`, " à lista de motivos: a disputa pelo mouse e teclado só existe a partir
+  dela. Na `0.8.5`, que é o padrão, não entra.
 
   Mostre o diff e grave só depois do OK. Mexa só nessa linha, mesmo que o arquivo tenha outras
   alterações do usuário.
@@ -217,13 +257,24 @@ O que os testes mostraram ao operar um app desktop com estas ferramentas:
   clique no ícone dela na barra de tarefas (`Click` nas coordenadas que o `Snapshot` mostra).
 - **Esperar a tela mudar.** Use `Wait` com alguns segundos e confira com um `Snapshot` (com
   `use_ui_tree: false` se bastar a lista de janelas). Não use `WaitFor`: ele travava o VS Code.
-- **Disputa pelo mouse e teclado (a partir da `0.8.8`).** Enquanto o agente opera, o pacote
-  assume o mouse e o teclado físicos e mostra um aviso na tela. Se o usuário mexer, o agente
-  perde o controle e só o retoma depois de uma espera sem uso. Ação recusada nesse meio-tempo →
-  consulte o `ControlStatus` (dono atual e segundos que faltam), espere com `Wait` e tente de
-  novo. **Mouse em uso não é motivo para pular a conferência**, nem para passá-la ao usuário:
-  depois de umas 3 esperas sem conseguir, pergunte no chat ("Preciso conferir a tela com o
-  Windows-MCP. Solte o mouse e o teclado e me avise.") e, com a resposta, confira.
+- **Tela congelada: `Ctrl+Alt+Shift+Backspace`.** Só acontece numa `0.8.8` ou mais nova (na
+  `0.8.5`, o padrão, não existe). Se o mouse e o teclado pararem de responder enquanto o agente
+  opera, a máquina não travou: o hook do pacote está engolindo o input (Etapa 2). Esse atalho
+  devolve o controle na hora. Mover bastante o mouse também devolve, e o controle volta ao
+  agente depois de ~10 s sem uso. **Diga isso ao usuário** ao configurar uma versão dessas.
+- **Disputa pelo mouse e teclado (`0.8.8`+).** Enquanto o agente opera, o pacote assume o mouse e
+  o teclado físicos e mostra um aviso na tela. Se o usuário mexer, o agente perde o controle e só
+  o retoma depois de uma espera sem uso. Ação recusada nesse meio-tempo → consulte o
+  `ControlStatus` (dono atual e segundos que faltam), espere com `Wait` e tente de novo.
+  **Mouse em uso não é motivo para pular a conferência**, nem para passá-la ao usuário: depois de
+  umas 3 esperas sem conseguir, pergunte no chat ("Preciso conferir a tela com o Windows-MCP.
+  Solte o mouse e o teclado e me avise.") e, com a resposta, confira. O próprio projeto avisa que
+  essa retomada é "best-effort, not a security boundary", e que o Windows pode remover um hook de
+  baixo nível sem avisar o processo.
+- **`Snapshot` no VS Code é a travessia mais pesada.** Ele é Electron e expõe a árvore de
+  acessibilidade inteira. Numa `0.8.8`+ isso é o pior caso: o congelamento dura toda a travessia.
+  Numa `0.8.8`+ dá para excluí-lo com `WINDOWS_MCP_EXCLUDE_PROCESSES=Code.exe` no `env` (a
+  variável não existe na `0.8.5`, e lá não faz falta).
 - **Coordenadas.** Se a imagem vier reduzida, multiplique as coordenadas da imagem pela razão
   entre o tamanho real da tela e o da imagem antes de clicar.
 - **Mostrar o print ao usuário.** O resultado do `Snapshot`/`Screenshot` diz onde a imagem foi
