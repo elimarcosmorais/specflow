@@ -4,6 +4,18 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.2.0] - 2026-10-13
+
+### Incompatível
+
+- **references:** move o material de consulta para `.temp/` (b1104e8)
+  projetos que usam o framework devem mover `docs/references/` para `.temp/references/` e
+  garantir `.temp/` no `.gitignore` (rodar `/spec-claude` resolve a segunda parte).
+
+### Adicionado
+
+- **build:** tenta as sugestões dos revisores antes do relatório final (fa1a2df)
+
 ## [0.1.0] - 2026-10-12
 
 ### Incompatível
@@ -53,4 +65,5 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[0.2.0]: https://github.com/elimarcosmorais/specflow/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/elimarcosmorais/specflow/releases/tag/v0.1.0
