@@ -12,7 +12,7 @@
 - **Plataformas:** web | mobile | desktop
 - **Stack de UI:** <!-- LLM-ONLY: detectada no código ou na ADR. Ex.: React + Tailwind, Flutter (Material 3), WPF. Não invente. -->
 - **Biblioteca de componentes base:** <!-- LLM-ONLY: ex.: shadcn/ui, MUI, Material 3, nenhuma (componentes próprios) -->
-- **Fontes consultadas:** <!-- LLM-ONLY: caminhos do código, links de Figma, documentos do time. Nunca docs/references/: é temporário (rule docs.md); o que veio de lá é [decisão]. -->
+- **Fontes consultadas:** <!-- LLM-ONLY: caminhos do código, links de Figma, documentos do time. Nunca .temp/references/: é temporário (rule docs.md); o que veio de lá é [decisão]. -->
 - **ADRs relacionadas:** `docs/adr/NNN-<titulo>.md` | nenhuma
 
 ## Direção

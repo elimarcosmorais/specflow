@@ -1,6 +1,6 @@
 ---
 name: spec-claude
-description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão, e em projeto com interface, como o agente confere uma mudança de tela (ex.: Dusk no Laravel, Playwright na web, Windows-MCP no desktop Windows) - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e grava direto, sem pedir confirmação: cria o CLAUDE.md se não existe ou, se existe, enxuga e complementa com edições pontuais. No fim, relata o que fez e a fonte de cada fato. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md), convenções de um tema inteiro (spec-rule-create), decidir se um item solto vira regra (spec-rule-curate) nem settings, hooks ou permissões.
+description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão, e em projeto com interface, como o agente confere uma mudança de tela (ex.: Dusk no Laravel, Playwright na web, Windows-MCP no desktop Windows) - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e grava direto, sem pedir confirmação: cria o CLAUDE.md se não existe ou, se existe, enxuga e complementa com edições pontuais. Também garante que `.temp/` (material de consulta temporário, não versionado) está no .gitignore do projeto. No fim, relata o que fez e a fonte de cada fato. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md), convenções de um tema inteiro (spec-rule-create), decidir se um item solto vira regra (spec-rule-curate) nem settings, hooks ou permissões.
 argument-hint: "[pasta do projeto (opcional; padrão: raiz do repositório)]"
 ---
 
@@ -15,8 +15,8 @@ cada linha inútil custa token sempre e dilui as regras que importam.
 Escrever o `CLAUDE.md` do projeto: o que o agente precisa saber **deste** projeto para trabalhar
 nele sem chutar. **Alvo: até ~80 linhas.** Comece enxuto; o arquivo cresce com o uso.
 
-Saída: `CLAUDE.md` na pasta do projeto, seguindo o [template](template.md). Não é um
-plano: não tem status nem pasta em `docs/`.
+Saída: `CLAUDE.md` na pasta do projeto, seguindo o [template](template.md), e a linha `.temp/`
+no `.gitignore` (Etapa 5). Não é um plano: não tem status nem pasta em `docs/`.
 
 Fronteiras:
 
@@ -147,6 +147,15 @@ Grave **direto, sem pedir confirmação**: rodar a skill já é a autorização.
 `CLAUDE.md`; modo complementar → aplique as edições pontuais no arquivo atual (o `git diff`
 mostra depois exatamente o que mudou).
 
+Garanta também que **`.temp/` está fora do git**: é onde mora o material de consulta temporário
+do usuário (`.temp/references/`, rule [`docs.md`](../../rules/docs.md)), criado e apagado toda
+hora, que não se versiona. Rode `git check-ignore -q .temp/`:
+
+- **ignorado** (código 0) → não mexa no `.gitignore`;
+- **não ignorado** (código 1) → acrescente a linha `.temp/` ao `.gitignore` da pasta do projeto
+  (crie o arquivo se não existir), sem tocar no resto dele e na quebra de linha que ele usa;
+- **fora de um repositório git** (erro) → pule e avise na Etapa 6.
+
 Depois, **faça a varredura final**: Grep por `\{\{|<!--` no `CLAUDE.md`. Sobrou algo → resolva e
 repita até zerar.
 
@@ -164,6 +173,7 @@ Fontes:
   - <arquivo:linha | usuário>: <fatos que saíram dele>
 Comandos extraídos de: <arquivos> (não executados)
 Varredura de {{ }} e <!-- -->: limpa
+.gitignore: .temp/ <já ignorado | acrescentado | sem repositório git>
 behavior.md: <presente | ausente — copie a .claude/ do framework para o projeto>
 Convenções de área fora do CLAUDE.md: <tema → /spec-rule-create "<tema>"> (ou: nenhuma)
 Teste visual: <ferramenta (no repo | a instalar → /spec-change "instalar <ferramenta>")> (ou: sem interface)

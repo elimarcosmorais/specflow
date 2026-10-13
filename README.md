@@ -105,7 +105,7 @@ passos de risco alto).
 | `/spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
 | `/spec-release` | Lançar uma versão: calcula o número pelos commits, atualiza o `CHANGELOG.md`, cria a tag e o GitHub Release |
 | `/spec-readme` | Gerar ou completar o `README.md` |
-| `/spec-claude` | Gerar ou enxugar o `CLAUDE.md` |
+| `/spec-claude` | Gerar ou enxugar o `CLAUDE.md` (e pôr `.temp/` no `.gitignore`) |
 | `/spec-rule-create` | Definir as convenções de um tema (banco, erros HTTP…) em uma rule |
 | `/spec-rule-curate` | Decidir se um item vira regra, e auditar as rules |
 | `/spec-windows-mcp` | Configurar o Windows-MCP para o agente ver e operar a tela (só Windows) |

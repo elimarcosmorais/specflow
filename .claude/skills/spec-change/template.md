@@ -5,7 +5,7 @@ tamanho: média     # média | grande
 
 # <Título da mudança>
 
-- **Data:** AAAA-MM-DD · **Pedido:** <texto curto do pedido | `docs/references/...`>
+- **Data:** AAAA-MM-DD · **Pedido:** <texto curto do pedido | `.temp/references/...`>
 - **ADRs que se aplicam:** [ADR NNN](../adr/NNN-<titulo>.md) | nenhuma
 - **Specs afetadas:** `docs/specs/<assunto>.md` (cria | altera) · `docs/architecture.md` (altera) | nenhuma
 

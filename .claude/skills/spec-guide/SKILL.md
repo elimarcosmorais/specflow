@@ -64,7 +64,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande ([template](../spec-change/template.md)) | `rascunho` → `aprovado` → executado e apagado pelo build |
 | `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada; índice em `docs/adr/README.md` | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, uma categoria por arquivo | vivo; sincronizar com o código é livre, mudar a identidade é do usuário |
-| `docs/references/` | material de consulta do usuário: marca, prints, prompts | temporário; só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
+| `.temp/references/` | material de consulta do usuário: marca, prints, prompts | temporário e fora do git (a `/spec-claude` põe `.temp/` no `.gitignore`); só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
 | `CHANGELOG.md` | o que mudou para quem usa, por versão lançada | só `spec-release` escreve, uma seção por versão; a versão em si é a tag |
 
 - **Plano** junta problema, comportamento (CAs), decisões, telas, contratos, specs afetadas e os
@@ -129,7 +129,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | Commitar todas as mudanças | `/spec-semantic-commit` |
 | Lançar uma versão (SemVer, CHANGELOG, tag, GitHub Release), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |
-| Criar, auditar ou enxugar o CLAUDE.md | `/spec-claude [pasta]` |
+| Criar, auditar ou enxugar o CLAUDE.md (e garantir `.temp/` no `.gitignore`) | `/spec-claude [pasta]` |
 | Definir as convenções de um tema (banco, erros HTTP…) | `/spec-rule-create "<tema>"` |
 | Decidir se algo vira regra, ou auditar as rules | `/spec-rule-curate "<item>"` · `/spec-rule-curate auditar` |
 | Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/spec-windows-mcp [ferramentas extras]` |
@@ -157,12 +157,13 @@ CLAUDE.md, README.md, CHANGELOG.md (só depois da primeira versão)
 └── rules/behavior.md, docs.md (sempre) e <tema>.md (só ao tocar os paths dela)
 docs/
 ├── adr/README.md            índice; as ADRs NNN-<titulo>.md ao lado
-├── references/              brand/, prompts/, screens/…
 ├── specs/README.md          índice; os assuntos ao lado, subdivididos em pastas
 ├── plans/AAAA-MM-DD-<slug>.md   só enquanto não executado
 ├── architecture.md
 ├── design-system.md         só com interface
 └── design/<categoria>.md
+.temp/                       fora do git (está no .gitignore)
+└── references/              brand/, prompts/, screens/…
 ```
 
 - Nomes em kebab-case, sem acentos. ADR com numeração de três dígitos, sequencial, nunca
