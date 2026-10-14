@@ -4,6 +4,12 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.5.0] - 2026-10-14
+
+### Adicionado
+
+- **mcp:** extrai as dicas de uso para um uso.md ao lado da skill (17bdbd5)
+
 ## [0.4.0] - 2026-10-14
 
 ### Adicionado
@@ -82,6 +88,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[0.5.0]: https://github.com/elimarcosmorais/specflow/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/elimarcosmorais/specflow/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/elimarcosmorais/specflow/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/elimarcosmorais/specflow/compare/v0.1.0...v0.2.0
