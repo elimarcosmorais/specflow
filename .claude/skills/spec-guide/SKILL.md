@@ -76,6 +76,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada; índice em `docs/adr/README.md` | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, uma categoria por arquivo | vivo; sincronizar com o código é livre, mudar a identidade é do usuário |
 | `.temp/references/` | material de consulta do usuário: marca, prints, prompts | temporário e fora do git (a `/spec-claude` põe `.temp/` no `.gitignore`); só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
+| `.temp/design-system-formulario.md` | a especificação de entrada do design system ([formulário](../spec-design-system/formulario.md)) | temporário; `/spec-design-system` emite pré-preenchido, o usuário ou outro agente preenche, a skill lê e escreve o design system |
 | `CHANGELOG.md` | o que mudou para quem usa, por versão lançada | só `spec-release` escreve, uma seção por versão; a versão em si é a tag |
 
 - **Plano** junta problema, comportamento (CAs), decisões, telas, contratos, specs afetadas e os
@@ -90,7 +91,10 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
   `aceito` como contrato. Quem procura uma ADR lê o índice (só as em vigor, coluna "Abra quando",
   agrupado por tema acima de 20) e abre só as que ele aponta; só `spec-adr` mexe no índice.
 - **Design system**: obrigatório em projeto com interface; o `spec-change` não planeja
-  mudança com tela sem ele.
+  mudança com tela sem ele. Em projeto novo, a `spec-design-system` tira as dúvidas de direção,
+  entrega o formulário pré-preenchido em `.temp/design-system-formulario.md` e só escreve
+  `docs/` quando ele volta preenchido; em projeto que já tem design system, ela atualiza por
+  perguntas, e o formulário só sai se o usuário pedir.
 
 # 3. O build
 
@@ -138,7 +142,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | Registrar ou substituir uma decisão de arquitetura | `/spec-adr "<título>"` |
 | Ver as ADRs que os planos pedem e ainda faltam | `/spec-adr` (vazio) |
 | Criar, corrigir ou reorganizar o índice das ADRs | `/spec-adr índice` |
-| Criar ou atualizar o design system | `/spec-design-system [Figma, docs ou descrição]` |
+| Criar ou atualizar o design system | `/spec-design-system [proposta, Figma, docs ou o formulário preenchido]` |
 | Commitar todas as mudanças | `/spec-semantic-commit` |
 | Lançar uma versão (SemVer, CHANGELOG, tag, GitHub Release), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |
@@ -176,7 +180,8 @@ docs/
 ├── design-system.md         só com interface
 └── design/<categoria>.md
 .temp/                       fora do git (está no .gitignore)
-└── references/              brand/, prompts/, screens/…
+├── references/              brand/, prompts/, screens/…
+└── design-system-formulario.md   só até a spec-design-system consumi-lo
 ```
 
 - Nomes em kebab-case, sem acentos. ADR com numeração de três dígitos, sequencial, nunca

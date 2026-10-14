@@ -105,7 +105,7 @@ fica no relatório com a recomendação e o comando pronto.
 |---|---|
 | `/spec-guide` | Tirar dúvidas: qual skill rodar, próximo passo de um plano, onde fica cada documento |
 | `/spec-adr` | Registrar uma decisão de arquitetura que vale para o projeto todo; `/spec-adr índice` organiza o índice das ADRs |
-| `/spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface) |
+| `/spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface); em projeto novo, entrega um formulário técnico de especificação, já preenchido com o que deu para derivar, e escreve o design system quando ele volta |
 | `/spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
 | `/spec-release` | Lançar uma versão: calcula o número pelos commits, atualiza o `CHANGELOG.md`, cria a tag e o GitHub Release |
 | `/spec-readme` | Gerar ou completar o `README.md` |
