@@ -92,7 +92,7 @@ reclassifique.
    `README.md`) que cobrem o que mudou. Mudança visual → confira-a como manda a seção Teste
    visual do `CLAUDE.md` (o teste de tela ou o MCP que ela indica). Sem a seção → diga "não
    conferi na tela". Com a seção, não pule a conferência nem a passe ao usuário: não conseguiu
-   operar a ferramenta (sem as ferramentas do MCP nesta sessão, mouse em uso com o Windows-MCP
+   operar a ferramenta (sem as ferramentas do MCP nesta sessão, ou a janela do app não veio
    depois de esperar e tentar de novo) → pergunte no chat que precisa conferir com ela e o que
    impediu, e confira com a resposta.
 4. **Documente.** A mudança alterou o que uma spec descreve, ou criou algo que merece uma? Edite

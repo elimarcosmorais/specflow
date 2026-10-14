@@ -63,8 +63,8 @@ vago ("tratar erros de forma apropriada") não é motivo de pergunta: resolva co
 - o passo **contradiz uma ADR**, ou duas ADRs se contradizem;
 - a **conferência de tela** que a seção Teste visual do `CLAUDE.md` manda fazer não deu certo
   (passo 4 de "Como trabalhar"). A pergunta diz que você precisa conferir com a ferramenta e o
-  que impediu, por exemplo: "Preciso conferir a tela com o Windows-MCP, mas o mouse está em
-  uso. Pode soltar o mouse e o teclado?".
+  que impediu, por exemplo: "Preciso conferir a tela com o Windows-MCP e não consegui: o
+  `Snapshot` não devolveu a janela do app. Como quer seguir?".
 
 ## 2. Qualidade de produção, sem complexidade especulativa
 
