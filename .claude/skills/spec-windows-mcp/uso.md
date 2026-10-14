@@ -37,7 +37,14 @@ rápido, que pula a travessia da árvore de propósito.
 
 - **Conferir um layout:** um `Snapshot` com `use_vision: true` e, na fonte A, `region` na janela
   do app — em vez de `Screenshot` + `Snapshot`, e sem o desktop inteiro com o editor atrás.
-- **Só saber que janelas existem:** `use_ui_tree: false`, que fica bem mais rápido.
+- **`use_ui_tree: false` não devolve a lista de janelas.** Ele é o caminho rápido do `Screenshot`:
+  pula a enumeração de janelas junto com a árvore, e a resposta vem com `Focused Window: No
+  active window found` e `Opened Windows: No windows found` **mesmo com janelas abertas** — medido
+  em sessão real, e o código diz o mesmo (`desktop/service.py`, "Fast path for Screenshot tool
+  (use_ui_tree=False): skip window enumeration", igual na `0.8.5`, na `0.8.8` e no fork). Então:
+  a lista de janelas só vem com a árvore ligada (o padrão), e para saber se um app subiu o mais
+  barato é `Get-Process <nome>` no terminal. Use `use_ui_tree: false` só quando quiser a imagem
+  ou os metadados da tela sem a travessia — e aí o `Screenshot` já faz isso.
 - **Clicar pelo número:** com `use_annotation: true` (o padrão) a imagem vem com um número em
   cada elemento detectado, e `Click`, `Type`, `Scroll` e `Move` aceitam esse número em `label`,
   sem coordenada. Desligue a anotação (`use_annotation: false`) quando a imagem é para olho
@@ -56,10 +63,9 @@ rápido, que pula a travessia da árvore de propósito.
 - **`App` com `mode: "switch"` casa o nome de forma aproximada.** Com o projeto aberto no VS Code,
   "Dev Tools" trouxe a janela "dev-tools - … - Visual Studio Code". Para focar a janela certa,
   clique no ícone dela na barra de tarefas (`Click` nas coordenadas que o `Snapshot` mostra).
-- **Esperar a tela mudar.** Use `Wait` com alguns segundos e confira com um `Snapshot` (com
-  `use_ui_tree: false` se bastar a lista de janelas). Siga sem `WaitFor`: o laço dele foi revisado
-  no fork e respeita o `timeout` pedido, mas quem travava era a captura dentro dele, e
-  `Wait` + `Snapshot` resolve com menos ferramenta liberada.
+- **Esperar a tela mudar.** Use `Wait` com alguns segundos e confira com um `Snapshot`. Siga sem
+  `WaitFor`: o laço dele foi revisado no fork e respeita o `timeout` pedido, mas quem travava era
+  a captura dentro dele, e `Wait` + `Snapshot` resolve com menos ferramenta liberada.
 - **`Snapshot` no VS Code é a travessia mais pesada, e pode pendurar o editor.** Medido: com
   `editor.accessibilitySupport` em `auto` (o default) ou `off`, a árvore do editor vem
   praticamente vazia e a captura custa 0,05-1,40 s. Com a chave em **`on`**, a mesma captura leva
