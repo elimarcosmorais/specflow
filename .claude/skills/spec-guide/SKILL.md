@@ -169,7 +169,8 @@ contexto; a rule diz como aplicar e carrega) · README × `CLAUDE.md` (pessoas �
 ```
 CLAUDE.md, README.md, CHANGELOG.md (só depois da primeira versão)
 .claude/
-├── skills/spec-<nome>/SKILL.md (+ template.md quando gera documento)
+├── skills/spec-<nome>/SKILL.md (+ ao lado: template.md quando gera documento, arquivo de
+│   consulta ou script quando a skill precisa — ex.: uso.md e verificar.py nas skills de MCP)
 ├── agents/spec-executor.md, spec-reviewer.md, spec-security-reviewer.md, spec-fixer.md
 └── rules/behavior.md, docs.md (sempre) e <tema>.md (só ao tocar os paths dela)
 docs/

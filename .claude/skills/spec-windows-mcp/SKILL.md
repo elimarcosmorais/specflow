@@ -1,6 +1,6 @@
 ---
 name: spec-windows-mcp
-description: Utilitário (transversal, só Windows). Configura o Windows-MCP no projeto para o agente ver e operar a tela do Windows (screenshot, árvore de acessibilidade, clique, teclado, janelas) - confere o uv e o Python, escolhe a fonte do servidor (um fork no GitHub com os patches de travamento, pinado por commit, quando existe; senao a versao pinada do PyPI), registra o servidor no .mcp.json só com as ferramentas de tela, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe esse arquivo no .gitignore, prova com um handshake MCP direto que o servidor sobe e lista as ferramentas, e registra o servidor na seção Teste visual do CLAUDE.md do projeto (sem precisar voltar ao spec-claude). Também traz as dicas de uso aprendidas nos testes. Não instala nada sem confirmação e não libera PowerShell, Registry, FileSystem nem Process.
+description: Utilitário (transversal, só Windows). Configura o Windows-MCP no projeto para o agente ver e operar a tela do Windows (screenshot, árvore de acessibilidade, clique, teclado, janelas) - confere o uv e o Python, escolhe a fonte do servidor (um fork no GitHub com os patches de travamento, pinado por commit, quando existe; senao a versao pinada do PyPI), registra o servidor no .mcp.json só com as ferramentas de tela, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe esse arquivo no .gitignore, prova com um handshake MCP direto que o servidor sobe e lista as ferramentas, e registra o servidor na seção Teste visual do CLAUDE.md do projeto (sem precisar voltar ao spec-claude). As dicas de uso e os parâmetros medidos de cada ferramenta ficam no uso.md ao lado da skill, que o bullet do CLAUDE.md manda ler antes de operar a tela. Não instala nada sem confirmação e não libera PowerShell, Registry, FileSystem nem Process.
 argument-hint: "[ferramentas extras a liberar (opcional)]"
 disable-model-invocation: true
 ---
@@ -120,7 +120,7 @@ ela exige um git completo: numa máquina cujo único git é o embutido em outro 
 laragon, por exemplo) o install morre em
 `git: 'submodule' is not a git command` — medido. O arquivo `.tar.gz` não usa git nenhum.
 
-**Por que o fork, e o que cada patch resolve** (medido, com os números nas Dicas de uso):
+**Por que o fork, e o que cada patch resolve** (medido, com os números no [uso.md](uso.md)):
 
 - uma chamada UIA que não volta pendurava a captura por mais de 20 s — `--tree-timeout` dá
   orçamento de tempo ao walk, e um teto duro abandona a captura em vez de esperar para sempre;
@@ -136,7 +136,7 @@ computador desliga o controle.
 
 E o padrao sem fork: aceita Python `>=3.12`, não tem o hook, e não tem `--tree-timeout` nem
 exclusão de processo (a variável não existe lá). Com ela, `Snapshot` no VS Code é o pior caso
-conhecido — veja as Dicas de uso.
+conhecido — veja o [uso.md](uso.md).
 
 **Checagem antes de subir para uma `0.8.9` ou mais nova.** Pergunte ao próprio CLI, que é a fonte
 autoritativa: o README documenta o `main`, não a versão lançada, e por isso descreve o
@@ -295,18 +295,24 @@ MCP.
 - Sem `CLAUDE.md` no projeto → não crie. O `/spec-claude`, quando rodar, acha o servidor no
   `.mcp.json`.
 - O `CLAUDE.md` já cita o Windows-MCP, em qualquer seção → não mova a regra para a seção Teste
-  visual: reorganizar o arquivo é trabalho do `/spec-claude`. Só complete o bullet existente
-  com a frase "Não pule a conferência…" do bloco abaixo, se ela faltar.
+  visual: reorganizar o arquivo é trabalho do `/spec-claude`. Só complete o bullet existente com
+  o que faltar do bloco abaixo: a leitura do `uso.md` e a frase "Não pule a conferência…".
 - Senão → acrescente este bullet à seção Teste visual, no idioma do arquivo. Sem a seção, crie-a
   na posição do [template](../spec-claude/template.md) (depois de UI, antes de "Pronto
   significa"):
 
   ```
   - Ver a tela (conferir layout, reproduzir bug) → Windows-MCP (`windows-mcp` no `.mcp.json`):
-    abra o app e confira com `Snapshot`. Não pule a conferência nem a passe ao usuário: não
-    conseguiu operar (ferramentas ausentes) → pergunte no chat que precisa conferir com o
-    Windows-MCP.
+    antes da primeira chamada, leia `<caminho>/uso.md` (parâmetros medidos e armadilhas); abra o
+    app e confira com `Snapshot`. Não pule a conferência nem a passe ao usuário: não conseguiu
+    operar (ferramentas ausentes) → pergunte no chat que precisa conferir com o Windows-MCP.
   ```
+
+  `<caminho>` é onde esta skill está **nesta máquina**, confirmado com `ls`, não chutado:
+  `.claude/skills/spec-windows-mcp` quando o projeto tem a skill (o normal, com o SpecFlow
+  instalado nele), ou o caminho absoluto da pasta do usuário quando ela só existe lá. O ponteiro é
+  o que faz as dicas chegarem a quem opera a tela: esta skill tem
+  `disable-model-invocation: true`, então o agente que está programando nunca a carrega sozinho.
 
   Só se o servidor ficar com o **controle ligado** (`0.8.8`+ sem `--no-control`), acrescente
   "mouse em uso depois de esperar com `Wait`, " à lista de motivos: a disputa pelo mouse e teclado
@@ -337,62 +343,17 @@ O agente chama o `Snapshot` com `use_vision: true` (inclui a imagem) e `use_anno
 (sem os retângulos coloridos que o padrão desenha em volta dos elementos). Se o modo de
 permissão da sessão pedir aprovação, o Claude Code pergunta antes de cada ferramenta nova.
 
+Se o servidor ficou com o **controle de input ligado** (`0.8.8`+ sem `--no-control`), avise também
+da disputa pelo mouse e teclado e do `Ctrl+Alt+Shift+Backspace`, com os detalhes da última seção
+do [uso.md](uso.md) — não os repita de memória, e não ofereça esse atalho nas outras
+configurações.
+
 # Dicas de uso
 
-O que os testes mostraram ao operar um app desktop com estas ferramentas:
-
-- **`Snapshot` x `Screenshot`.** O `Snapshot` traz a árvore de acessibilidade: janelas, botões,
-  links e campos, com coordenadas clicáveis. Use `use_ui_tree: false` quando só precisar da lista
-  de janelas, porque fica bem mais rápido. O `Screenshot` só captura a imagem.
-- **App com WebView2 (Wails, Electron, Tauri) expõe o HTML.** Os elementos da página aparecem
-  na árvore com os rótulos acessíveis (`aria-label`, texto do link ou do botão). Dá para navegar
-  e validar o layout sem pedir ao usuário.
-- **`App` com `mode: "launch_executable"` não passa variáveis de ambiente.** App que precisa de
-  uma variável para subir fecha logo após abrir. Embrulhar em `cmd /c "set X=...&& start ..."`
-  pelo próprio `App` também não funcionou nos testes. Suba o app pelo terminal com a variável
-  definida e use o MCP só para ver e operar. Confira se ele ficou de pé
-  (`Get-Process <nome>`) antes de procurar a janela.
-- **`App` com `mode: "switch"` casa o nome de forma aproximada.** Com o projeto aberto no VS Code,
-  "Dev Tools" trouxe a janela "dev-tools - … - Visual Studio Code". Para focar a janela certa,
-  clique no ícone dela na barra de tarefas (`Click` nas coordenadas que o `Snapshot` mostra).
-- **Esperar a tela mudar.** Use `Wait` com alguns segundos e confira com um `Snapshot` (com
-  `use_ui_tree: false` se bastar a lista de janelas). Siga sem `WaitFor`: o laço dele foi revisado
-  no fork e respeita o `timeout` pedido, mas quem travava era a captura dentro dele, e
-  `Wait` + `Snapshot` resolve com menos ferramenta liberada.
-- **Tela congelada: `Ctrl+Alt+Shift+Backspace` — e só com o controle ligado.** O atalho é do
-  subsistema de controle: existe na `0.8.8`+ **sem** `--no-control`, e em nenhum outro caso. Com
-  `--no-control` (fonte A) ou na `0.8.5` esse atalho **não é saída de emergência**: ninguém o
-  intercepta e ele chega no app em foco como tecla normal — num caso real fechou o VS Code em vez
-  de salvar a sessão. Com o controle ligado, ele devolve o input na hora; mover bastante o mouse
-  também devolve, e o controle volta ao agente depois de ~10 s sem uso. **Diga isso ao usuário**
-  ao configurar uma versão com controle ligado, e não ofereça o atalho nas outras.
-- **Disputa pelo mouse e teclado (só com o controle ligado: `0.8.8`+ sem `--no-control`).**
-  Enquanto o agente opera, o pacote assume o mouse e
-  o teclado físicos e mostra um aviso na tela. Se o usuário mexer, o agente perde o controle e só
-  o retoma depois de uma espera sem uso. Ação recusada nesse meio-tempo → consulte o
-  `ControlStatus` (dono atual e segundos que faltam), espere com `Wait` e tente de novo.
-  **Mouse em uso não é motivo para pular a conferência**, nem para passá-la ao usuário: depois de
-  umas 3 esperas sem conseguir, pergunte no chat ("Preciso conferir a tela com o Windows-MCP.
-  Solte o mouse e o teclado e me avise.") e, com a resposta, confira. O próprio projeto avisa que
-  essa retomada é "best-effort, not a security boundary", e que o Windows pode remover um hook de
-  baixo nível sem avisar o processo.
-- **`Snapshot` no VS Code é a travessia mais pesada, e pode pendurar o editor.** Medido: com
-  `editor.accessibilitySupport` em `auto` (o default) ou `off`, a árvore do editor vem
-  praticamente vazia e a captura custa 0,05-1,40 s. Com a chave em **`on`**, a mesma captura leva
-  23 s **parada numa única chamada UIA** (`TextPattern.GetVisibleRanges` sobre o texto aberto), e
-  o Windows confirma o editor pendurado (`IsHungAppWindow`) por 12 s seguidos. Isso é
-  independente do hook de input: acontece na `0.8.5` também.
-
-  Duas consequências práticas: nenhum limite de **quantidade** de elementos corta esse caso (a
-  chamada presa não conta elemento nenhum), e nenhuma correção do lado do servidor destrava o
-  editor — o provider travado é dentro dele. A saída é não entrar no processo:
-  `WINDOWS_MCP_EXCLUDE_PROCESSES=Code.exe` no `env`. Na `0.8.8` isso protege **só** o walk (o
-  pré-passo de janelas entra no processo excluído de qualquer jeito); na fonte A vale em todo o
-  caminho do `Snapshot`. A variável não existe na `0.8.5`.
-- **Coordenadas.** Se a imagem vier reduzida, multiplique as coordenadas da imagem pela razão
-  entre o tamanho real da tela e o da imagem antes de clicar.
-- **Mostrar o print ao usuário.** O resultado do `Snapshot`/`Screenshot` diz onde a imagem foi
-  salva (`tool-results\...png`). Mande esse arquivo para o usuário em vez de só descrevê-lo.
+Estão em [uso.md](uso.md), ao lado desta skill: os parâmetros medidos de cada ferramenta, como
+conferir uma tela numa chamada só, o que os testes mostraram (WebView2, `App`, o `Snapshot` no VS
+Code) e o que vale apenas com o controle de input ligado. É o arquivo que o bullet da Etapa 6
+manda o agente ler antes de operar a tela, e a fonte das dicas que esta skill der ao usuário.
 
 # Entrada
 

@@ -1,6 +1,6 @@
 ---
 name: spec-playwright-mcp
-description: Utilitário (transversal). Configura o Playwright MCP no projeto para o agente ver e operar páginas web num navegador (abrir URL, árvore de acessibilidade, print, clique, formulário, console) - confere o Node e o navegador, fixa uma versão do pacote, registra o servidor no .mcp.json em modo headless e isolado, bloqueia a ferramenta browser_run_code_unsafe nas permissões do projeto, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe os arquivos locais no .gitignore, prova com um handshake MCP direto que o servidor sobe, abre uma página e tira um print, e registra o servidor na seção Teste visual do CLAUDE.md do projeto (sem precisar voltar ao spec-claude). Também traz as dicas de uso. Não instala nada sem confirmação.
+description: Utilitário (transversal). Configura o Playwright MCP no projeto para o agente ver e operar páginas web num navegador (abrir URL, árvore de acessibilidade, print, clique, formulário, console) - confere o Node e o navegador, fixa uma versão do pacote, registra o servidor no .mcp.json em modo headless e isolado, bloqueia a ferramenta browser_run_code_unsafe nas permissões do projeto, cria ou completa o .claude/settings.local.json com enabledMcpjsonServers, põe os arquivos locais no .gitignore, prova com um handshake MCP direto que o servidor sobe, abre uma página e tira um print, e registra o servidor na seção Teste visual do CLAUDE.md do projeto (sem precisar voltar ao spec-claude). As dicas de uso e os parâmetros medidos de cada ferramenta ficam no uso.md ao lado da skill, que o bullet do CLAUDE.md manda ler antes de operar a página. Não instala nada sem confirmação.
 argument-hint: "[headed | ferramentas extras a liberar (opcional)]"
 disable-model-invocation: true
 ---
@@ -145,16 +145,24 @@ MCP.
 
 - Sem `CLAUDE.md` no projeto → não crie. O `/spec-claude`, quando rodar, acha o servidor no
   `.mcp.json`.
-- O `CLAUDE.md` já cita o Playwright MCP, em qualquer seção → nada a fazer. Não mova a regra
-  para a seção Teste visual: reorganizar o arquivo é trabalho do `/spec-claude`.
+- O `CLAUDE.md` já cita o Playwright MCP, em qualquer seção → não mova a regra para a seção
+  Teste visual: reorganizar o arquivo é trabalho do `/spec-claude`. Só complete o bullet existente
+  com o que faltar do bloco abaixo: a leitura do `uso.md`.
 - Senão → acrescente este bullet à seção Teste visual, no idioma do arquivo. Sem a seção, crie-a
   na posição do [template](../spec-claude/template.md) (depois de UI, antes de "Pronto
   significa"):
 
   ```
   - Ver a tela sem escrever teste (conferir layout, reproduzir bug) → Playwright MCP
-    (`playwright` no `.mcp.json`): suba o app em segundo plano e abra o endereço local.
+    (`playwright` no `.mcp.json`): antes da primeira chamada, leia `<caminho>/uso.md` (parâmetros
+    medidos e armadilhas); suba o app em segundo plano e abra o endereço local.
   ```
+
+  `<caminho>` é onde esta skill está **nesta máquina**, confirmado com `ls`, não chutado:
+  `.claude/skills/spec-playwright-mcp` quando o projeto tem a skill (o normal, com o SpecFlow
+  instalado nele), ou o caminho absoluto da pasta do usuário quando ela só existe lá. O ponteiro é
+  o que faz as dicas chegarem a quem opera a página: esta skill tem
+  `disable-model-invocation: true`, então o agente que está programando nunca a carrega sozinho.
 
   Mostre o diff e grave só depois do OK. Mexa só nessa linha, mesmo que o arquivo tenha outras
   alterações do usuário.
@@ -172,21 +180,10 @@ página inicial".
 
 # Dicas de uso
 
-- **O app precisa estar no ar.** O MCP só abre URL. Suba o servidor de dev com o comando do
-  `CLAUDE.md` em segundo plano e navegue para o endereço local dele.
-- **`browser_snapshot` x `browser_take_screenshot`.** O snapshot traz a árvore de acessibilidade
-  com as referências que `browser_click` e `browser_type` usam; é com ele que se age. O print só
-  mostra; serve para conferir o visual.
-- **Console e rede.** Depois de navegar, `browser_console_messages` traz as mensagens do console
-  (procure os erros de JavaScript) e `browser_network_requests` a lista numerada das requisições
-  (procure status 4xx e 5xx; o detalhe vem de `browser_network_request`). Confira os dois antes
-  de dizer que a tela está certa.
-- **Responsivo.** `browser_resize` muda o tamanho da janela para conferir a tela no celular sem
-  reconfigurar o servidor.
-- **Login.** Com `--isolated`, cada sessão começa deslogada. Use o usuário de teste que o projeto
-  já documenta (seed, `README`); sem um, pergunte. Nunca digite uma senha real do usuário.
-- **Mostrar o print ao usuário.** O resultado do `browser_take_screenshot` diz onde a imagem foi
-  salva (`.playwright-mcp/…png`). Mande esse arquivo em vez de só descrevê-lo.
+Estão em [uso.md](uso.md), ao lado desta skill: os parâmetros medidos de cada ferramenta, o que
+economiza token (`browser_find`, `depth`, `filename`), as duas armadilhas do console e da rede, e
+o que os testes mostraram. É o arquivo que o bullet da Etapa 6 manda o agente ler antes de operar
+a página, e a fonte das dicas que esta skill der ao usuário.
 
 # Entrada
 
