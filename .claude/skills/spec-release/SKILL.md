@@ -53,12 +53,17 @@ git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null \
   || git remote show origin | sed -n 's/.*HEAD branch: //p'   # branch principal
 git fetch --tags --quiet origin               # traz as tags do remoto
 git status -sb | head -1                      # [behind N]? → pare
+gh auth status                                # remoto no GitHub: dá para criar o release?
 ```
 
 - **Sem git** → pare: o framework exige git.
 - **Sem remoto** → siga, mas a versão fica só local (commit e tag); avise na confirmação.
 - **Fora da branch principal** → siga, mas avise na confirmação: a tag vai apontar para esta
   branch.
+- **Remoto no GitHub sem `gh`, ou com `gh` sem login** → siga, mas **avise na confirmação**: a
+  tag é publicada e a versão sai **sem página de release**. É aqui que isso se descobre, não na
+  Etapa 8: lá a tag já está no remoto e não há mais nada a decidir. A Etapa 7 oferece instalar o
+  `gh` (ou fazer o login) antes de lançar.
 
 ## Etapa 2 — Achar a última versão
 
@@ -172,7 +177,7 @@ Versão: v1.4.2 → v1.5.0 (minor: 3 feat, 2 fix)
 Arquivos: package.json, package-lock.json, CHANGELOG.md
 Commit: chore(release): v1.5.0 · Tag: v1.5.0
 Publicar: push de main + tag para origin · GitHub Release
-Avisos: <fora da branch principal | manifesto dizia 1.0.0 | commits sem tipo: a1b2c3d "ajustes" | nenhum>
+Avisos: <sem `gh` (ou sem login): a versão sai sem página de release | fora da branch principal | manifesto dizia 1.0.0 | commits sem tipo: a1b2c3d "ajustes" | nenhum>
 
 <a seção da versão nova no CHANGELOG>
 ```
@@ -182,6 +187,13 @@ E pergunte com `AskUserQuestion`:
 - **Publicar** (recomendado): commit, tag, push e release.
 - **Só local**: commit e tag, sem push nem release.
 - **Cancelar**: nada é alterado.
+
+Aviso de `gh` (Etapa 1) → acrescente uma opção antes de *Só local*: **Instalar o `gh` primeiro**
+(ou **Fazer o login primeiro**), dizendo que depois dele a versão sai com a página de release.
+Escolhida, instale pelas instruções globais do usuário (confira-as; não as repita de memória),
+confira o binário com `--version`, peça o `gh auth login` — que é interativo e só o usuário
+faz — e só então siga para a Etapa 8. A Etapa 8 continua proibida de instalar ou autenticar por
+conta própria: a decisão é desta etapa, com o usuário.
 
 Primeira versão → troque *Publicar* por *Publicar v0.1.0* (recomendado) e *Publicar v1.0.0* (já
 em produção). O usuário escreveu outra versão em "Other" → recalcule a partir da Etapa 5 e siga
@@ -204,14 +216,19 @@ tag ficam locais, intactos: mostre o erro, explique a causa provável e pare (Re
 **GitHub Release**, se o remoto é GitHub:
 
 ```bash
-gh auth status                                 # gh instalado e autenticado?
+gh auth status                                 # confirma o que a Etapa 1 (ou 7) já viu
 gh release create v1.5.0 --title "v1.5.0" --notes-file <arquivo com a seção da versão>
 ```
 
 Grave as notas (a seção da versão, sem o título `## [1.5.0]`) num arquivo temporário do
-scratchpad. Versão `X.Y.Z-algo` → acrescente `--prerelease`. Sem `gh`, sem login ou com erro → a
-tag já está publicada: diga que o release não foi criado, por quê, e o comando para criá-lo
-depois. Não instale nem autentique o `gh` por conta própria.
+scratchpad. Use `--verify-tag`, para o `gh` usar a tag que você acabou de publicar e falhar em
+vez de criar outra. Versão `X.Y.Z-algo` → acrescente `--prerelease`. Sem `gh`, sem login ou com
+erro → a tag já está publicada: diga que o release não foi criado, por quê, e o comando para
+criá-lo depois. Não instale nem autentique o `gh` por conta própria: quem oferece isso é a
+Etapa 7, quando ainda dá para escolher.
+
+Versões antigas sem página de release (o repositório lançou sem `gh` antes) → só as crie se o
+usuário pedir, uma por tag, com as notas que o `CHANGELOG.md` já tem; a mais nova leva `--latest`.
 
 ## Etapa 9 — Relatório
 
