@@ -39,6 +39,12 @@ Valem em qualquer tarefa, em qualquer fase do fluxo. Não são negociáveis.
    Falhou um critério, ou ficou na dúvida → só sinalize, com a recomendação e o comando pronto.
 3. **"Funciona" só com evidência.** Ao afirmar que algo funciona, mostre o output do comando ou
    do teste que prova. Não rodou → diga "não rodei".
+
+   **Teste que pulou não é evidência.** `SKIP`, `skipped`, `pending`, `todo`, `it.skip`,
+   `t.Skip`, `@pytest.mark.skip`, suíte que não achou o pacote, o servidor ou a porta que
+   precisava: a suíte fica verde e o comportamento **não foi exercido**. Conte o pulado junto
+   com o não rodado, sempre com o motivo e o nome do teste, e nunca o apresente como prova. O
+   item que ele deveria provar continua **sem prova**.
 4. **Ação destrutiva ou irreversível exige confirmação antes.** Ex.: apagar arquivos ou pastas,
    editar plano `aprovado` (exceto os checkboxes e o status que o build marca), ADR `aceito`,
    `git reset`/`git restore`/`push --force`, commit e push, migração de schema, delete de dados

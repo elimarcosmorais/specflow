@@ -34,7 +34,8 @@ A skill `spec-build` te passa:
    **Atualize as specs** do passo para descrever o comportamento novo, seguindo a rule
    `docs.md` (índice, limite de 300 linhas e subdivisão).
 4. **Prove que terminou:** rode os comandos do "Pronto quando" (testes, build, lint). Tudo verde
-   antes de responder. Passo com tela → confira-a como manda a seção Teste visual do
+   **e nada pulado** antes de responder: leia a contagem de pulados da saída, não só a última
+   linha (Regra 4). Passo com tela → confira-a como manda a seção Teste visual do
    `CLAUDE.md`: o teste de tela costuma ficar fora da suíte padrão (`php artisan dusk`,
    `npx playwright test`); se ela indica um MCP de tela, abra a tela e olhe. Sem a seção →
    "não conferi na tela" na saída. Com a seção, a conferência não se pula nem vai para o
@@ -97,6 +98,13 @@ Para cada item de teste do "Pronto quando": escreva o teste, veja-o falhar, impl
 passar. Sem teste verde para cada item, o passo não está pronto. CA marcado `(manual: …)` não
 vira teste automatizado: só confira que o código permite fazer o roteiro.
 
+**Verde não é pulado.** Teste que a suíte pulou (`SKIP`, `skipped`, `pending`, `t.Skip`,
+`it.skip`) deixou o item **sem prova**, mesmo com a suíte verde (rule `behavior.md`, regra 3).
+Leia o motivo do pulo e resolva-o: o pacote, o binário, a variável de ambiente, o serviço ou a
+porta que o teste exige é precondição do passo, não tarefa do usuário. Não conseguiu resolver
+(ex.: a porta está ocupada por um programa que não é seu) → **pare** e pergunte, com o nome do
+teste e o motivo do pulo.
+
 Se o projeto não tem como rodar testes, **pare** e pergunte: configurar a engine, escrever os
 testes sem executar, ou seguir sem testes.
 
@@ -112,6 +120,10 @@ O resultado esperado do "Pronto quando" é **contrato literal**.
 - **Toda ação tem asserção** sobre um resultado observável (retorno, estado, efeito).
 - **Teste falhou → corrija o código, não o teste.** Só altere um teste com uma linha
   `SUT_IS_CORRECT_BECAUSE: <motivo>` explicando por que o teste estava errado.
+- **Não transforme precondição que falta em pulo.** Acrescentar um `Skip` para a suíte ficar
+  verde sem exercer o código é o mesmo que apagar o teste: a precondição faz parte do passo
+  (Regra 4). O `Skip` que **já existia** no projeto você mantém, mas resolve a precondição dele
+  e, se não conseguir, para e pergunta.
 
 ## 6. Nada só para teste no código de produção
 
@@ -171,7 +183,8 @@ Responda **apenas** este bloco (sem diff, sem explicação longa):
 ```
 RESULTADO: concluído | parada
 Arquivos: criados `a`, `b` · modificados `c`
-Testes: `<comando>` → N passando, M falhando · build: ok | falhou | n/a
+Testes: `<comando>` → N passando, M falhando, P pulados · build: ok | falhou | n/a
+Pulados: <teste> — <motivo do pulo> · <como resolvi | por que não dá para resolver aqui> | nenhum
 Tela: `<comando>` → ok | falhou · conferida por <MCP>: <o que viu> · não conferi na tela   (só se o passo tem tela)
 CAUSA-RAIZ: <uma linha por bloqueante corrigido>          (só no modo correção)
 Sugestões: [P1] aplicada · [P2] recusada: <motivo>        (só no modo sugestões)
@@ -186,6 +199,10 @@ Pergunta: <pergunta> · Opções: (a) … (b) … · Recomendo: (x), porque … 
 Cada item vai em **um** campo, e o relatório final os separa entre "só para saber" e "você
 precisa agir":
 
+- **Pulados**: nunca `nenhum` por omissão — a suíte verde com um pulo é o jeito mais silencioso
+  de entregar um passo sem prova. Pulo que você resolveu entra com o que fez; pulo que ficou
+  significa item do "Pronto quando" sem prova, e aí o normal é `parada` (Regra 4), não
+  `concluído`.
 - **Decisões** e **Difere do plano**: o usuário só precisa saber. Divergência que muda **o que**
   é entregue não entra aqui: é gatilho de parada (Regra 1).
 - **A decidir**: o usuário precisa escolher. Entra só o risco que **você não pode resolver** no

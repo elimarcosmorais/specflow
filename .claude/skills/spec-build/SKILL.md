@@ -1,6 +1,6 @@
 ---
 name: spec-build
-description: Executa um plano aprovado (docs/plans/AAAA-MM-DD-<slug>.md, gerado pelo /spec-change) passo a passo - entrega cada passo a um spec-executor novo, manda o spec-reviewer conferir (e o spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no plano e deixa o código e as specs aprovados em stage, sem commitar. No fechamento, com tudo verde, faz a varredura fora do escopo - tria o que os executores só anotaram em "Notei fora do escopo" e delega o item isolado a um spec-fixer por item, até 3 em paralelo, com a suíte e o build como gate - e apaga o plano. Só o que bloqueia volta para correção. As sugestões dos revisores, o executor aplica numa rodada única depois da aprovação, revisada à parte e descartada se reprovar; o que ele recusar vai para o relatório final. Coordena; não escreve código.
+description: Executa um plano aprovado (docs/plans/AAAA-MM-DD-<slug>.md, gerado pelo /spec-change) passo a passo - entrega cada passo a um spec-executor novo, manda o spec-reviewer conferir (e o spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no plano e deixa o código e as specs aprovados em stage, sem commitar. No fechamento, com a suíte e o build inteiros verdes e sem teste pulado (sem essa prova o plano não é apagado), faz a varredura fora do escopo - tria o que os executores só anotaram em "Notei fora do escopo" e delega o item isolado a um spec-fixer por item, até 3 em paralelo, com a suíte e o build como gate - e apaga o plano. Só o que bloqueia volta para correção. As sugestões dos revisores, o executor aplica numa rodada única depois da aprovação, revisada à parte e descartada se reprovar; o que ele recusar vai para o relatório final. Coordena; não escreve código.
 argument-hint: "[caminho do plano (opcional)] [N (opcional): só esse passo]"
 disable-model-invocation: true
 ---
@@ -36,8 +36,11 @@ documentado nas specs, um passo por vez.
 
 # Regras
 
-1. **Nunca implemente.** Código e testes são do executor. Você só roda git e, no fechamento, os
-   comandos de teste e build.
+1. **Nunca implemente.** Código e testes são do executor. Você roda git e, no fechamento, os
+   comandos de teste e build — mais os comandos que montam a **precondição** deles (a tarefa que
+   gera o pacote ou o dado de teste, exportar uma variável, subir ou parar um serviço, liberar
+   uma porta). Precondição de teste é ambiente, não código: montá-la é seu, escrever código
+   nunca é.
 2. **Um passo por vez**, na ordem do plano.
 3. **Só bloqueante volta para correção.** Sugestão nunca segura um passo e nunca vira arquivo.
    Ela tem **uma** rodada com o executor depois que o passo é aprovado (2.7). A rodada não conta
@@ -213,9 +216,32 @@ toca no passo.
 
 Quando todos os passos estiverem concluídos:
 
-1. Rode a suíte de testes e o build do projeto. Falhou → mostre no relatório e não apague o
-   plano.
-2. **Varredura fora do escopo.** Com a suíte e o build verdes, tria os itens que você guardou em
+1. **Prove o plano inteiro.** Rode a suíte de testes e o build do projeto, **inteiros**, como o
+   `CLAUDE.md` os define — não a versão dirigida (`-run`, `--filter`, um pacote só) que um passo
+   usou. Três resultados, e só o primeiro fecha o plano:
+
+   | Resultado | O que fazer |
+   |---|---|
+   | **verde, nada pulado** | siga para o item 2 |
+   | **vermelho** | mostre a falha no relatório e **não apague o plano** |
+   | **não rodou, ou verde com pulo** | igual a vermelho: **não apague o plano** |
+
+   **"Não rodei" e "pulou" não fecham o plano.** Suíte que não roda (falta um pacote, um
+   binário, uma variável de ambiente, um serviço) e teste que pula (`SKIP`, `skipped`,
+   `pending`, `t.Skip`) deixam o plano **sem prova** (rule `behavior.md`, regra 3): a suíte fica
+   verde sem exercer o código, e o defeito reaparece na próxima mudança como problema novo. Leia
+   a contagem de pulados, não só a última linha da saída.
+
+   Antes de desistir, resolva você a precondição, que é do build e não do usuário: rode a tarefa
+   que monta o pacote ou o dado de teste, exporte a variável, suba o serviço, libere a porta
+   (comando que só pede admin → eleve só ele, `behavior.md`, regra 5). Não deu → **pergunte**
+   (Regra 8), com o teste, o motivo do pulo e as opções concretas, por exemplo: "O
+   `TestRealServer` pula porque a porta 3306 está ocupada pelo Laragon. (a) eu paro o serviço,
+   rodo a suíte e o religo; (b) você para e eu rodo de novo; (c) fecho o plano sem esta prova
+   (fica registrada como pendente no relatório)". Só a resposta do usuário autoriza fechar sem
+   a prova, e aí o relatório diz **qual** prova faltou e por quê.
+2. **Varredura fora do escopo.** Com a suíte e o build verdes e nada pulado, tria os itens que
+   você guardou em
    "Notei fora do escopo" de todos os passos (2.6, item 3), juntando os repetidos. A faixa de
    impacto pequeno não aparece aqui: o executor já a corrigiu dentro do passo.
 
@@ -239,7 +265,8 @@ Quando todos os passos estiverem concluídos:
    - **Sem revisão, de propósito.** O gate é a suíte: item que precisaria de um revisor não é
      faixa B, é C. Não chame o `spec-reviewer`: ele revisa um passo do plano, e estes itens não
      estão no plano.
-   - **Gate.** Rode a suíte e o build de novo. Verde → `git add` dos arquivos dos fixers; log
+   - **Gate.** Rode a suíte e o build de novo. Verde (e sem pulo novo) → `git add` dos arquivos
+     dos fixers; log
      `[varredura] 2 resolvidos, 1 recusado · staged`. Vermelho → desfaça: `git restore` nos
      modificados do item culpado e apague os que ele criou (só os que estavam limpos na foto),
      rode de novo e passe o item para C, com a falha como motivo. A falha não aponta de qual
@@ -257,6 +284,8 @@ Quando todos os passos estiverem concluídos:
    arquivo. A remoção fica em stage e entra no mesmo commit do código, como prevê a rule
    `docs.md` (por isso não pede confirmação). Antes, confira que as "Specs afetadas" do
    cabeçalho estão no stage; faltou alguma → mostre no relatório e não apague.
+   **"Tudo passou" é literal:** o item 1 voltou verde e sem pulo, ou o usuário autorizou fechar
+   sem aquela prova. Fora disso o plano fica, e o relatório diz o que falta provar para fechá-lo.
 
 Execução parcial (parou num passo, ou rodou só um) → pule esta etapa inteira, varredura
 incluída: o plano fica, com os checkboxes marcados, para a próxima sessão retomar, e os itens
@@ -273,12 +302,12 @@ Passos concluídos: X/Y
 | 1 — <nome> | concluído | 1 |
 | 2 — <nome> | parado: <motivo> | 3 |
 
-Testes e build: ok | <falha>
+Testes e build: `<comando>` → ok | <falha> | pulou: <teste> (<motivo>) | não rodou: <motivo>
 Specs: <arquivos atualizados> | nenhuma
 Plano: apagado (remoção em stage) | mantido: <motivo>
 
 ### Para você
-- **Conferir:** <CA-2: abrir a tela X e …>
+- **Conferir:** <CA-2 (manual): abrir a tela X e …>
 - **Decidir:** <risco ou limite, `arquivo:linha` (passo N)> · Recomendo: <…>
 - **Deixei para você, fora do escopo:** <problema, `arquivo:linha`> · <por que ficou> →
   `/spec-change <pedido pronto>`
@@ -303,6 +332,28 @@ campo de mesmo nome do executor (2.6), ou da triagem da varredura (Etapa 3, item
 uma linha só. Em "Deixei para você", "por que ficou" é o que o tirou da triagem: decisão,
 contrato, área sensível, mais de uma passada, fila cheia, recusado pelo fixer ou gate vermelho. Não reclassifique: um item que
 pareça estar no campo errado é problema do passo, e o revisor já o conferiu.
+
+**O relatório não tem linha livre.** Toda linha vem de um campo do executor, da triagem da
+varredura ou do item 3 da Etapa 3 — nada entra por ser inconveniente de resolver. Em especial,
+**"Conferir" é lista fechada:** só CA marcado `(manual: …)` e tela que o `CLAUDE.md` não dá como
+o agente conferir (Etapa 3, item 3). Nada mais entra ali. Antes de escrever qualquer linha em
+"Para você", passe o item por esta ordem:
+
+| O item é… | Onde vai |
+|---|---|
+| comando que você já pode rodar (gerar o pacote de teste, subir o serviço, regerar código) | **você roda**, agora; se falhar, é falha de fechamento (item 1) |
+| prova que faltou da suíte ou do build | item 1: plano mantido, ou pergunta ao usuário |
+| sintoma de um problema do projeto cuja causa você identificou | triagem da varredura (B ou C), **descrito pela causa** |
+| CA `(manual: …)` ou tela que o agente não consegue conferir | **Conferir** |
+| decisão, contrato, área sensível, mais de uma passada, fila cheia | **Deixei para você**, com recomendação e comando pronto |
+
+**Sintoma não vira tarefa recorrente.** Antes de relatar que algo "voltou", "quebrou de novo" ou
+"precisa rodar de novo", pergunte-se **o que fez aquilo acontecer** e relate a causa, não o
+remédio: um item que manda o usuário repetir o mesmo comando a cada build é um defeito do
+projeto (a tarefa que sobrescreve o artefato, o `.gitignore` que apaga o dado, a ordem das
+tarefas), e defeito tem triagem — faixa B se couber num `spec-fixer`, C com a causa escrita se
+não couber. Não soube dizer a causa → diga isso na linha, para o usuário não receber a mesma
+tarefa duas vezes sem explicação.
 
 # Entrada
 

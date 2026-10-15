@@ -89,7 +89,11 @@ reclassifique.
 2. **Implemente** a menor mudança que resolve bem, com o teste que a cobre quando o projeto tem
    testes para aquela camada.
 3. **Prove.** Rode os comandos de teste, build e lint do projeto (do `CLAUDE.md` ou do
-   `README.md`) que cobrem o que mudou. Mudança visual → confira-a como manda a seção Teste
+   `README.md`) que cobrem o que mudou. **Verde com pulo não é prova** (rule `behavior.md`,
+   regra 3): o teste que cobre o que você mudou pulou → resolva a precondição (pacote, variável
+   de ambiente, serviço, porta) e rode de novo; não conseguiu → diga no resumo qual teste pulou
+   e por quê, na linha `Prova`, em vez de chamar a suíte de verde.
+   Mudança visual → confira-a como manda a seção Teste
    visual do `CLAUDE.md` (o teste de tela ou o MCP que ela indica). Sem a seção → diga "não
    conferi na tela". Com a seção, não pule a conferência nem a passe ao usuário: não conseguiu
    operar a ferramenta (sem as ferramentas do MCP nesta sessão, ou a janela do app não veio
@@ -125,7 +129,7 @@ reclassifique.
    - **Um nível só.** O que um fixer trouxer em "Notei fora do escopo" vira C no resumo, **nunca**
      um item novo nesta rodada. É esta trava que faz a varredura terminar.
    - **Gate.** Com todos de volta, rode uma vez os comandos de teste, build e lint do projeto,
-     sobre tudo. Verde → pronto. Vermelho → `git restore` nos arquivos modificados **daquele**
+     sobre tudo. Verde e sem pulo novo → pronto. Vermelho → `git restore` nos arquivos modificados **daquele**
      item e apague os que ele criou (só os que estavam limpos na foto), rode de novo e passe o
      item para C, com a falha como motivo. A falha não aponta de qual item veio → desfaça a
      rodada inteira e passe todos para C. Não pede confirmação (`behavior.md`, regra 4): desfaz
@@ -138,7 +142,7 @@ Tamanho: pequena — <motivo>
 
 Feito: <1-3 linhas do que mudou>
 Arquivos: `<arquivo>` (+X −Y), …
-Prova: `<comando>` → <resultado> | não rodei: <motivo>
+Prova: `<comando>` → <resultado> | não rodei: <motivo> · pulou: <teste> (<motivo>)
 Specs: <arquivo> (criado | atualizado | subdividido) | nenhuma
 
 Corrigi fora do escopo: <o que e por quê, `arquivo:linha`> | nada

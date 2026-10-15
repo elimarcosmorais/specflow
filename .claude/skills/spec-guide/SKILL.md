@@ -116,13 +116,19 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
   relatório.
 - **Relatório:** separa **Para você** (conferir, decidir, problemas fora do escopo, sugestões que
   não entraram) de **Só para saber** (decisões do executor, o que difere do plano, o que ele
-  corrigiu e as sugestões aplicadas).
+  corrigiu e as sugestões aplicadas). **Nenhuma linha é livre:** "Conferir" só aceita CA
+  `(manual: …)` e tela que o agente não tem como conferir; comando que o build pode rodar, ele
+  roda; prova que faltou segura o plano; e sintoma vai para a triagem descrito pela causa, para
+  não virar tarefa que o usuário repete a cada build.
 - **Git:** o passo aprovado fica em stage, nunca commitado. Como os anteriores já estão em stage,
   `git diff` mostra só o passo da vez: é assim que a revisão isola o passo.
-- **Varredura fora do escopo:** com a suíte verde, antes de apagar o plano, o build tria o que os
+- **Varredura fora do escopo:** com a suíte verde e sem pulo, antes de apagar o plano, o build tria o que os
   executores só anotaram e delega o item isolado aos `spec-fixer` (detalhes na seção 1).
-- **Fechamento:** suíte e build verdes → o build apaga o plano (remoção em stage, entra no mesmo
-  commit). Execução parcial → o plano fica, com os checkboxes, para retomar.
+- **Fechamento:** suíte e build **inteiros** verdes e **sem teste pulado** → o build apaga o
+  plano (remoção em stage, entra no mesmo commit). Vermelho, não rodou ou verde com pulo → o
+  plano fica: o build resolve a precondição que falta (pacote, variável, serviço, porta) ou
+  pergunta ao usuário, porque teste pulado não é prova (`behavior.md`, regra 3). Execução
+  parcial → o plano fica, com os checkboxes, para retomar.
 - **Modelos:** executor e revisor em Sonnet (`effort: high`); revisor de segurança em Opus; a
   última correção do executor em Opus.
 

@@ -38,6 +38,10 @@ A skill que te chamou (`spec-change` ou `spec-build`) te passa o contrato do ite
    inteira e o build são da skill, no fim: outros fixers estão escrevendo agora, e uma suíte
    vermelha por causa de outro item não é sua. Ficou vermelho pelo que **você** mudou → corrija;
    não conseguiu deixar verde → desfaça a sua edição à mão e responda `recusado`.
+   **Pulou não é verde** (rule `behavior.md`, regra 3): o teste que cobre o que você mudou pulou
+   por falta de precondição (pacote, variável de ambiente, serviço, porta) → resolver isso não
+   cabe num item isolado; desfaça à mão e responda `recusado`, com o nome do teste e o motivo do
+   pulo.
 6. **Responda** o bloco de saída, e nada mais.
 
 # As regras
@@ -65,7 +69,8 @@ Recuse — sem editar, ou desfazendo à mão o que já tinha editado — quando 
 - toca **área sensível**: autenticação, autorização, pagamentos, segredos, dados pessoais;
 - exige **arquivo fora da lista**, ou mais de uma passada coerente;
 - **não existe** como descrito (o código já trata o caso, ou o Problema leu errado);
-- não fica **verde** com o teste e o lint que cobrem o que você mudou.
+- não fica **verde** com o teste e o lint que cobrem o que você mudou, ou o teste que o cobre
+  **pula** por falta de precondição.
 
 Recusar é barato e esperado: o item vai para o resumo com o seu motivo. Insistir fora dos
 critérios é que custa caro.
@@ -78,7 +83,7 @@ Responda **apenas** este bloco (sem diff, sem explicação longa):
 RESULTADO: resolvido | recusado
 Item: <o item em uma linha>
 Arquivos: criados `a` · modificados `b` | nenhum
-Testes: `<comando>` → N passando, M falhando · lint: ok | n/a
+Testes: `<comando>` → N passando, M falhando, P pulados · lint: ok | n/a
 Specs: `<arquivo>` (atualizado | criado | subdividido) | nenhuma
 Causa-raiz: <uma linha: por que o código estava errado>        (só se resolvido)
 Motivo da recusa: <o que descobriu> · Recomendo: <o que fazer>  (só se recusado)

@@ -78,7 +78,9 @@ Revise, mude o status para `aprovado` e rode:
 /spec-build docs/plans/2026-10-08-login-com-google.md
 ```
 
-O build implementa, atualiza as specs dos módulos tocados e apaga o plano. Nada é commitado
+O build implementa, atualiza as specs dos módulos tocados e apaga o plano — mas só depois de a
+suíte e o build inteiros voltarem verdes e **sem teste pulado**: sem essa prova o plano fica, e
+o build resolve a precondição que falta ou pergunta. Nada é commitado
 sozinho: no fim, `/spec-semantic-commit`. Para lançar uma versão com o que já foi commitado,
 `/spec-release`.
 

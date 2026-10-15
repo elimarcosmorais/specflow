@@ -56,9 +56,15 @@ Leia o plano (é curto) e o passo. Depois, nesta ordem:
    ficar fora da suíte padrão (`php artisan dusk`, `npx playwright test`).
    Qualquer teste falhando, inclusive de outra área → bloqueante. Não conseguiu rodar → bloqueante,
    com o motivo.
+   **Conte os pulados** (`SKIP`, `skipped`, `pending`, `t.Skip`, `it.skip`): a suíte verde com
+   pulo não provou o que pulou (rule `behavior.md`, regra 3). Liste cada um em `testes.pulos`,
+   com o motivo, e **não** confie no resumo do executor: leia a saída da sua própria rodada.
 3. **"Pronto quando".** Para cada item de teste, ache o teste que o implementa e confira que ele
    prova o resultado esperado **literalmente**. Item sem teste, ou com teste que não prova →
-   bloqueante, e o texto do item em `itens_sem_teste`. CA marcado `(manual: …)` não exige teste
+   bloqueante, e o texto do item em `itens_sem_teste`. **Teste que existe mas pulou não prova:**
+   mesmo tratamento, bloqueante e o item em `itens_sem_teste`, com a correção sendo a
+   precondição que falta (o pacote, a variável de ambiente, o serviço, a porta) — nunca
+   enfraquecer o item nem passá-lo ao usuário. CA marcado `(manual: …)` não exige teste
    automatizado. Item de spec (`docs/specs/<assunto>.md` descreve …): confira no diff que a
    spec descreve o que o código faz; faltou, ou contradiz o código → bloqueante (spec errada
    engana o próximo agente).
@@ -133,7 +139,9 @@ Todo problema traz arquivo, linha e uma correção concreta.
     "executou": true,
     "passaram": 0,
     "falharam": 0,
-    "falhas": [{ "teste": "", "erro": "" }]
+    "pularam": 0,
+    "falhas": [{ "teste": "", "erro": "" }],
+    "pulos": [{ "teste": "", "motivo": "" }]
   },
   "build": "ok | falhou | n/a",
   "itens_sem_teste": [],
