@@ -8,7 +8,7 @@ Onde cada documento mora, quem pode mexer nele e quando. Vale em qualquer tarefa
 |---|---|---|
 | `docs/specs/` | **como o sistema funciona hoje**, por módulo ou assunto | o agente, livremente |
 | `docs/architecture.md` | a arquitetura base: camadas, módulos, fluxos e integrações principais | o agente, livremente |
-| `docs/adr/NNN-<titulo>.md` + índice `docs/adr/README.md` | **por que** uma decisão transversal foi tomada | só `/spec-adr`, com o usuário |
+| `docs/adr/NNN-<titulo>.md` + índice `docs/adr/README.md` | **por que** uma decisão transversal foi tomada | só `/spec-adr`, com o usuário; a correção verificável, a varredura |
 | `docs/design-system.md` + `docs/design/` | a identidade visual: tokens, componentes e padrões | `/spec-design-system`; sincronizar com o código é livre |
 | `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande, até ser executado | `/spec-change` cria, o usuário aprova, `/spec-build` executa e apaga |
 | `.temp/references/` | material de consulta temporário do usuário: marca, prints, prompts | o usuário |
@@ -55,7 +55,30 @@ A profundidade é livre: um pedaço que passar de 300 linhas se subdivide do mes
 quando passam de 20. Substituída sai do índice: o histórico fica nas próprias ADRs (a nova
 aponta a antiga em **Substitui**). Para achar a ADR de um assunto, leia o índice e abra só as
 que a coluna aponta; o status que vale é o do arquivo da ADR. Sem índice, liste `docs/adr/`.
-Só `/spec-adr` mexe no índice: atualiza a cada ADR salva e reorganiza com `/spec-adr índice`.
+Quem escreve ADR e índice é `/spec-adr`, com o usuário: atualiza o índice a cada ADR salva e o
+reorganiza com `/spec-adr índice`. A única exceção é a correção verificável, abaixo.
+
+### Correção verificável: a exceção ao dono único
+
+Na varredura fora do escopo, um `spec-fixer` corrige numa ADR `proposto` ou `aceito`, e no
+índice, **sem pedir confirmação** (`behavior.md`, regra 4), só o erro que se confere sem julgar
+o conteúdo:
+
+- link que não resolve, ou referência a uma ADR, arquivo ou âncora que não existe;
+- erro de digitação, de acentuação ou de formatação Markdown que não muda o que a ADR afirma.
+
+Fica **fora**, e vira recomendação no relatório com o comando `/spec-adr` pronto:
+
+- **o que a ADR afirma** — Contexto, Decisão, Consequências, Alternativas. Vale também para a
+  consequência que se revelou errada: ela é juízo novo sobre a decisão, e se a decisão ainda se
+  sustenta é o usuário que diz;
+- **`status`, `Substitui` e `Substituída por`**, que são o contrato e o histórico: decisão nova
+  continua sendo ADR nova (`/spec-adr`, Etapa 4b), nunca edição da antiga;
+- **toda ADR `substituído`**, que é histórico e não se reescreve.
+
+O índice é recurso de **um item por rodada**: link quebrado nele é o caso mais provável de dois
+itens brigarem pelo mesmo arquivo, e a regra "dois itens no mesmo arquivo → delegue um só" das
+duas varreduras já resolve isso.
 
 ## Design system: livre para sincronizar
 

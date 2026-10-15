@@ -33,7 +33,7 @@ O plano é temporário: o build o apaga depois de executar. O que fica é a docu
 |---|---|
 | `docs/specs/` | como cada módulo funciona hoje; o agente cria, edita e subdivide sem pedir permissão |
 | `docs/architecture.md` | a arquitetura base |
-| `docs/adr/` | por que cada decisão transversal foi tomada (com a sua aprovação); índice em `docs/adr/README.md` |
+| `docs/adr/` | por que cada decisão transversal foi tomada (com a sua aprovação; só link quebrado e digitação o agente corrige sozinho); índice em `docs/adr/README.md` |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, obrigatória em projeto com interface |
 | `docs/plans/` | o plano da mudança em andamento |
 
@@ -99,7 +99,9 @@ passos de risco alto). O quarto é o `spec-fixer`, da **varredura fora do escopo
 mudança pedida — no fim da pequena, na `spec-change`, e no fechamento do plano, no `spec-build` —
 os problemas achados pelo caminho que têm uma só correção certa vão para ele, um por item e até
 3 em paralelo; teste e build no fim provam que nada quebrou, e o que depende de uma decisão sua
-fica no relatório com a recomendação e o comando pronto.
+fica no relatório com a recomendação e o comando pronto. É também por essa via que um link
+quebrado ou um erro de digitação numa ADR é corrigido sem passar por você — o que a ADR
+**afirma**, não: isso continua sendo `/spec-adr`, com a sua aprovação.
 
 **Utilitários:**
 

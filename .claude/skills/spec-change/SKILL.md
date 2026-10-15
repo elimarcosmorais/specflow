@@ -110,7 +110,7 @@ reclassifique.
    | Faixa | O que é | Quem resolve |
    |---|---|---|
    | **A — junto** | impacto pequeno (`behavior.md`, regra 2, Exceção) | você, inline, agora |
-   | **B — delegado** | falha A só por tamanho ou por precisar de teste próprio, e cumpre a Exceção 2 | um `spec-fixer` por item |
+   | **B — delegado** | falha A só por tamanho, por precisar de teste próprio ou por ser numa ADR, e cumpre a Exceção 2 | um `spec-fixer` por item |
    | **C — do usuário** | tem decisão, muda contrato, toca área sensível ou precisa de mais de uma passada | ninguém: vai para o resumo |
 
    - **Nada em B → pule a varredura.** Ela não é etapa obrigatória nem passa a existir sozinha:
@@ -128,6 +128,9 @@ reclassifique.
      o contrato dele. Log de uma linha por item: `[fora do escopo] <item> → fixer`.
    - **Um nível só.** O que um fixer trouxer em "Notei fora do escopo" vira C no resumo, **nunca**
      um item novo nesta rodada. É esta trava que faz a varredura terminar.
+   - **Item só de documentação** (o erro verificável numa ADR) a suíte não prova: a prova é a
+     conferência mecânica que o fixer responde em `Testes:` (`behavior.md`, regra 3). Veio sem
+     ela → o item vira C, e o que ele tocou é desfeito como no gate.
    - **Gate.** Com todos de volta, rode uma vez os comandos de teste, build e lint do projeto,
      sobre tudo. Verde e sem pulo novo → pronto. Vermelho → `git restore` nos arquivos modificados **daquele**
      item e apague os que ele criou (só os que estavam limpos na foto), rode de novo e passe o

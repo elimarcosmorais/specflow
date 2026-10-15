@@ -58,9 +58,11 @@ pequena (`spec-change`, Etapa 3, item 6) e no fechamento do plano (`spec-build`,
 com os itens juntados de todos os passos. O problema alheio de impacto pequeno é corrigido junto
 (a skill, na pequena; o executor, dentro do passo); o item isolado, com uma só correção certa,
 vai para um `spec-fixer` (até 3 em paralelo, um por item, arquivos disjuntos, um nível só — o que
-o fixer notar não vira outro item, e é isso que faz a varredura terminar); suíte e build no fim
-como gate, e o item que ficar vermelho é desfeito e volta para o relatório. Sem revisor, de
-propósito: item que precisaria de um não cumpre os critérios. O que tem decisão, contrato ou área
+o fixer notar não vira outro item, e é isso que faz a varredura terminar), e é a única via em que
+uma ADR é corrigida sem o usuário, só no que se confere sem julgar o conteúdo (rule `docs.md`,
+"Correção verificável"); suíte e build no fim como gate, e o item que ficar vermelho é desfeito e
+volta para o relatório. Sem revisor, de propósito: item que precisaria de um não cumpre os
+critérios. O que tem decisão, contrato ou área
 sensível não é delegado: fica no relatório com a recomendação e o comando `/spec-change` pronto.
 Critérios das duas faixas: rule [`behavior.md`](../../rules/behavior.md), regra 2.
 
@@ -73,7 +75,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | `docs/specs/` | como o sistema funciona hoje, por módulo; índice em `docs/specs/README.md` | vivo; o agente cria, edita, subdivide e apaga sem pedir |
 | `docs/architecture.md` | a arquitetura base | vivo, como as specs |
 | `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande ([template](../spec-change/template.md)) | `rascunho` → `aprovado` → executado e apagado pelo build |
-| `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada; índice em `docs/adr/README.md` | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova |
+| `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada; índice em `docs/adr/README.md` | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova; só `/spec-adr` escreve, exceto a correção verificável da varredura |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, uma categoria por arquivo | vivo; sincronizar com o código é livre, mudar a identidade é do usuário |
 | `.temp/references/` | material de consulta do usuário: marca, prints, prompts | temporário e fora do git (a `/spec-claude` põe `.temp/` no `.gitignore`); só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
 | `.temp/design-system-formulario.md` | a especificação de entrada do design system ([formulário](../spec-design-system/formulario.md)) | temporário; `/spec-design-system` emite pré-preenchido, o usuário ou outro agente preenche, a skill lê e escreve o design system |
@@ -89,7 +91,11 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 - **ADR**: só decisão transversal, cara de mudar e com alternativa real. Um plano grande a pede
   na seção Decisões; ela é registrada antes de aprovar o plano. Executor e revisores tratam ADR
   `aceito` como contrato. Quem procura uma ADR lê o índice (só as em vigor, coluna "Abra quando",
-  agrupado por tema acima de 20) e abre só as que ele aponta; só `spec-adr` mexe no índice.
+  agrupado por tema acima de 20) e abre só as que ele aponta. Escrever ADR e índice é do
+  `spec-adr`, com o usuário; a exceção única é a **correção verificável** (link quebrado,
+  referência inexistente, digitação) que um `spec-fixer` faz na varredura, em ADR `proposto` ou
+  `aceito`. O que a ADR afirma, o `status`, `Substitui`/`Substituída por` e a ADR `substituído`
+  ficam fora: viram recomendação com o comando `/spec-adr` pronto (rule `docs.md`).
 - **Design system**: obrigatório em projeto com interface; o `spec-change` não planeja
   mudança com tela sem ele. Em projeto novo, a `spec-design-system` tira as dúvidas de direção,
   entrega o formulário pré-preenchido em `.temp/design-system-formulario.md` e só escreve

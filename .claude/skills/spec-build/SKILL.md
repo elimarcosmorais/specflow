@@ -247,7 +247,7 @@ Quando todos os passos estiverem concluídos:
 
    | Faixa | O que é | Quem resolve |
    |---|---|---|
-   | **B — delegado** | cumpre a Exceção 2 da regra 2 (`behavior.md`) | um `spec-fixer` por item |
+   | **B — delegado** | cumpre a Exceção 2 da regra 2 (`behavior.md`), o erro verificável numa ADR incluído (rule `docs.md`) | um `spec-fixer` por item |
    | **C — do usuário** | tem decisão, muda contrato, toca área sensível ou precisa de mais de uma passada | ninguém: vai para o relatório |
 
    - **Nada em B → pule para o item 3.** A varredura não é etapa obrigatória: sem item que
@@ -265,6 +265,9 @@ Quando todos os passos estiverem concluídos:
    - **Sem revisão, de propósito.** O gate é a suíte: item que precisaria de um revisor não é
      faixa B, é C. Não chame o `spec-reviewer`: ele revisa um passo do plano, e estes itens não
      estão no plano.
+   - **Item só de documentação** (o erro verificável numa ADR) a suíte não prova: a prova é a
+     conferência mecânica que o fixer responde em `Testes:` (`behavior.md`, regra 3). Veio sem
+     ela → o item vira C, e o que ele tocou é desfeito como no gate.
    - **Gate.** Rode a suíte e o build de novo. Verde (e sem pulo novo) → `git add` dos arquivos
      dos fixers; log
      `[varredura] 2 resolvidos, 1 recusado · staged`. Vermelho → desfaça: `git restore` nos

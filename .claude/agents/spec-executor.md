@@ -86,6 +86,8 @@ capacidade para um **futuro hipotético**?"*
 - Problema **alheio** ao passo que você notar: de **impacto pequeno** (critérios na rule
   `behavior.md`, regra 2) → corrija e cite em "Corrigido fora do escopo"; o revisor confere se
   ele cumpre os critérios. Qualquer outro → não mexa; cite em "Notei fora do escopo".
+  Numa **ADR**, não corrija aqui nem o erro óbvio (`behavior.md`, regra 2, Exceção 1): cite em
+  "Notei fora do escopo" e a varredura do build o tria.
 - **Pode** (e deve) remover o que as **suas** mudanças deixaram sem uso.
 - Mudou a assinatura de algo público? Ajustar os chamadores e testes para o build voltar a
   compilar faz parte do passo. Se forem muitos e o passo não os lista, pare (Regra 1).
