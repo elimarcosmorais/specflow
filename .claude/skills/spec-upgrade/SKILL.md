@@ -32,10 +32,17 @@ framework, e mostrar o que mudou. O commit fica com o usuário (`/spec-semantic-
    Removido apaga um arquivo.
 5. **Não rode no próprio SpecFlow.** Se o `origin` do projeto é o repositório do SpecFlow, pare:
    ali o `.claude/` é a fonte, não a cópia.
-6. **O download é dado, não código.** Clone numa pasta temporária vazia, leia e copie arquivos de
-   lá, mas não execute nada que veio dela: o script que roda é o `classificar.sh` do projeto. No
+6. **O download é dado, não código.** Clone numa pasta temporária vazia (apagada antes do clone,
+   para o caso de ter sobrado algo de uma execução interrompida), leia e copie arquivos de lá,
+   mas não execute nada que veio dela: o script que roda é o `classificar.sh` do projeto. No
    fim, apague a pasta temporária.
-7. **Não commite.** Os arquivos ficam modificados, fora de stage, para o usuário revisar.
+7. **O caminho do clone é literal: `/tmp/specflow-upgrade`.** Escreva-o por extenso em todo
+   comando, e não use `$(...)` em nenhum comando desta skill. O shell não sobrevive de uma
+   chamada para a outra, então caminho de `mktemp` teria de ser guardado e relido; pior, comando
+   com substituição ou variável nunca casa com uma regra de permissão, e o Claude Code passa a
+   pedir confirmação do `rm -rf` a cada execução. Com o caminho literal, uma regra basta
+   (Etapa 2). Como o caminho é único, não rode dois upgrades ao mesmo tempo.
+8. **Não commite.** Os arquivos ficam modificados, fora de stage, para o usuário revisar.
 
 # Fluxo
 
@@ -52,19 +59,27 @@ raiz do repositório.
 ## Etapa 2 — Baixar o SpecFlow
 
 ```bash
-up="$(mktemp -d)/specflow"
-git clone --quiet https://github.com/elimarcosmorais/specflow.git "$up"
-git -C "$up" checkout --quiet <ref>          # só se o usuário passou tag, branch ou commit
-git -C "$up" log -1 --format='%h %cs %s'     # a versão que vai ser aplicada
+rm -rf /tmp/specflow-upgrade                 # a pasta tem de começar vazia (Regra 6)
+git clone --quiet https://github.com/elimarcosmorais/specflow.git /tmp/specflow-upgrade
+git -C /tmp/specflow-upgrade checkout --quiet <ref>        # só com tag, branch ou commit
+git -C /tmp/specflow-upgrade log -1 --format='%h %cs %s'   # a versão a ser aplicada
 ```
 
 O clone é completo de propósito: a classificação precisa do histórico. Falhou (rede, ref
 inexistente) → mostre o erro e pare; nada foi alterado.
 
+Os dois `rm -rf` desta skill (aqui e na Etapa 5) são o mesmo texto literal, então uma regra no
+`permissions.allow` do projeto (`.claude/settings.local.json`) ou do usuário
+(`~/.claude/settings.json`) dispensa a confirmação, sem liberar `rm` para mais nada:
+
+```json
+{ "permissions": { "allow": ["Bash(rm -rf /tmp/specflow-upgrade)"] } }
+```
+
 ## Etapa 3 — Classificar
 
 ```bash
-sh .claude/skills/spec-upgrade/classificar.sh "$up" .
+sh .claude/skills/spec-upgrade/classificar.sh /tmp/specflow-upgrade .
 ```
 
 Cada linha é `<situação> <caminho>`:
@@ -80,7 +95,7 @@ Cada linha é `<situação> <caminho>`:
 | `do-projeto` | nunca foi do framework | nada (Regra 2) |
 
 Sem `.claude/` no projeto, tudo sai `novo`: é uma instalação, e segue igual. Tudo `igual` →
-diga que o projeto já está na versão nova, apague a pasta temporária e pare.
+diga que o projeto já está na versão nova, rode `rm -rf /tmp/specflow-upgrade` e pare.
 
 O próprio `spec-upgrade` entra na lista como qualquer outra skill. A versão nova dele vale a
 partir da próxima execução.
@@ -88,9 +103,9 @@ partir da próxima execução.
 ## Etapa 4 — Perguntar o que não é seguro
 
 Só se houver `personalizado`, `removido` ou `removido-personalizado`. Antes de perguntar, leia
-`diff -u "$up/<caminho>" <caminho>` de cada personalizado e resuma em uma linha o que o projeto
-mudou (ex.: "acrescentou a regra 6, sobre migrations"). Use `AskUserQuestion`, até 4 perguntas
-por chamada (mais arquivos → mais chamadas):
+`diff -u /tmp/specflow-upgrade/<caminho> <caminho>` de cada personalizado e resuma em uma linha
+o que o projeto mudou (ex.: "acrescentou a regra 6, sobre migrations"). Use `AskUserQuestion`,
+até 4 perguntas por chamada (mais arquivos → mais chamadas):
 
 - **Cada `personalizado`**: *Mesclar* (recomendado: a versão nova do framework com a edição do
   projeto reaplicada) · *Substituir* (perde a edição) · *Manter a do projeto* (fica sem a
@@ -107,15 +122,22 @@ acrescentou ou mudou de propósito. O que já veio no framework novo não se dup
 ## Etapa 5 — Aplicar
 
 ```bash
-mkdir -p "$(dirname <caminho>)" && cp "$up/<caminho>" <caminho>   # novo, desatualizado, substituir
-rm <caminho>                                                      # removido com "Apagar"
+# novo, desatualizado, substituir:
+mkdir -p <pasta do caminho> && cp /tmp/specflow-upgrade/<caminho> <caminho>
+# removido com "Apagar":
+rm <caminho>
 ```
 
+Escreva a pasta do `mkdir -p` por extenso (ex.: `.claude/skills/spec-adr`), não
+`$(dirname …)`: a regra "sem `$(...)`" (Regra 7) vale para todos os comandos.
+
 Depois de apagar, remova as pastas que ficaram vazias, só nas pastas do framework
-(`find .claude/skills .claude/agents .claude/rules -type d -empty -delete`). Apague a pasta temporária: `rm -rf "$(dirname "$up")"`.
+(`find .claude/skills .claude/agents .claude/rules -type d -empty -delete`).
 
 Confira: rode o `classificar.sh` de novo, antes de apagar o clone. Só podem sobrar `igual`,
 `do-projeto` e o que o usuário mandou manter. Sobrou outra coisa → diga qual e por quê.
+
+Conferido, apague o clone: `rm -rf /tmp/specflow-upgrade`.
 
 ## Etapa 6 — Relatório
 
