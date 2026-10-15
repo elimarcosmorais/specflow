@@ -62,8 +62,18 @@ o fixer notar não vira outro item, e é isso que faz a varredura terminar), e �
 uma ADR é corrigida sem o usuário, só no que se confere sem julgar o conteúdo (rule `docs.md`,
 "Correção verificável"); suíte e build no fim como gate, e o item que ficar vermelho é desfeito e
 volta para o relatório. Sem revisor, de propósito: item que precisaria de um não cumpre os
-critérios. O que tem decisão, contrato ou área
-sensível não é delegado: fica no relatório com a recomendação e o comando `/spec-change` pronto.
+critérios.
+
+**Resolve ou cala.** Item que cumpre os critérios vai para um fixer **agora** — a faixa delegada
+é o caminho normal, não o último recurso —, e a prova, em projeto sem suíte ou em item só de
+documentação, é a conferência mecânica do `Pronto quando`: ausência de teste não empurra o item
+para o usuário. O que tem decisão, contrato ou área sensível não é delegado, e aí passa por duas
+travas antes de virar linha de relatório: a **barra de relevância** (entra só o que alguém sente
+se ficar como está — não estilo, refatoração de oportunidade ou sujeira que não atrapalha) e o
+**teto de 2 por relatório**. O que sobrevive vem com a recomendação e o comando `/spec-change`
+pronto, e esse comando leva `--sem-varredura`: a varredura de uma rodada não gera a da próxima.
+São as duas travas e a `--sem-varredura` que impedem uma correção de virar três pedidos novos
+(`behavior.md`, regra 2).
 Critérios das duas faixas: rule [`behavior.md`](../../rules/behavior.md), regra 2.
 
 # 2. Os documentos
@@ -129,7 +139,9 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 - **Git:** o passo aprovado fica em stage, nunca commitado. Como os anteriores já estão em stage,
   `git diff` mostra só o passo da vez: é assim que a revisão isola o passo.
 - **Varredura fora do escopo:** com a suíte verde e sem pulo, antes de apagar o plano, o build tria o que os
-  executores só anotaram e delega o item isolado aos `spec-fixer` (detalhes na seção 1).
+  executores só anotaram e delega o item isolado aos `spec-fixer`; para o relatório vão no
+  máximo 2 itens, e só os que passam da barra de relevância. A barra começa na **origem**: o
+  executor cita no máximo 2 itens por passo, e o fixer, 1 (detalhes na seção 1).
 - **Fechamento:** suíte e build **inteiros** verdes e **sem teste pulado** → o build apaga o
   plano (remoção em stage, entra no mesmo commit). Vermelho, não rodou ou verde com pulo → o
   plano fica: o build resolve a precondição que falta (pacote, variável, serviço, porta) ou

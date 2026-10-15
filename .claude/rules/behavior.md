@@ -27,26 +27,44 @@ Valem em qualquer tarefa, em qualquer fase do fluxo. Não são negociáveis.
 
    **Exceção 2: item isolado delegado**, só na varredura fora do escopo — `/spec-change`,
    Etapa 3, item 6, e `/spec-build`, Etapa 3, item 2 —, depois de a mudança pedida estar feita e
-   provada. Pode resolver, num `spec-fixer` por item, o problema que falha a exceção acima **só
-   por tamanho, por precisar de teste próprio ou por ser numa ADR** (regra 4) e cumpre **todos**
-   estes critérios:
+   provada. Pode resolver, num `spec-fixer` por item, o problema fora do escopo que **não cabe
+   na exceção acima** — por tamanho, por não ser daquele tipo "óbvio", por precisar de teste
+   próprio ou por ser numa ADR (regra 4) — e cumpre **todos** estes critérios:
    - **uma correção certa só:** nenhuma escolha de comportamento ou de produto que seja do
      usuário;
    - **isolado:** lista fechada de arquivos, disjunta da mudança pedida e dos outros itens (dois
      fixers nunca escrevem no mesmo arquivo);
    - **sem contrato novo:** não muda API, formato de dados, schema, migração nem tela;
    - **fora de área sensível:** autenticação, autorização, pagamentos, segredos, dados pessoais;
-   - **provável:** os testes, o build e o lint que o projeto já tem provam que entrou verde.
+   - **provável:** há como mostrar que entrou verde. Os testes, o build e o lint que o projeto
+     já tem cobrem o que mudou → são a prova. O projeto **não tem** o que rode naquela camada,
+     ou o item é só de documentação → a prova é a conferência mecânica que o `Pronto quando`
+     descreve. Ausência de suíte não reprova o item: reprova-o só não haver **nada** que mostre
+     o resultado, nem comando nem conferência.
 
-   **Item só de documentação** — hoje, a correção verificável numa ADR, que a rule `docs.md`
-   autoriza — não tem teste que o prove: a prova é a conferência mecânica que o `Pronto quando`
-   descreve (abrir o link e ver que resolve, conferir que o arquivo citado existe). Suíte e
-   build seguem valendo como gate, porque ele não pode deixá-los vermelhos.
+   **Item só de documentação** — a correção verificável numa ADR que a rule `docs.md` autoriza,
+   e todo arquivo de documentação num projeto que não tem suíte — não tem teste que o prove: a
+   prova é a conferência mecânica que o `Pronto quando` descreve (abrir o link e ver que
+   resolve, conferir que o arquivo citado existe, reler a linha e ver que diz o que o código
+   faz). Suíte, build e lint seguem valendo como gate onde existem, porque ele não pode
+   deixá-los vermelhos.
+
+   **Cumpriu os cinco critérios → delegue.** Esta faixa não é último recurso nem prêmio de
+   consolação: o item que os cumpre e ainda assim aparece no relatório é falha da varredura, não
+   cuidado.
 
    No máximo 3 por rodada, **um nível só** (o que um `spec-fixer` notar nunca vira outro item na
    mesma rodada) e gate no fim: suíte ou build vermelho → desfaz-se só o que os fixers tocaram.
 
-   Falhou um critério, ou ficou na dúvida → só sinalize, com a recomendação e o comando pronto.
+   Falhou um critério, ou ficou na dúvida → só sinalize, e **só se passar da barra**: entra no
+   relatório o item que, deixado como está, alguém sente — quebra, risco de segurança ou de
+   dados, contrato errado, ou trabalho que o usuário ia pedir de qualquer jeito. Preferência de
+   estilo, refatoração de oportunidade, "poderia ficar mais claro", TODO alheio antigo e sujeira
+   que não atrapalha **não entram, nem como nota**. **No máximo 2 por relatório**, na prioridade
+   quebrado > risco > fila cheia; o que não couber não é relatado — não existe "só para
+   constar". O que sobrevive à barra vem com a recomendação e o comando pronto, e esse comando
+   leva `--sem-varredura`: resolver um item não abre varredura nova, e é esta a trava **entre**
+   rodadas, irmã do "um nível só" dentro da rodada.
 3. **"Funciona" só com evidência.** Ao afirmar que algo funciona, mostre o output do comando ou
    do teste que prova. Não rodou → diga "não rodei".
 

@@ -42,10 +42,14 @@ A skill que te chamou (`spec-change` ou `spec-build`) te passa o contrato do ite
    por falta de precondição (pacote, variável de ambiente, serviço, porta) → resolver isso não
    cabe num item isolado; desfaça à mão e responda `recusado`, com o nome do teste e o motivo do
    pulo.
-   **Item só de documentação** (uma ADR, pela exceção da rule `docs.md`) não tem teste: a prova
-   é a conferência mecânica do `Pronto quando` — abra o link e veja que resolve, confira que o
-   arquivo citado existe — mais o lint de Markdown, se o projeto tem um. Escreva em `Testes:` o
-   que conferiu e o resultado.
+   **Item só de documentação** — uma ADR, pela exceção da rule `docs.md`, ou um arquivo de
+   documentação num projeto que não tem suíte — não tem teste: a prova é a conferência mecânica
+   do `Pronto quando` — abra o link e veja que resolve, confira que o arquivo citado existe,
+   releia a linha e veja que ela diz o que o código faz — mais o lint de Markdown, se o projeto
+   tem um. Escreva em `Testes:` o que conferiu e o resultado.
+   **Projeto sem nada que rode naquela camada não é motivo de recusa:** a prova é a mesma
+   conferência mecânica. Recuse por falta de prova só quando não houver **nada** que mostre o
+   resultado, nem comando nem conferência (`behavior.md`, regra 2, critério "provável").
 6. **Responda** o bloco de saída, e nada mais.
 
 # As regras
@@ -57,6 +61,12 @@ A skill que te chamou (`spec-change` ou `spec-build`) te passa o contrato do ite
 2. **Um nível só.** Outro problema que você notar pelo caminho **não é seu**, por pequeno que
    pareça: vai para "Notei fora do escopo" e o usuário decide. É esta regra que faz a varredura
    terminar; quebrá-la é o que fazia cada correção virar três.
+   **E o campo tem barra e teto: no máximo 1 item**, e só o que alguém **sente** se ficar como
+   está — quebra, risco de segurança ou de dados, contrato errado, ou trabalho que o usuário ia
+   pedir de qualquer jeito. Preferência de estilo, refatoração de oportunidade, "poderia ficar
+   mais claro", TODO alheio antigo e sujeira que não atrapalha → `nada`, nem como nota. Você vê
+   uma lista fechada de arquivos, e até 3 fixers rodam juntos: um item solto por fixer já enche
+   o relatório do usuário sozinho (`behavior.md`, regra 2).
 3. **Nada de futuro hipotético.** Corrija o que o item diz, com qualidade de produção (erro
    tratado, recurso fechado). Sem parâmetro opcional, interface de uma implementação,
    `retry`/cache "para o caso de" nem refatoração de oportunidade.
@@ -78,7 +88,8 @@ Recuse — sem editar, ou desfazendo à mão o que já tinha editado — quando 
 - exige **arquivo fora da lista**, ou mais de uma passada coerente;
 - **não existe** como descrito (o código já trata o caso, ou o Problema leu errado);
 - não fica **verde** com o teste e o lint que cobrem o que você mudou, ou o teste que o cobre
-  **pula** por falta de precondição.
+  **pula** por falta de precondição. Não é este caso o projeto **não ter** teste para aquela
+  camada: aí a prova é a conferência mecânica do `Pronto quando`.
 
 Recusar é barato e esperado: o item vai para o resumo com o seu motivo. Insistir fora dos
 critérios é que custa caro.
@@ -95,5 +106,5 @@ Testes: `<comando>` → N passando, M falhando, P pulados · lint: ok | n/a
 Specs: `<arquivo>` (atualizado | criado | subdividido) | nenhuma
 Causa-raiz: <uma linha: por que o código estava errado>        (só se resolvido)
 Motivo da recusa: <o que descobriu> · Recomendo: <o que fazer>  (só se recusado)
-Notei fora do escopo: <problema alheio, `arquivo:linha`> | nada
+Notei fora do escopo (máx. 1, só o que passa da barra): <problema alheio, `arquivo:linha`> | nada
 ```

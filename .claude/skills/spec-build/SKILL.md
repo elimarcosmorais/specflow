@@ -1,6 +1,6 @@
 ---
 name: spec-build
-description: Executa um plano aprovado (docs/plans/AAAA-MM-DD-<slug>.md, gerado pelo /spec-change) passo a passo - entrega cada passo a um spec-executor novo, manda o spec-reviewer conferir (e o spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no plano e deixa o código e as specs aprovados em stage, sem commitar. No fechamento, com a suíte e o build inteiros verdes e sem teste pulado (sem essa prova o plano não é apagado), faz a varredura fora do escopo - tria o que os executores só anotaram em "Notei fora do escopo" e delega o item isolado a um spec-fixer por item, até 3 em paralelo, com a suíte e o build como gate - e apaga o plano. Só o que bloqueia volta para correção. As sugestões dos revisores, o executor aplica numa rodada única depois da aprovação, revisada à parte e descartada se reprovar; o que ele recusar vai para o relatório final. Coordena; não escreve código.
+description: Executa um plano aprovado (docs/plans/AAAA-MM-DD-<slug>.md, gerado pelo /spec-change) passo a passo - entrega cada passo a um spec-executor novo, manda o spec-reviewer conferir (e o spec-security-reviewer nos passos de risco alto), faz até 2 correções por passo, marca o "Pronto quando" no plano e deixa o código e as specs aprovados em stage, sem commitar. No fechamento, com a suíte e o build inteiros verdes e sem teste pulado (sem essa prova o plano não é apagado), faz a varredura fora do escopo - tria o que os executores só anotaram em "Notei fora do escopo" e delega o item isolado a um spec-fixer por item, até 3 em paralelo, com a suíte e o build como gate - e apaga o plano. Item que cumpre os critérios vai para um fixer, nunca para o relatório, e o relatório leva no máximo 2 itens fora do escopo: só o que alguém sentiria se ficasse. Só o que bloqueia volta para correção. As sugestões dos revisores, o executor aplica numa rodada única depois da aprovação, revisada à parte e descartada se reprovar; o que ele recusar vai para o relatório final. Coordena; não escreve código.
 argument-hint: "[caminho do plano (opcional)] [N (opcional): só esse passo]"
 disable-model-invocation: true
 ---
@@ -52,7 +52,8 @@ documentado nas specs, um passo por vez.
    revisor confere. O que ele só anotou em "Notei fora do escopo" você junta de **todos** os
    passos e tria no fechamento (Etapa 3, item 2): o item isolado vai para um `spec-fixer`
    (Exceção 2 da mesma regra), e o resto vai para o relatório com a recomendação e o comando
-   pronto. Nada de varredura no meio dos passos: ela roda uma vez, com a suíte verde.
+   pronto. O executor só cita ali o que passa da barra de relevância, no máximo 2 por passo, para
+   a triagem não receber uma pilha já inflada. Nada de varredura no meio dos passos: ela roda uma vez, com a suíte verde.
 5. **No máximo 3 tentativas por passo** (a execução + 2 correções). A última correção roda em
    Opus. Na 3ª reprovação, pare.
 6. **Nunca commite.** Só `git add`. O commit é do usuário.
@@ -243,15 +244,20 @@ Quando todos os passos estiverem concluídos:
 2. **Varredura fora do escopo.** Com a suíte e o build verdes e nada pulado, tria os itens que
    você guardou em
    "Notei fora do escopo" de todos os passos (2.6, item 3), juntando os repetidos. A faixa de
-   impacto pequeno não aparece aqui: o executor já a corrigiu dentro do passo.
+   impacto pequeno não aparece aqui: o executor já a corrigiu dentro do passo. O que chega **já
+   passou pela barra de relevância na origem** (máx. 2 por passo, no executor), então não a
+   reabra: nada do que os executores calaram volta, e o teto de 2 do relatório continua valendo
+   para o que sobrar em C.
 
    | Faixa | O que é | Quem resolve |
    |---|---|---|
    | **B — delegado** | cumpre a Exceção 2 da regra 2 (`behavior.md`), o erro verificável numa ADR incluído (rule `docs.md`) | um `spec-fixer` por item |
-   | **C — do usuário** | tem decisão, muda contrato, toca área sensível ou precisa de mais de uma passada | ninguém: vai para o relatório |
+   | **C — do usuário** | tem decisão, muda contrato, toca área sensível ou precisa de mais de uma passada — **e passa da barra de relevância** (`behavior.md`, regra 2) | ninguém: no máximo 2, vão para o relatório |
 
    - **Nada em B → pule para o item 3.** A varredura não é etapa obrigatória: sem item que
-     cumpra os critérios, ela não acontece.
+     cumpra os critérios, ela não acontece. **O inverso também vale:** item que cumpre os
+     critérios vai para um fixer agora, não para o relatório — relatório com item que você
+     poderia ter delegado é erro desta etapa, não cautela.
    - **Feche o contrato de cada item de B:** `Problema` (com `arquivo:linha`), `Arquivos` (lista
      fechada) e `Pronto quando` (resultado concreto). Não soube fechar a lista de arquivos → é C.
    - **Até 3 por rodada**, na prioridade quebrado > risco > sujeira; o resto é C, com o motivo
@@ -312,8 +318,8 @@ Plano: apagado (remoção em stage) | mantido: <motivo>
 ### Para você
 - **Conferir:** <CA-2 (manual): abrir a tela X e …>
 - **Decidir:** <risco ou limite, `arquivo:linha` (passo N)> · Recomendo: <…>
-- **Deixei para você, fora do escopo:** <problema, `arquivo:linha`> · <por que ficou> →
-  `/spec-change <pedido pronto>`
+- **Deixei para você, fora do escopo** (máx. 2, só o que passa da barra): <problema,
+  `arquivo:linha`> · <por que ficou> → `/spec-change "<pedido pronto>" --sem-varredura`
 - **Sugestões que não entraram** (opcionais, não bloquearam):
   - [P3] <titulo> — `<arquivo>:<linha>` — <correção em 1 linha> · <recusada: motivo | rodada
     reprovada: bloqueante>
@@ -332,8 +338,10 @@ O código está em stage, sem commit. Revise com `git diff --staged` e commite c
 As duas seções separam o que pede ação do que é só informação. Linha sem item sai do relatório,
 e seção sem nenhuma linha vira `Para você: nada.` ou `Só para saber: nada.`. Cada item vem do
 campo de mesmo nome do executor (2.6), ou da triagem da varredura (Etapa 3, item 2), e fica em
-uma linha só. Em "Deixei para você", "por que ficou" é o que o tirou da triagem: decisão,
-contrato, área sensível, mais de uma passada, fila cheia, recusado pelo fixer ou gate vermelho. Não reclassifique: um item que
+uma linha só. Em "Deixei para você", no máximo 2 linhas e só as que passam da barra de
+relevância (`behavior.md`, regra 2), "por que ficou" é o que o tirou da triagem: decisão,
+contrato, área sensível, mais de uma passada, fila cheia, recusado pelo fixer ou gate vermelho; o
+comando pronto leva `--sem-varredura`, para que resolver um item não abra varredura nova. Não reclassifique: um item que
 pareça estar no campo errado é problema do passo, e o revisor já o conferiu.
 
 **O relatório não tem linha livre.** Toda linha vem de um campo do executor, da triagem da
@@ -348,7 +356,8 @@ o agente conferir (Etapa 3, item 3). Nada mais entra ali. Antes de escrever qual
 | prova que faltou da suíte ou do build | item 1: plano mantido, ou pergunta ao usuário |
 | sintoma de um problema do projeto cuja causa você identificou | triagem da varredura (B ou C), **descrito pela causa** |
 | CA `(manual: …)` ou tela que o agente não consegue conferir | **Conferir** |
-| decisão, contrato, área sensível, mais de uma passada, fila cheia | **Deixei para você**, com recomendação e comando pronto |
+| decisão, contrato, área sensível, mais de uma passada, fila cheia | **Deixei para você**, se passar da barra: máx. 2, com recomendação e comando pronto |
+| qualquer outra coisa que você notou (estilo, refatoração de oportunidade, "poderia ficar mais claro", TODO alheio antigo, sujeira que não atrapalha) | **lugar nenhum** — não passa da barra, e nem como nota entra |
 
 **Sintoma não vira tarefa recorrente.** Antes de relatar que algo "voltou", "quebrou de novo" ou
 "precisa rodar de novo", pergunte-se **o que fez aquilo acontecer** e relate a causa, não o

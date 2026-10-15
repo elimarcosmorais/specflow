@@ -98,8 +98,11 @@ O build coordena três agents: `spec-executor` (implementa um passo),
 passos de risco alto). O quarto é o `spec-fixer`, da **varredura fora do escopo**: terminada a
 mudança pedida — no fim da pequena, na `spec-change`, e no fechamento do plano, no `spec-build` —
 os problemas achados pelo caminho que têm uma só correção certa vão para ele, um por item e até
-3 em paralelo; teste e build no fim provam que nada quebrou, e o que depende de uma decisão sua
-fica no relatório com a recomendação e o comando pronto. É também por essa via que um link
+3 em paralelo; teste e build no fim provam que nada quebrou. A regra é **resolver ou calar:**
+item que cumpre os critérios vai para um fixer, não para o relatório, e o relatório recebe no
+máximo 2 itens — só o que depende de uma decisão sua e você sentiria se ficasse como está, com a
+recomendação e o comando pronto. Esse comando leva `--sem-varredura`, para que resolver um item
+não abra uma varredura nova: é o que impede uma correção de virar três pedidos. É também por essa via que um link
 quebrado ou um erro de digitação numa ADR é corrigido sem passar por você — o que a ADR
 **afirma**, não: isso continua sendo `/spec-adr`, com a sua aprovação.
 

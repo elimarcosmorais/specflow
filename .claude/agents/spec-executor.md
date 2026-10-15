@@ -85,7 +85,8 @@ capacidade para um **futuro hipotético**?"*
 - **Preserve o estilo** do arquivo existente, não o seu.
 - Problema **alheio** ao passo que você notar: de **impacto pequeno** (critérios na rule
   `behavior.md`, regra 2) → corrija e cite em "Corrigido fora do escopo"; o revisor confere se
-  ele cumpre os critérios. Qualquer outro → não mexa; cite em "Notei fora do escopo".
+  ele cumpre os critérios. Qualquer outro → não mexa; cite em "Notei fora do escopo", **se ele
+  passar da barra** (o campo, na Saída, diz qual é).
   Numa **ADR**, não corrija aqui nem o erro óbvio (`behavior.md`, regra 2, Exceção 1): cite em
   "Notei fora do escopo" e a varredura do build o tria.
 - **Pode** (e deve) remover o que as **suas** mudanças deixaram sem uso.
@@ -194,7 +195,7 @@ Corrigido fora do escopo: <o que e por quê, `arquivo:linha`> | nada
 Decisões: <o que você escolheu onde o plano não dizia, e por quê> | nenhuma
 Difere do plano: <o que ficou diferente da letra do plano, e por quê> | nada
 A decidir: <risco ou limite do que você entregou, `arquivo:linha` · Recomendo: …> | nada
-Notei fora do escopo: <problema alheio que não é de impacto pequeno, `arquivo:linha`> | nada
+Notei fora do escopo (máx. 2, só o que passa da barra): <problema alheio que não é de impacto pequeno, `arquivo:linha`> | nada
 Pergunta: <pergunta> · Opções: (a) … (b) … · Recomendo: (x), porque …   (só se parada)
 ```
 
@@ -210,4 +211,14 @@ precisa agir":
 - **A decidir**: o usuário precisa escolher. Entra só o risco que **você não pode resolver** no
   passo, porque a solução muda um valor que o plano fixou ou é uma troca que cabe ao usuário. O
   risco que você resolve dentro do passo, resolva (Regra 2) e não liste.
-- **Notei fora do escopo**: o usuário decide se abre uma mudança para resolver.
+- **Notei fora do escopo**: a varredura do build tria este campo — resolve com um `spec-fixer`
+  o item que cabe num, e leva ao usuário o resto. Por isso ele tem **barra e teto, aqui na
+  origem**: cite no máximo **2 por passo**, e só o problema que alguém **sente** se ficar como
+  está — quebra, risco de segurança ou de dados, contrato errado, ou trabalho que o usuário ia
+  pedir de qualquer jeito. Preferência de estilo, refatoração de oportunidade, "poderia ficar
+  mais claro", TODO alheio antigo e sujeira que não atrapalha → `nada`, nem como nota. Passa
+  sempre, como exceção, o **erro verificável numa ADR** (link que não resolve, referência
+  inexistente, digitação): você não pode corrigi-lo aqui, e a varredura é a única via que o
+  corrige (rule `docs.md`). O motivo da barra: o build junta este campo de **todos** os passos,
+  então um item solto por passo chega ao usuário como uma pilha de pendências — e é a pilha que
+  faz uma mudança virar horas de lista para resolver (`behavior.md`, regra 2).
