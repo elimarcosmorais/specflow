@@ -84,6 +84,18 @@ rápido, que pula a travessia da árvore de propósito.
 - **Mostrar o print ao usuário.** O resultado do `Snapshot`/`Screenshot` diz onde a imagem foi
   salva (`tool-results\...png`). Mande esse arquivo para o usuário em vez de só descrevê-lo.
 
+## O que ele não alcança: o diálogo do UAC
+
+Ele nasce no **desktop seguro**, num processo de integridade alta (`consent.exe`), e o
+`windows-mcp` roda em integridade média, no desktop normal: o `Snapshot` não o vê (é outro
+desktop, não aparece no print) e o `Click` não chega nele. Baixar o `PromptOnSecureDesktop` para
+`0` não resolve — o UIPI barra input sintético de um processo de integridade média para um de
+integridade alta.
+
+Então **não existe** "o agente clica em Sim". Comando que precisa de admin segue a regra 5 do
+`behavior.md`: eleve só aquele comando, avise antes no chat, e trate "não autorizado" (recusa ou
+expiração do diálogo, ~2 min) como passo não executado, sem prova.
+
 ## Só quando o controle de input está ligado
 
 Vale apenas na `0.8.8`+ **sem** `--no-control`. Com `--no-control` (fonte A) ou na `0.8.5` o

@@ -22,7 +22,7 @@ tamanho: média     # média | grande
 
 **Fora do escopo:** <o que parece fazer parte, mas fica de fora, e por quê> | nada
 
-<!-- LLM-ONLY: cada CA é verificável por um teste ou por um roteiro manual curto. CA que só uma pessoa confere (olhar a tela num projeto sem a seção Teste visual no CLAUDE.md, usar outra máquina) termina com "(manual: <roteiro em 1 linha>)": ele não entra no "Pronto quando" dos passos, e o build o lista no relatório para o usuário. Só os comportamentos que mudam; o que continua igual não entra. -->
+<!-- LLM-ONLY: cada CA é verificável por um teste ou por um roteiro manual curto. CA que só uma pessoa confere (olhar a tela num projeto sem a seção Teste visual no CLAUDE.md, responder ao diálogo do UAC, usar outra máquina) termina com "(manual: <roteiro em 1 linha>)": ele não entra no "Pronto quando" dos passos, e o build o lista no relatório para o usuário. Só os comportamentos que mudam; o que continua igual não entra. -->
 
 ## 3. Decisões
 

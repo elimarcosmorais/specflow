@@ -111,13 +111,42 @@ Valem em qualquer tarefa, em qualquer fase do fluxo. Não são negociáveis.
 5. **Precisou de admin → eleve só aquele comando.** Não passe a tarefa ao usuário nem rode a
    sessão inteira como admin. Antes, diga no chat o comando exato e por quê: o aviso do UAC não
    mostra o comando. O processo elevado não devolve a saída, então grave-a num log e leia-o
-   depois (é a evidência da regra 3). Usuário recusou o UAC → diga o comando e peça que ele o
-   rode.
+   depois (é a evidência da regra 3).
+
+   **O diálogo é do humano, e tem prazo.** Ele nasce no desktop seguro, em integridade alta:
+   nenhum MCP de tela o vê nem clica nele — não tente, nem com `PromptOnSecureDesktop=0`, porque
+   o UIPI barra input sintético num processo de integridade alta. Ele também expira em ~2
+   minutos, e expirar conta como recusa: a sessão tem como notificar (ex.: `PushNotification`) →
+   avise ao elevar, para quem acompanha de longe chegar a tempo. Chame com timeout de 300000 ms,
+   senão o default de 2 minutos da ferramenta corta junto com o diálogo.
+
+   O `Start-Process` **lança** quando ninguém autoriza. Sem o `try/catch`, o agente lê "ninguém
+   autorizou" como erro do comando e vai procurar defeito no código:
 
    ```powershell
-   $p = Start-Process pwsh -Verb RunAs -Wait -PassThru -WindowStyle Hidden -ArgumentList '-NoProfile','-Command',"& { <comando> } *> '<log>'; exit `$LASTEXITCODE"
-   $p.ExitCode; Get-Content '<log>'
+   try {
+     $p = Start-Process pwsh -Verb RunAs -Wait -PassThru -WindowStyle Hidden -ArgumentList '-NoProfile','-Command',"& { <comando> } *> '<log>'; exit `$LASTEXITCODE"
+     "exit=$($p.ExitCode)"; Get-Content '<log>'
+   } catch { "UAC NAO AUTORIZADO (recusa ou expiracao): $($_.Exception.Message)" }
    ```
+
+   **UAC não autorizado = passo não executado.** Não é falha do comando nem do código: é a mesma
+   falta de prova do teste pulado (regra 3). O que ele ia provar continua **sem prova**, e é
+   assim que entra no relatório, com o comando pronto para o usuário rodar.
+
+   **Nunca contorne.** Não desligue o UAC, não eleve a sessão inteira, não guarde credencial
+   (`runas /savecred`) e não crie tarefa agendada elevada: tarefa cuja ação está num caminho
+   gravável pelo usuário é escalada de privilégio permanente — qualquer código rodando como ele
+   vira admin sem prompt —, e a que aponta para saída de build (`bin/`, `dist/`) é a pior delas.
+   Também não troque o alvo do teste por um caminho que não passa pelo UAC: aí ele fica verde
+   provando outra coisa, que é o mesmo defeito do teste pulado com outra roupa. Precisa de admin
+   **sem** o gesto humano com frequência → é decisão do usuário (ADR), não atalho de execução.
+
+   **A prova que exige o gesto humano é do plano, não da sua ordem de execução.** Não reordene
+   passos nem adie a prova para o fim por conta própria (`spec-build`, Princípios 2 e 7): o
+   critério de aceite que só fecha com alguém respondendo ao UAC nasce marcado `(manual: …)` no
+   plano, e o build já o recolhe no relatório com o roteiro em vez de rodá-lo (`spec-build`,
+   Etapa 3, item 3).
 
 Como evoluir esta lista: errou em algo que uma regra já cobria → reforce a redação dela; errou
 em algo novo → acrescente uma regra.
