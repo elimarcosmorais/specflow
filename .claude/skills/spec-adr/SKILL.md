@@ -146,7 +146,7 @@ Arquivo salvo em: docs/adr/NNN-<titulo>.md
 - Índice: docs/adr/README.md <atualizado | criado> (tema: <tema> | sem agrupamento)
 
 ADRs ainda pendentes: <um `/spec-adr "<título>"` por linha> | nenhuma
-Depois delas: <origem plano → aprovar o plano e rodar `/spec-build <caminho>` | nada>
+Depois delas: <origem plano → aprovar o plano; o `/spec-lead` executa em seguida | nada>
 
 Revise o arquivo. Se estiver de acordo, mude o status para `aceito` (ou peça que eu mude).
 ```

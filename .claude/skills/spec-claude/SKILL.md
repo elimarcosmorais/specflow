@@ -1,6 +1,6 @@
 ---
 name: spec-claude
-description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão, e em projeto com interface, como o agente confere uma mudança de tela (ex.: Dusk no Laravel, Playwright na web, Windows-MCP no desktop Windows) - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e grava direto, sem pedir confirmação: cria o CLAUDE.md se não existe ou, se existe, enxuga e complementa com edições pontuais. Também garante que `.temp/` (material de consulta temporário, não versionado) está no .gitignore do projeto. No fim, relata o que fez e a fonte de cada fato. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md), convenções de um tema inteiro (spec-rule-create), decidir se um item solto vira regra (spec-rule-curate) nem settings, hooks ou permissões.
+description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão, e em projeto com interface, como o agente confere uma mudança de tela (ex.: Dusk no Laravel, Playwright na web, Windows-MCP no desktop Windows) - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e grava direto, sem pedir confirmação: cria o CLAUDE.md se não existe ou, se existe, enxuga e complementa com edições pontuais. Também garante que `.temp/` (material de consulta temporário, não versionado) está no .gitignore do projeto. No fim, relata o que fez e a fonte de cada fato. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". A sincronia de rotina de um fato que o repo responde (comando de teste que mudou, pasta nova) é do /spec-lead, que a resolve sozinho; esta skill é para o que exige o usuário: o arquivo do zero, a auditoria do conjunto e toda regra nova. Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md), convenções de um tema inteiro (spec-rule-create), decidir se um item solto vira regra (spec-rule-curate) nem settings, hooks ou permissões.
 argument-hint: "[pasta do projeto (opcional; padrão: raiz do repositório)]"
 ---
 
@@ -31,6 +31,12 @@ Fronteiras:
   o `CLAUDE.md` existe → `/spec-rule-curate`.
 - **Specs, arquitetura, ADRs e design system** se apontam, não se copiam (`docs/specs/README.md`,
   `docs/architecture.md`, `docs/adr/README.md`, `docs/design-system.md`).
+- **Sincronia de fato é do `/spec-lead`**, não sua. O comando de teste que mudou, a versão da
+  stack, a pasta ou camada nova, a ferramenta de teste visual instalada: o lead corrige sozinho,
+  num item de débito, porque sai de um arquivo do repo (rule `docs.md`, "CLAUDE.md: fato é
+  livre, regra é do usuário"). Você é para o que **exige o usuário**: criar o arquivo do zero,
+  auditar o conjunto, enxugar, e toda **regra** nova — convenção, anti-padrão, "sempre"/"nunca".
+  Rodar com o arquivo já em dia é esperado e barato: você confirma as fontes e sai.
 
 # Regras
 
@@ -176,7 +182,7 @@ Varredura de {{ }} e <!-- -->: limpa
 .gitignore: .temp/ <já ignorado | acrescentado | sem repositório git>
 behavior.md: <presente | ausente — copie a .claude/ do framework para o projeto>
 Convenções de área fora do CLAUDE.md: <tema → /spec-rule-create "<tema>"> (ou: nenhuma)
-Teste visual: <ferramenta (no repo | a instalar → /spec-change "instalar <ferramenta>")> (ou: sem interface)
+Teste visual: <ferramenta (no repo | a instalar → /spec-lead "instalar <ferramenta>")> (ou: sem interface)
 MCP de tela: <servidor ativo | declarado mas inativo nesta sessão → /spec-windows-mcp ou /spec-playwright-mcp (reativa e verifica) | a configurar → /spec-playwright-mcp (web) ou /spec-windows-mcp (desktop Windows), que já o registra no CLAUDE.md> (ou: sem interface)
 Próximo passo: revisar o CLAUDE.md (git diff CLAUDE.md) e commitar → /spec-semantic-commit
 ```

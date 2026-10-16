@@ -1,6 +1,6 @@
 ---
 name: spec-design-system
-description: Utilitário do framework (obrigatório em projeto com interface visual). Cria ou atualiza o design system do produto - docs/design-system.md (contexto geral e índice) e um arquivo por categoria em docs/design/ (cores, tipografia, espaçamento, ícones, layout, tema, componentes, padrões de feedback, acessibilidade visual e, sob demanda, botões, camadas, movimento e divergências). Deriva do código, do Figma e dos documentos do time tudo o que já existe e só pergunta o resto. Em projeto novo, parte da proposta do produto, tira as dúvidas de direção e entrega um formulário técnico de especificação, pré-preenchido com o que derivou e com a recomendação em cada campo aberto, para o usuário (ou outro agente) preencher; com o formulário de volta, valida, pergunta o que restou e escreve o design system. Não especifica as telas de uma mudança, não cria ADR e não escreve código. Usar quando o usuário pedir para criar, consolidar ou atualizar o design system, quando devolver o formulário preenchido, ou quando o /spec-change parar por falta dele.
+description: Utilitário do framework (obrigatório em projeto com interface visual). Cria ou atualiza o design system do produto - docs/design-system.md (contexto geral e índice) e um arquivo por categoria em docs/design/ (cores, tipografia, espaçamento, ícones, layout, tema, componentes, padrões de feedback, acessibilidade visual e, sob demanda, botões, camadas, movimento e divergências). Deriva do código, do Figma e dos documentos do time tudo o que já existe e só pergunta o resto. Em projeto novo, parte da proposta do produto, tira as dúvidas de direção e entrega um formulário técnico de especificação, pré-preenchido com o que derivou e com a recomendação em cada campo aberto, para o usuário (ou outro agente) preencher; com o formulário de volta, valida, pergunta o que restou e escreve o design system. Não especifica as telas de uma mudança, não cria ADR e não escreve código. Usar quando o usuário pedir para criar, consolidar ou atualizar o design system, quando devolver o formulário preenchido, ou quando o /spec-lead parar por falta dele.
 argument-hint: "[proposta do projeto | links de Figma | caminhos de documentos de design do time | caminho do formulário preenchido (opcional)]"
 disable-model-invocation: true
 ---
@@ -29,7 +29,7 @@ Entrada, em projeto novo: `.temp/design-system-formulario.md`, uma cópia pré-p
 (rule `docs.md`): não vai para `docs/`, nenhum documento permanente o cita e quem o apaga é o
 usuário.
 
-**Obrigatório em projeto com interface visual:** o `/spec-change` não planeja mudança com
+**Obrigatório em projeto com interface visual:** o `/spec-lead` não planeja mudança com
 tela sem ele. Rode-o:
 
 - **Projeto novo com interface**, antes do primeiro plano com tela.
@@ -60,7 +60,7 @@ Projeto sem interface (só backend, biblioteca, CLI) não precisa desta skill.
 8. **Não crie ADR.** Decisão transversal com trade-off real (biblioteca de UI, dark mode desde já,
    skeleton em todo o produto) vira **recomendação** de `/spec-adr` no resumo, e só lá.
 9. **Não escreva código.** Os tokens de um projeto novo são implementados pelo fluxo normal
-   (`/spec-change`).
+   (`/spec-lead`).
 10. **Não exiba os documentos no terminal.** Salve os arquivos e mostre só o resumo. Vale para o
     formulário também: entregue o caminho dele, nunca o conteúdo.
 11. **Documentos em português com acentuação correta.** Nomes de código e termos de design
@@ -213,7 +213,7 @@ refaça as perguntas que ele já respondeu.
      fallback stack, duração de animação) → decida pelo default, registre como `[decisão]` e
      liste no resumo, em "Decidido por default";
    - **contradição com o código** → pergunte qual vale: corrigir o código (vira recomendação de
-     `/spec-change`) ou registrar em `divergencias-conhecidas.md`.
+     `/spec-lead`) ou registrar em `divergencias-conhecidas.md`.
    No máximo **2 rodadas** de até 4 perguntas. Restou campo obrigatório em branco depois delas →
    diga quais e pare, sem escrever.
 4. **Formulário vazio ou quase** (só os campos que você mesmo pré-preencheu) → não escreva: diga

@@ -8,11 +8,12 @@ Onde cada documento mora, quem pode mexer nele e quando. Vale em qualquer tarefa
 |---|---|---|
 | `docs/specs/` | **como o sistema funciona hoje**, por módulo ou assunto | o agente, livremente |
 | `docs/architecture.md` | a arquitetura base: camadas, módulos, fluxos e integrações principais | o agente, livremente |
-| `docs/adr/NNN-<titulo>.md` + índice `docs/adr/README.md` | **por que** uma decisão transversal foi tomada | só `/spec-adr`, com o usuário; a correção verificável, a varredura |
+| `docs/adr/NNN-<titulo>.md` + índice `docs/adr/README.md` | **por que** uma decisão transversal foi tomada | o `spec-architect` (chamado pelo lead) ou `/spec-adr`, sempre com a decisão já tomada; a correção verificável, um plano secundário |
 | `docs/design-system.md` + `docs/design/` | a identidade visual: tokens, componentes e padrões | `/spec-design-system`; sincronizar com o código é livre |
-| `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança média ou grande, até ser executado | `/spec-change` cria, o usuário aprova, `/spec-build` executa e apaga |
+| `docs/plans/AAAA-MM-DD-<slug>.md` (e `-parte-N`, `-secundario-N`) | o plano de uma mudança, até ser executado | o `spec-planner` cria, o usuário aprova o principal, o `/spec-lead` executa e apaga |
 | `.temp/references/` | material de consulta temporário do usuário: marca, prints, prompts | o usuário |
 | `.temp/design-system-formulario.md` | a especificação de entrada do design system, até ser preenchida e consumida | `/spec-design-system` cria, o usuário (ou um agente) preenche, a skill lê |
+| `CLAUDE.md` | o contrato do agente com **este** projeto: stack, comandos reais, convenções, onde coisas novas vão | `/spec-claude` cria e audita, com o usuário; o **fato** que o repo responde, o agente sincroniza livremente (abaixo) |
 | `CHANGELOG.md` | o que mudou para quem usa, em cada versão lançada | `/spec-release`, a cada versão |
 
 **Não duplique.** A spec diz **como funciona** e aponta para a ADR que diz **por quê**. O plano
@@ -55,30 +56,34 @@ A profundidade é livre: um pedaço que passar de 300 linhas se subdivide do mes
 quando passam de 20. Substituída sai do índice: o histórico fica nas próprias ADRs (a nova
 aponta a antiga em **Substitui**). Para achar a ADR de um assunto, leia o índice e abra só as
 que a coluna aponta; o status que vale é o do arquivo da ADR. Sem índice, liste `docs/adr/`.
-Quem escreve ADR e índice é `/spec-adr`, com o usuário: atualiza o índice a cada ADR salva e o
-reorganiza com `/spec-adr índice`. A única exceção é a correção verificável, abaixo.
+Quem escreve ADR e índice é o `spec-architect`, chamado pelo `/spec-lead` com a decisão já
+tomada, ou a skill `/spec-adr`, quando o usuário registra uma decisão direto: os dois atualizam
+o índice a cada ADR salva, e `/spec-adr índice` o reorganiza. **Ninguém decide aqui** — a ADR
+registra a escolha, não a faz. A única exceção ao dono único é a correção verificável, abaixo.
 
 ### Correção verificável: a exceção ao dono único
 
-Na varredura fora do escopo, um `spec-fixer` corrige numa ADR `proposto` ou `aceito`, e no
-índice, **sem pedir confirmação** (`behavior.md`, regra 4), só o erro que se confere sem julgar
-o conteúdo:
+Num passo de plano secundário, ou num item avulso, o `spec-executor` corrige numa ADR `proposto`
+ou `aceito`, e no índice, **sem pedir confirmação** (`behavior.md`, regra 4), só o erro que se
+confere sem julgar o conteúdo:
 
 - link que não resolve, ou referência a uma ADR, arquivo ou âncora que não existe;
 - erro de digitação, de acentuação ou de formatação Markdown que não muda o que a ADR afirma.
 
-Fica **fora**, e vira recomendação no relatório com o comando `/spec-adr` pronto:
+A prova é a conferência mecânica do `Pronto quando` — abrir o link e ver que resolve, conferir
+que o arquivo citado existe (`behavior.md`, regra 3).
+
+Fica **fora**, e vira proposta no relatório com o comando `/spec-adr` pronto:
 
 - **o que a ADR afirma** — Contexto, Decisão, Consequências, Alternativas. Vale também para a
   consequência que se revelou errada: ela é juízo novo sobre a decisão, e se a decisão ainda se
   sustenta é o usuário que diz;
 - **`status`, `Substitui` e `Substituída por`**, que são o contrato e o histórico: decisão nova
-  continua sendo ADR nova (`/spec-adr`, Etapa 4b), nunca edição da antiga;
+  continua sendo ADR nova, nunca edição da antiga;
 - **toda ADR `substituído`**, que é histórico e não se reescreve.
 
-O índice é recurso de **um item por rodada**: link quebrado nele é o caso mais provável de dois
-itens brigarem pelo mesmo arquivo, e a regra "dois itens no mesmo arquivo → delegue um só" das
-duas varreduras já resolve isso.
+O índice `docs/adr/README.md` é recurso disputado: dois itens de débito que mexem nele vão no
+**mesmo** passo, nunca em passos paralelos de planos diferentes.
 
 ## Design system: livre para sincronizar
 
@@ -86,11 +91,45 @@ Registrar o que o código **já implementa** é livre, como nas specs. Mudar a i
 token, componente ou padrão que o código ainda não tem) é decisão do usuário: pergunte antes, ou
 rode `/spec-design-system`.
 
+## CLAUDE.md: fato é livre, regra é do usuário
+
+O `CLAUDE.md` entra no contexto de **toda** sessão de **todo** agent, então desatualizado ele
+não é inofensivo: ele mente para quem confia nele. Mas ele também é o único documento que
+governa o próprio agente, e por isso o corte é mais estreito que o das specs:
+
+| O que mudou | Quem resolve |
+|---|---|
+| **Fato que um arquivo do repo responde:** comando de teste, build ou lint, versão da stack, pasta ou camada que passou a existir, ferramenta de teste visual instalada, `.temp/` fora do `.gitignore` | o agente, **livremente** — é sincronizar documento com código, como numa spec |
+| **Regra nova:** convenção que ninguém escreveu, anti-padrão, "sempre faça X", "nunca edite Y" | o **usuário**: `/spec-claude`, ou `/spec-rule-curate` para um item solto |
+
+O teste é mecânico: **deu para extrair de um arquivo do repo?** É fato. **Veio do juízo de alguém
+sobre como o time deve trabalhar?** É regra, e regra é escolha do usuário (`behavior.md`,
+regra 1, motivo **c**). Na dúvida, é regra.
+
+Três coisas seguram o risco de o agente editar as próprias amarras, e valem juntas: ele escreve
+**só fato com fonte**, a edição sai no relatório em "Decisões que tomei", e nada é commitado —
+o usuário vê o `git diff --staged` antes.
+
+**Criar o `CLAUDE.md` que não existe é do usuário**, porque a `spec-claude` precisa do que o repo
+não responde (o idioma, os anti-padrões que o time mais corrige). Mas a ausência dele **não
+trava** demanda nenhuma: o agente lê o repo e trabalha sem ele, e `/spec-claude` vai para o
+relatório como proposta. Nisso ele é o oposto do design system, que trava de propósito — tela
+sem identidade visual sai para ser jogada fora; código sem `CLAUDE.md` sai um pouco pior.
+
 ## Planos: temporários
 
-Um plano por mudança, nome `AAAA-MM-DD-<slug>.md`. `rascunho` → `aprovado` (pelo usuário) →
-executado e **apagado pelo build** no fechamento: a remoção fica em stage junto com o código e
-entra no mesmo commit. Plano não vira documentação.
+Plano não vira documentação: ele é executado e **apagado pelo `/spec-lead`** no fechamento, e a
+remoção fica em stage junto com o código, no mesmo commit. São três:
+
+| Plano | Nome | Status inicial | Aprovação |
+|---|---|---|---|
+| **principal** | `AAAA-MM-DD-<slug>.md` | `rascunho` | do usuário — é a única do fluxo |
+| **parte** | `AAAA-MM-DD-<slug>-parte-N.md` | `rascunho` | a mesma do principal, que cobre todas as partes |
+| **secundário** | `AAAA-MM-DD-<slug>-secundario-N.md` | `aprovado` | **nenhuma**: resolver débito é do lead (`behavior.md`, regra 2) |
+
+**Só é apagado o plano cumprido:** todo checkbox `[x]` e a suíte, o build e o lint inteiros
+verdes, sem teste pulado. Com passo pendente, o plano fica — com os checkboxes marcados — e
+`/spec-lead continuar` o retoma.
 
 ## Referências: temporárias
 
