@@ -18,7 +18,8 @@ Valem em qualquer tarefa, em qualquer fase do fluxo. Não são negociáveis.
    - **localizado:** poucas linhas, num ou dois arquivos;
    - **sem efeito para quem usa:** não muda comportamento de que alguém depende nem contrato
      (API, formato de dados, schema, tela);
-   - **fora de área sensível:** autenticação, autorização, pagamentos, segredos, dados pessoais;
+   - **fora de área sensível que o plano não cobre:** autenticação, autorização, pagamentos,
+     segredos, dados pessoais (veja "O plano aprovado autoriza a sua área", adiante);
    - **provado:** os testes, o build e o lint que a tarefa já roda cobrem o que mudou.
 
    **ADR fica fora desta exceção.** Mesmo o erro óbvio numa ADR só é corrigido sem confirmação
@@ -35,12 +36,29 @@ Valem em qualquer tarefa, em qualquer fase do fluxo. Não são negociáveis.
    - **isolado:** lista fechada de arquivos, disjunta da mudança pedida e dos outros itens (dois
      fixers nunca escrevem no mesmo arquivo);
    - **sem contrato novo:** não muda API, formato de dados, schema, migração nem tela;
-   - **fora de área sensível:** autenticação, autorização, pagamentos, segredos, dados pessoais;
+   - **fora de área sensível que o plano não cobre:** autenticação, autorização, pagamentos,
+     segredos, dados pessoais (veja "O plano aprovado autoriza a sua área", adiante);
    - **provável:** há como mostrar que entrou verde. Os testes, o build e o lint que o projeto
      já tem cobrem o que mudou → são a prova. O projeto **não tem** o que rode naquela camada,
      ou o item é só de documentação → a prova é a conferência mecânica que o `Pronto quando`
      descreve. Ausência de suíte não reprova o item: reprova-o só não haver **nada** que mostre
      o resultado, nem comando nem conferência.
+
+   **O plano aprovado autoriza a sua área.** O critério "área sensível" existe para o agente
+   que mexe onde ninguém o mandou, não para proibir o trabalho que o humano acabou de aprovar:
+   num plano cujo assunto **é** aquela área — segredo, autenticação, autorização, pagamento,
+   dado pessoal —, o item que fica nela e cumpre os outros quatro critérios **entra** na faixa,
+   nas duas exceções. Os outros quatro não afrouxam: escolha de produto, contrato novo, item
+   não isolado ou sem prova continuam sendo do usuário. Fora da área do plano o critério segue
+   fechado, e sem plano não há o que autorizar — na mudança pequena da `/spec-change`, área
+   sensível já promove o pedido para média (Etapa 2), e o item sensível da varredura é do
+   usuário.
+
+   **Tarefa dada é tarefa cumprida.** Devolver ao usuário o item que a área do plano autoriza e
+   os critérios aceitam não é cautela: é a varredura falhando. O plano existe para que as
+   escolhas do humano sejam feitas **na aprovação**, não uma a uma durante a execução. Plano que
+   não dava para cumprir é defeito do plano: pare e diga qual passo falta (`/spec-build`,
+   Princípio 7), em vez de entregar o resto e relatar a lacuna.
 
    **Item só de documentação** — a correção verificável numa ADR que a rule `docs.md` autoriza,
    e todo arquivo de documentação num projeto que não tem suíte — não tem teste que o prove: a
@@ -65,6 +83,14 @@ Valem em qualquer tarefa, em qualquer fase do fluxo. Não são negociáveis.
    constar". O que sobrevive à barra vem com a recomendação e o comando pronto, e esse comando
    leva `--sem-varredura`: resolver um item não abre varredura nova, e é esta a trava **entre**
    rodadas, irmã do "um nível só" dentro da rodada.
+
+   **Risco não entra no teto.** O teto e a barra existem contra sujeira e preferência de
+   estilo, não contra risco. O item que **expõe segredo, credencial, dado pessoal ou dado de
+   pagamento, abre caminho para acesso indevido, ou pode corromper ou apagar dado** é sempre
+   relatado, em linha própria, com a recomendação e o comando pronto — ainda que já haja 2 na
+   frente dele, e ainda que sejam 5. O teto de 2 vale para o resto, e `fila cheia` nunca é
+   motivo para o usuário não saber de um risco. Vale em **todos** os tetos deste fluxo,
+   inclusive os da origem: o executor (2 por passo) e o `spec-fixer` (1).
 3. **"Funciona" só com evidência.** Ao afirmar que algo funciona, mostre o output do comando ou
    do teste que prova. Não rodou → diga "não rodei".
 

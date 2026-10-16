@@ -101,7 +101,9 @@ os problemas achados pelo caminho que têm uma só correção certa vão para el
 3 em paralelo; teste e build no fim provam que nada quebrou. A regra é **resolver ou calar:**
 item que cumpre os critérios vai para um fixer, não para o relatório, e o relatório recebe no
 máximo 2 itens — só o que depende de uma decisão sua e você sentiria se ficasse como está, com a
-recomendação e o comando pronto. Esse comando leva `--sem-varredura`, para que resolver um item
+recomendação e o comando pronto. Risco de segurança ou de dados não entra nesse teto: disso você
+fica sabendo sempre, por cheia que esteja a fila. Esse comando leva `--sem-varredura`, para que
+resolver um item
 não abra uma varredura nova: é o que impede uma correção de virar três pedidos. É também por essa via que um link
 quebrado ou um erro de digitação numa ADR é corrigido sem passar por você — o que a ADR
 **afirma**, não: isso continua sendo `/spec-adr`, com a sua aprovação.

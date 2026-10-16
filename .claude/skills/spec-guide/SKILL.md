@@ -67,10 +67,15 @@ critérios.
 **Resolve ou cala.** Item que cumpre os critérios vai para um fixer **agora** — a faixa delegada
 é o caminho normal, não o último recurso —, e a prova, em projeto sem suíte ou em item só de
 documentação, é a conferência mecânica do `Pronto quando`: ausência de teste não empurra o item
-para o usuário. O que tem decisão, contrato ou área sensível não é delegado, e aí passa por duas
-travas antes de virar linha de relatório: a **barra de relevância** (entra só o que alguém sente
+para o usuário. O que tem decisão, contrato ou área sensível **que o plano não cobre** não é
+delegado — a área que o plano aprovado trata está autorizada, e o item nela é delegado como
+qualquer outro (`behavior.md`, regra 2) —, e aí passa por duas travas antes de virar linha de
+relatório: a **barra de relevância** (entra só o que alguém sente
 se ficar como está — não estilo, refatoração de oportunidade ou sujeira que não atrapalha) e o
-**teto de 2 por relatório**. O que sobrevive vem com a recomendação e o comando `/spec-change`
+**teto de 2 por relatório** — de que o item de **risco** não participa: segredo, credencial,
+dado pessoal ou dado de pagamento expostos, acesso indevido e dado que pode corromper ou apagar
+são sempre relatados, por cheia que esteja a fila (`behavior.md`, regra 2). O que sobrevive vem
+com a recomendação e o comando `/spec-change`
 pronto, e esse comando leva `--sem-varredura`: a varredura de uma rodada não gera a da próxima.
 São as duas travas e a `--sem-varredura` que impedem uma correção de virar três pedidos novos
 (`behavior.md`, regra 2).
@@ -141,7 +146,8 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 - **Varredura fora do escopo:** com a suíte verde e sem pulo, antes de apagar o plano, o build tria o que os
   executores só anotaram e delega o item isolado aos `spec-fixer`; para o relatório vão no
   máximo 2 itens, e só os que passam da barra de relevância. A barra começa na **origem**: o
-  executor cita no máximo 2 itens por passo, e o fixer, 1 (detalhes na seção 1).
+  executor cita no máximo 2 itens por passo, e o fixer, 1 (detalhes na seção 1). Risco de
+  segurança ou de dados não entra em nenhum desses tetos.
 - **Fechamento:** suíte e build **inteiros** verdes e **sem teste pulado** → o build apaga o
   plano (remoção em stage, entra no mesmo commit). Vermelho, não rodou ou verde com pulo → o
   plano fica: o build resolve a precondição que falta (pacote, variável, serviço, porta) ou

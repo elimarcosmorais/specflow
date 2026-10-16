@@ -1,6 +1,6 @@
 ---
 name: spec-change
-description: Porta de entrada do framework. Recebe um pedido (texto livre ou arquivo), lê o código e as specs que ele toca e classifica o tamanho - pequena, média ou grande. Pequena (CSS, bug, texto, ajuste localizado) → implementa direto, sem plano, roda os testes, atualiza a spec do módulo se o comportamento documentado mudou e, por fim, faz a varredura fora do escopo: corrige junto o problema alheio de impacto pequeno e delega o item isolado a um spec-fixer por item (até 3 em paralelo, com teste e build no fim como gate) - item que cumpre os critérios vai para um fixer, nunca para o resumo. Para o resumo vão no máximo 2 itens, com recomendação e comando pronto: só o que tem decisão, contrato ou área sensível e que alguém sentiria se ficasse. O comando pronto leva --sem-varredura, para que resolver um item não abra varredura nova e uma correção não vire três pedidos. Média ou grande → conversa só o que o código não responde e escreve um único plano curto em docs/plans/ (comportamento, decisões, specs afetadas, passos) para o usuário aprovar e depois executar com /spec-build. O processo escala com a mudança - nunca gera plano para mudança pequena.
+description: Porta de entrada do framework. Recebe um pedido (texto livre ou arquivo), lê o código e as specs que ele toca e classifica o tamanho - pequena, média ou grande. Pequena (CSS, bug, texto, ajuste localizado) → implementa direto, sem plano, roda os testes, atualiza a spec do módulo se o comportamento documentado mudou e, por fim, faz a varredura fora do escopo: corrige junto o problema alheio de impacto pequeno e delega o item isolado a um spec-fixer por item (até 3 em paralelo, com teste e build no fim como gate) - item que cumpre os critérios vai para um fixer, nunca para o resumo. Para o resumo vão no máximo 2 itens, com recomendação e comando pronto: só o que tem decisão, contrato ou área sensível e que alguém sentiria se ficasse - item de risco de segurança ou de dados não conta nesse teto e nunca é descartado. O comando pronto leva --sem-varredura, para que resolver um item não abra varredura nova e uma correção não vire três pedidos. Média ou grande → conversa só o que o código não responde e escreve um único plano curto em docs/plans/ (comportamento, decisões, specs afetadas, passos) para o usuário aprovar e depois executar com /spec-build. O processo escala com a mudança - nunca gera plano para mudança pequena.
 argument-hint: "[pedido em texto livre | caminho de um .md/.txt] [--sem-varredura]"
 disable-model-invocation: true
 ---
@@ -40,8 +40,10 @@ design system. Onde cada coisa mora: rule `docs.md`.
    isolado você **delega a um `spec-fixer`** — é o caminho normal, não o último recurso. Para o
    resumo vai só o que tem decisão, contrato ou área sensível **e passa da barra de
    relevância**: no máximo 2 itens, com a recomendação e o comando pronto. O que não passa da
-   barra não é relatado, nem como nota. Critérios das faixas e a barra: rule `behavior.md`,
-   regra 2. Na **média e na grande** você não mexe no código, e o mesmo teto e a mesma barra
+   barra não é relatado, nem como nota. **Risco não entra no teto** (`behavior.md`, regra 2):
+   segredo, credencial, dado pessoal ou dado de pagamento expostos, caminho para acesso
+   indevido ou dado que pode corromper ou apagar são sempre relatados. Critérios das faixas e a
+   barra: rule `behavior.md`, regra 2. Na **média e na grande** você não mexe no código, e o mesmo teto e a mesma barra
    valem para o resumo.
 
    **Resumo não é lista de tarefas.** Três itens "deixei para você" não são zelo: são a
@@ -129,6 +131,10 @@ reclassifique.
      deixou para o usuário → pule este item inteiro.** A varredura de uma rodada não gera a
      varredura da próxima: é a trava **entre** rodadas, irmã do "um nível só" dentro da rodada,
      e é ela que impede uma correção de virar três pedidos novos.
+   - **Sem plano, área sensível é C.** O que autoriza corrigir em área sensível é o plano
+     aprovado que trata dela (`behavior.md`, regra 2), e a mudança pequena não tem plano — a
+     Etapa 2 promove para média o pedido que toca área sensível. Item sensível aqui é do
+     usuário.
    - **Nada em B → pule a varredura.** Ela não é etapa obrigatória nem passa a existir sozinha:
      sem item que cumpra os critérios, você só preenche as linhas do resumo. **O inverso também
      vale:** item que cumpre os critérios vai para um fixer agora, não para o resumo — resumo
@@ -137,8 +143,8 @@ reclassifique.
      `arquivo:linha`), `Arquivos` (lista fechada) e `Pronto quando` (resultado concreto). Não
      soube fechar a lista de arquivos sem explorar meio projeto → é C.
    - **Até 3 por rodada**, nesta prioridade: quebrado > risco > sujeira. O resto é C, com o
-     motivo `fila cheia`, e ainda passa pela barra e pelo teto de 2 do resumo. Dois itens que
-     tocam o mesmo arquivo → delegue um só; o outro é C.
+     motivo `fila cheia`, e ainda passa pela barra e pelo teto de 2 do resumo (de que o item de
+     risco não participa). Dois itens que tocam o mesmo arquivo → delegue um só; o outro é C.
      Arquivo que já estava sujo e não é da mudança pedida → não delegue nele (é C): não daria
      para desfazer só o que o fixer fez.
    - **Guarde a foto** (`git status --porcelain --untracked-files=all`) antes de delegar: é ela
@@ -169,12 +175,13 @@ Specs: <arquivo> (criado | atualizado | subdividido) | nenhuma
 
 Corrigi fora do escopo: <o que e por quê, `arquivo:linha`> | nada
 Resolvi em paralelo: <item> — `<arquivo>` · <prova> | nada
-Deixei para você (máx. 2): <item, `arquivo:linha`> · <por que ficou> · Recomendo: <…> →
-  `/spec-change "<pedido pronto>" --sem-varredura` | nada
+Deixei para você (máx. 2; risco não conta no teto): <item, `arquivo:linha`> · <por que ficou> ·
+  Recomendo: <…> → `/spec-change "<pedido pronto>" --sem-varredura` | nada
 ```
 
 Um item por linha, **no máximo 2**, e só o que passa da barra de relevância (`behavior.md`,
-regra 2): o que alguém sente se ficar como está. Em "Deixei para você", "por que ficou" é o que
+regra 2): o que alguém sente se ficar como está. O item de **risco** de segurança ou de dados
+não conta nesse teto e nunca sai por fila cheia. Em "Deixei para você", "por que ficou" é o que
 o tirou da triagem: decisão, contrato, área sensível, mais de uma passada, fila cheia, recusado
 pelo fixer ou gate vermelho. O comando pronto leva `--sem-varredura`.
 
@@ -221,7 +228,7 @@ Plano salvo em: docs/plans/AAAA-MM-DD-<slug>.md
 - Specs afetadas: <arquivos> | nenhuma
 - Plano: N passos (risco alto: passo X | nenhum)
 - ADR a registrar antes de aprovar: `/spec-adr "<título>"` | nenhuma
-- Deixei para você (máx. 2, só o que passa da barra): <item, `arquivo:linha`> · Recomendo: <…> → `/spec-change "<pedido pronto>" --sem-varredura` | nada
+- Deixei para você (máx. 2, só o que passa da barra; risco não conta no teto): <item, `arquivo:linha`> · Recomendo: <…> → `/spec-change "<pedido pronto>" --sem-varredura` | nada
 
 Revise o plano. Aprovado → mude o status para `aprovado` (ou peça que eu mude) e rode
 `/spec-build docs/plans/AAAA-MM-DD-<slug>.md`.
