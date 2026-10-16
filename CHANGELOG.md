@@ -4,6 +4,29 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.6.0] - 2026-10-16
+
+### Incompatível
+
+- unifica o fluxo no `spec-lead`, com seis agents especializados (3402fca)
+
+  `/spec-change` e `/spec-build` saem. Use `/spec-lead "<pedido>"` para uma mudança
+  nova e `/spec-lead continuar` para retomar um plano com passo pendente. O agent
+  `spec-fixer` foi removido, e o template do plano passou de
+  `.claude/skills/spec-change/template.md` para `.claude/skills/spec-lead/plano.md`.
+
+### Adicionado
+
+- **uac:** trata não autorizado como passo sem prova e proíbe contorno (1e85ac1)
+- **varredura:** autoriza a área do plano e isenta risco do teto (1e12243)
+- **varredura:** limita o fora do escopo a 2 itens e resolve o resto (4086dc9)
+- **adr:** permite a varredura corrigir erro verificável em ADR (ada3b25)
+
+### Corrigido
+
+- **upgrade:** fixa o caminho do clone em `/tmp/specflow-upgrade` (ddf54ba)
+- trata teste pulado como falta de prova em todo o fluxo (ea0841d)
+
 ## [0.5.2] - 2026-10-14
 
 ### Corrigido
@@ -100,6 +123,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[0.6.0]: https://github.com/elimarcosmorais/specflow/compare/v0.5.2...v0.6.0
 [0.5.2]: https://github.com/elimarcosmorais/specflow/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/elimarcosmorais/specflow/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/elimarcosmorais/specflow/compare/v0.4.0...v0.5.0
