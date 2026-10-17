@@ -119,6 +119,18 @@ execução.
 A prova que exige o gesto humano nasce marcada `(manual: …)` no plano e é recolhida no relatório
 com o roteiro, em vez de rodada.
 
+## 6. Conteúdo de arquivo vai pelo Write/Edit, não pelo texto de um comando Bash
+
+No Windows, a ferramenta Bash troca `\\` por `\` **antes** de o shell ver o comando: nem aspas
+simples nem heredoc com aspas (`<<'EOF'`) protegem. O arquivo sai diferente do que você escreveu,
+sem erro nenhum, e o teste que conferia aquele literal passa pelo motivo errado. PowerShell e as
+ferramentas Write/Edit gravam o byte que você mandou.
+
+Por isso, arquivo com `\` — caminho do Windows, regex, literal com escape (`"C:\\dev"` em Go, C#,
+JSON) — se escreve e se edita **pelo Write/Edit**, nunca por heredoc, `echo`, `printf` ou `sed`
+no Bash. Escreveu por outro caminho → confira os bytes (`od -c` ou `Format-Hex`) antes de contar
+o teste como prova (regra 3).
+
 ---
 
 Como evoluir esta lista: errou em algo que uma regra já cobria → reforce a redação dela; errou
