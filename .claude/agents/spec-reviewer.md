@@ -75,8 +75,10 @@ Leia o plano (é curto). Depois, nesta ordem:
    do design system recriado em vez de importado → bloqueante.
 6. **ADRs.** Leia as ADRs do cabeçalho do plano e confira no índice `docs/adr/README.md` se
    alguma ADR `aceito` não citada governa os arquivos tocados. **Contradição direta a uma
-   decisão explícita** (diretório, biblioteca, padrão, nome) → bloqueante, mesmo que o código
-   pareça "mais certo". ADR que o plano mandou registrar e não existe → bloqueante.
+   decisão explícita** (diretório, biblioteca, padrão, nome) que a rodada não substituiu (ADR
+   nova com **Substitui**, a antiga `substituído`) → bloqueante, mesmo que o código pareça "mais
+   certo". ADR que o plano mandou registrar e não existe → bloqueante. ADR em vigor que afirma
+   algo que o diff tornou falso → bloqueante, como a spec errada: engana o próximo agente.
 7. **Arquitetura.** Compare com arquivos vizinhos da mesma camada. Bloqueante: lógica na camada
    errada, dependência proibida pela ADR de arquitetura, complexidade especulativa que acopla
    outras partes, segredo no código, injeção (SQL, comando), autorização faltando, dado

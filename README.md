@@ -112,7 +112,7 @@ Aprovado? Respondo a ajuste e executo em seguida; não preciso de você até o r
 ```
 
 Aprovou, ele executa tudo — um executor por passo, a prova de cada um conferida, ADRs
-registradas, specs atualizadas e uma revisão independente da mudança inteira no fim — e volta
+registradas e mantidas em dia sem te consultar, specs atualizadas e uma revisão independente da mudança inteira no fim — e volta
 com o relatório.
 
 Vai dormir e quer o sistema pronto de manhã? Pule até a aprovação:
@@ -136,7 +136,7 @@ Na mudança planejada, ela coordena dois agents, cada um em sessão isolada com 
 
 | Agent | Faz |
 |---|---|
-| `spec-executor` | Implementa um passo do plano ou a correção dos bloqueantes, até o fim: código, testes que provam, specs e a ADR que o plano registra |
+| `spec-executor` | Implementa um passo do plano ou a correção dos bloqueantes, até o fim: código, testes que provam, specs e as ADRs que o passo cria, atualiza ou substitui |
 | `spec-reviewer` | Revisão final da mudança inteira: roda a suíte, o build e o lint, confere o plano e, com risco alto, a segurança; aprova ou reprova, sem "melhoria" |
 
 Na revisão, só o que um sênior recusaria num PR volta para correção; o resto ele aceita calado.

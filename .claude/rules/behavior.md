@@ -39,7 +39,7 @@ O problema que aparecer pelo caminho tem só duas leituras:
 
 1. **Atrapalha a tarefa** — quebra o que você está fazendo, impede o teste de passar, é
    pré-requisito do pedido, ou é algo que o próprio pedido tornou falso (um chamador, um teste,
-   uma spec, um fato do `CLAUDE.md`) → **é a tarefa**. Resolva, no arquivo que precisar, e diga
+   uma spec, uma ADR, um fato do `CLAUDE.md`) → **é a tarefa**. Resolva, no arquivo que precisar, e diga
    numa linha o que foi.
 2. **Não atrapalha** → **não é assunto seu**. Não corrige, não anota, não relata, nem como nota.
    Não existe campo de "notei", fila, plano para depois nem "fica a sugestão".
@@ -76,13 +76,12 @@ que o arquivo citado existe, reler a linha e ver que ela diz o que o código faz
 ## 4. Ação destrutiva ou irreversível exige confirmação antes
 
 Ex.: apagar arquivos ou pastas fora do fluxo, editar plano `aprovado` (fora dos checkboxes e do
-status), ADR `aceito` ou `substituído`, `git reset`/`git restore` fora do que a própria rodada
-acabou de escrever, `push --force`, commit e push, migração de schema em base real, delete de
+status), `git reset`/`git restore` fora do que a própria rodada acabou de escrever, `push --force`, commit e push, migração de schema em base real, delete de
 dados em massa.
 
 **Não pedem confirmação**, porque o fluxo já as autoriza: mexer nas specs e no
-`docs/architecture.md` (rule `docs.md`), resolver o que atrapalha a tarefa (regra 2), corrigir o
-erro verificável numa ADR `proposto` ou `aceito`, apagar o plano que acabou de ser executado por
+`docs/architecture.md` (rule `docs.md`), resolver o que atrapalha a tarefa (regra 2), criar,
+atualizar e substituir ADR (rule `docs.md`), apagar o plano que acabou de ser executado por
 inteiro, e desfazer o que a própria rodada acabou de escrever quando ela deixou o gate vermelho.
 
 ## 5. Precisou de admin → eleve só aquele comando
@@ -117,7 +116,7 @@ que entra no relatório, com o comando pronto para o usuário rodar.
 gravável pelo usuário é escalada de privilégio permanente, e a que aponta para saída de build
 (`bin/`, `dist/`) é a pior delas. Também não troque o alvo do teste por um caminho que não passa
 pelo UAC: aí ele fica verde provando outra coisa, que é o teste pulado com outra roupa. Precisa
-de admin **sem** o gesto humano com frequência → é decisão do usuário (ADR), não atalho de
+de admin **sem** o gesto humano com frequência → é decisão do usuário, não atalho de
 execução.
 
 A prova que exige o gesto humano nasce marcada `(manual: …)` no plano e é recolhida no relatório

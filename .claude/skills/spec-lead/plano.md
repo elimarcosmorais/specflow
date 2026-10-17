@@ -35,12 +35,14 @@ nenhum passo, e o relatório o recolhe para o usuário. Só o que muda entra. --
 |---|---|---|
 | <o que precisou ser decidido> | <o que foi escolhido> | <motivo em 1 linha; alternativa descartada> |
 
-**ADR a registrar:** <título> | nenhuma
+**ADR a registrar:** <título> (substitui NNN) | nenhuma
 
 <!-- LLM-ONLY: só decisão não óbvia — a que o usuário respondeu, ou a que o lead tomou e foge do
 padrão do código. O que o código, uma spec ou uma ADR já respondem não entra. ADR só para
 decisão que vale para o projeto todo; o executor a registra no primeiro passo que depende dela
-(Arquivos: `docs/adr/NNN-<titulo>.md` e `docs/adr/README.md`). -->
+(Arquivos: `docs/adr/NNN-<titulo>.md` e `docs/adr/README.md`). "(substitui NNN)" só quando a
+decisão vai contra uma ADR `aceito`. ADR que o passo só deixa desatualizada não entra aqui: o
+executor a atualiza sozinho (rule `docs.md`). -->
 
 ## 4. Telas
 

@@ -8,7 +8,7 @@ Onde cada documento mora, quem pode mexer nele e quando. Vale em qualquer tarefa
 |---|---|---|
 | `docs/specs/` | **como o sistema funciona hoje**, por módulo ou assunto | o agente, livremente |
 | `docs/architecture.md` | a arquitetura base: camadas, módulos, fluxos e integrações principais | o agente, livremente |
-| `docs/adr/NNN-<titulo>.md` + índice `docs/adr/README.md` | **por que** uma decisão transversal foi tomada | o `spec-executor`, no passo do plano que a registra, ou `/spec-adr`, sempre com a decisão já tomada |
+| `docs/adr/NNN-<titulo>.md` + índice `docs/adr/README.md` | **por que** uma decisão transversal foi tomada | o agente: cria, atualiza e substitui conforme a tarefa pede (abaixo); `/spec-adr` quando o usuário registra direto |
 | `docs/design-system.md` + `docs/design/` | a identidade visual: tokens, componentes e padrões | `/spec-design-system`; sincronizar com o código é livre |
 | `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança, até ser executado | o `/spec-lead` escreve, o usuário aprova, o lead executa e apaga |
 | `.temp/references/` | material de consulta temporário do usuário: marca, prints, prompts | o usuário |
@@ -50,38 +50,32 @@ Vale para spec, `architecture.md`, `design-system.md` e os arquivos de `docs/des
 
 A profundidade é livre: um pedaço que passar de 300 linhas se subdivide do mesmo jeito.
 
-## ADRs: pelo índice
+## ADRs: do agente, pelo índice
 
 `docs/adr/README.md` lista só as ADRs em vigor, com a coluna "Abra quando", agrupadas por tema
 quando passam de 20. Substituída sai do índice: o histórico fica nas próprias ADRs (a nova
 aponta a antiga em **Substitui**). Para achar a ADR de um assunto, leia o índice e abra só as
 que a coluna aponta; o status que vale é o do arquivo da ADR. Sem índice, liste `docs/adr/`.
-Quem escreve ADR e índice é o `spec-executor`, no passo do plano que a registra (a decisão já
-veio tomada no plano aprovado), ou a skill `/spec-adr`, quando o usuário registra uma decisão
-direto: os dois atualizam o índice a cada ADR salva, e `/spec-adr índice` o reorganiza. **Ninguém decide aqui** — a ADR
-registra a escolha, não a faz. A única exceção ao dono único é a correção verificável, abaixo.
 
-### Correção verificável: a exceção ao dono único
+**ADR é do agente, não do usuário.** O usuário aprova o plano; a ADR registra o que a tarefa
+decidiu, e o agente a cria e a modifica sempre que cumprir a tarefa pede — o `spec-executor` no
+passo do plano, o `/spec-lead` no caminho direto. Nada disso pede confirmação (`behavior.md`,
+regra 4) nem vira proposta para o usuário: ADR que a tarefa deixou errada é a tarefa por
+terminar (`behavior.md`, regra 2). `/spec-adr` continua servindo ao usuário que quer registrar
+uma decisão direto, e `/spec-adr índice` reorganiza o índice.
 
-Quando o erro atrapalha a tarefa (`behavior.md`, regra 2) — o passo usa aquela ADR, ou o
-índice que ele vai editar —, o `spec-executor` corrige numa ADR `proposto` ou `aceito`, e no
-índice, **sem pedir confirmação** (`behavior.md`, regra 4), só o erro que se confere sem julgar
-o conteúdo:
+| A tarefa… | O agente |
+|---|---|
+| toma uma decisão transversal, cara de mudar e com alternativa real | **cria** a ADR (`aceito`) e a linha dela no índice |
+| torna falso o que uma ADR afirma — caminho, mecanismo, nome, consequência —, e a decisão continua de pé | **atualiza** a ADR no lugar, na mesma tarefa, como faria com uma spec |
+| muda a própria decisão | **substitui**: ADR nova com **Substitui**; na antiga, `status: substituído` e **Substituída por**; tira a antiga do índice |
+| esbarra em link quebrado, referência inexistente ou erro de digitação numa ADR ou no índice | **corrige** |
 
-- link que não resolve, ou referência a uma ADR, arquivo ou âncora que não existe;
-- erro de digitação, de acentuação ou de formatação Markdown que não muda o que a ADR afirma.
-
-A prova é a conferência mecânica do `Pronto quando` — abrir o link e ver que resolve, conferir
-que o arquivo citado existe (`behavior.md`, regra 3).
-
-Fica **fora**, e vira proposta no relatório com o comando `/spec-adr` pronto:
-
-- **o que a ADR afirma** — Contexto, Decisão, Consequências, Alternativas. Vale também para a
-  consequência que se revelou errada: ela é juízo novo sobre a decisão, e se a decisão ainda se
-  sustenta é o usuário que diz;
-- **`status`, `Substitui` e `Substituída por`**, que são o contrato e o histórico: decisão nova
-  continua sendo ADR nova, nunca edição da antiga;
-- **toda ADR `substituído`**, que é histórico e não se reescreve.
+Duas coisas seguram o histórico, e nenhuma é motivo de parar: **trocar a decisão é substituir,
+nunca reescrever** — a ADR antiga é o registro de por que se fez assim, e a `substituído` não se
+edita mais; e **ADR `aceito` é contrato** — o agente não a contraria por preferência, só quando a
+tarefa pede outra coisa, e aí a substitui. Toda ADR criada, atualizada ou substituída sai no
+relatório.
 
 O índice `docs/adr/README.md` é recurso disputado: os passos rodam um de cada vez, e nenhum
 agent o edita em paralelo.

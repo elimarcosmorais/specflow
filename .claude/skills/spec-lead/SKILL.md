@@ -125,7 +125,7 @@ Mudança pequena e clara não paga o custo de passar o bastão: você faz o trab
 
 1. **Faça a mudança**, seguindo o padrão do arquivo. O que ela torna falso muda junto
    (`behavior.md`, regra 2): o teste que conferia o valor antigo, a spec que descreve o
-   comportamento, um fato do `CLAUDE.md`. Correção de bug → acrescente o teste que o reproduz.
+   comportamento, o que uma ADR afirma, um fato do `CLAUDE.md`. Correção de bug → acrescente o teste que o reproduz.
 2. **Prove na medida da mudança** (`behavior.md`, regra 3) — não a suíte inteira:
    - ache o que cobre o que mudou: `Grep` do texto, símbolo ou rota, **antigo e novo**, nas
      pastas de teste (inclusive as de tela, como `tests/Browser`, `e2e/`);
@@ -185,7 +185,9 @@ Mudança pequena e clara não paga o custo de passar o bastão: você faz o trab
    - **ADR** só para decisão transversal, cara de mudar e com alternativa real: "ADR a
      registrar" na seção Decisões, e o primeiro passo que depende dela a registra (Arquivos:
      `docs/adr/NNN-<titulo>.md`, `docs/adr/README.md`). As ADRs `aceito` que já tocam a mudança
-     entram no cabeçalho: são contrato para os executores.
+     entram no cabeçalho: são contrato para os executores. A mudança vai contra uma delas → a
+     nova entra em "ADR a registrar" com "(substitui NNN)": a troca é sua, e aprovar o plano a
+     cobre. ADR que só fica desatualizada o passo atualiza sozinho (rule `docs.md`).
    - **Curto:** ~1 página, até 3 na mudança grande. Nomes, assinaturas, códigos de erro,
      mensagens literais; nada de corpo de função, SQL completo ou "preparar terreno para".
 3. **Releia o plano** como o executor o leria, sem esta conversa: algum passo pede algo que só

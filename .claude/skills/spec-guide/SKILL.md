@@ -116,7 +116,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | `docs/specs/` | como o sistema funciona hoje, por módulo; índice em `docs/specs/README.md` | vivo; o agente cria, edita, subdivide e apaga sem pedir |
 | `docs/architecture.md` | a arquitetura base | vivo, como as specs |
 | `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança ([template](../spec-lead/plano.md)), escrito pelo lead | `rascunho` → `aprovado` (pelo usuário) → executado e apagado pelo lead |
-| `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada; índice em `docs/adr/README.md` | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova; escrevem o `spec-executor` (no passo do plano que a registra) e `/spec-adr` |
+| `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada; índice em `docs/adr/README.md` | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova; do agente: cria, atualiza e substitui conforme a tarefa pede, sem perguntar; `/spec-adr` para o usuário registrar direto |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, uma categoria por arquivo | vivo; sincronizar com o código é livre, mudar a identidade é do usuário |
 | `.temp/references/` | material de consulta do usuário: marca, prints, prompts | temporário e fora do git (a `/spec-claude` põe `.temp/` no `.gitignore`); só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
 | `.temp/design-system-formulario.md` | a especificação de entrada do design system ([formulário](../spec-design-system/formulario.md)) | temporário; `/spec-design-system` emite pré-preenchido, o usuário ou outro agente preenche, a skill lê e escreve o design system |
@@ -133,15 +133,15 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 - **Specs** andam com o código: o passo que muda um comportamento atualiza a spec dele, no mesmo
   diff, e a revisão final confere. Passou de 300 linhas → subdivide (`assunto.md` vira índice dos
   pedaços em `assunto/`) e avisa no fim.
-- **ADR**: só decisão transversal, cara de mudar e com alternativa real. **Ninguém decide na
-  ADR** — ela registra a escolha já feita (pelo usuário ao aprovar o plano, ou pelo lead), e por
-  isso nasce `aceito` quando vem de um plano aprovado. Quem a escreve é o `spec-executor`, no
-  primeiro passo que depende dela, ou `/spec-adr`, quando o usuário registra direto. Executor e
-  revisor tratam ADR `aceito` como contrato; quem procura uma lê o índice (só as em vigor,
-  coluna "Abra quando", agrupado por tema acima de 20). A **correção verificável** (link
-  quebrado, referência inexistente, digitação) o executor faz quando ela atrapalha o passo; o
-  que a ADR afirma, o `status`, `Substitui`/`Substituída por` e a ADR `substituído` ficam fora e
-  viram proposta com o comando `/spec-adr` pronto (rule `docs.md`).
+- **ADR**: só decisão transversal, cara de mudar e com alternativa real. **É do agente, não do
+  usuário:** o usuário aprova o plano, e a ADR registra o que a tarefa decidiu — por isso nasce
+  `aceito`. O agente a cria, atualiza e substitui sempre que cumprir a tarefa pede, sem
+  perguntar nem deixar proposta: a que a tarefa tornou falsa ele atualiza na mesma tarefa, como
+  a spec; a decisão que a tarefa troca vira ADR nova com **Substitui**, e a antiga só ganha
+  `substituído` (histórico não se reescreve). `/spec-adr` fica para o usuário que quer registrar
+  direto. Executor e revisor tratam ADR `aceito` como contrato — não se contraria por
+  preferência —, e o revisor reprova ADR que o diff deixou errada. Quem procura uma lê o índice
+  (só as em vigor, coluna "Abra quando", agrupado por tema acima de 20). Rule `docs.md`.
 - **CLAUDE.md**: carrega em toda sessão de todo agent, então desatualizado ele mente para quem
   confia nele. O corte é mecânico: **fato que um arquivo do repo responde** (comando de teste,
   versão da stack, pasta ou camada nova, ferramenta de teste visual, `.temp/` no `.gitignore`) se
@@ -171,7 +171,8 @@ depois para a mudança inteira:
                                                           3ª reprovação → parada (tipo d)
 ```
 
-- **A equipe:** `spec-executor` (implementa passo ou correção, e registra a ADR do plano) e
+- **A equipe:** `spec-executor` (implementa passo ou correção, e cria, atualiza ou substitui as
+  ADRs que o passo pede) e
   `spec-reviewer` (revisão final, só JSON). O resto é do lead: ler o código, decidir, escrever o
   plano, conferir cada passo — e, no caminho direto, fazer a mudança inteira sozinho.
 - **Executor, por passo.** Contexto limpo, só o passo. "Arquivos" não é cerca: o que o passo

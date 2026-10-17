@@ -21,7 +21,7 @@ Uma skill de conversa, dois agents. O usuário fala **só** com o lead.
 | Papel | Quem |
 |---|---|
 | Ponto único de contato: lê o código e decide; faz sozinho a mudança pequena; na maior, escreve o plano, confere cada passo, fecha e relata | skill `spec-lead` |
-| Implementa um passo do plano ou a correção dos bloqueantes; registra a ADR do plano | `spec-executor` |
+| Implementa um passo do plano ou a correção dos bloqueantes; cria, atualiza e substitui as ADRs que o passo pede | `spec-executor` |
 | Revisão final, binária, da mudança inteira (segurança quando há `Risco: alto`) | `spec-reviewer` |
 
 Tarefa dada é tarefa cumprida: não há fila de débito, plano secundário nem "melhoria".

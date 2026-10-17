@@ -14,7 +14,7 @@ curta, no fim deste arquivo. -->
 - <1 a 4 linhas do que o usuário ganhou, do ponto de vista dele; não a lista de arquivos>
 - **Arquivos:** <N> criados, <M> modificados (`git diff --staged --stat`)
 - **Specs:** `<arquivo>` (criado | atualizado | subdividido) | nenhuma
-- **ADRs:** <NNN — título> (registrada) | nenhuma
+- **ADRs:** <NNN — título> (registrada | atualizada: <o que mudou> | substituída por NNN) | nenhuma
 - **Também resolvi:** <o que atrapalhava o pedido, em 1 linha cada, `arquivo`> | omita a linha
 - **Riscos fechados:** <o que estava exposto, a quem, `arquivo:linha`> · <como fechou, 1 linha> | omita a linha
 
