@@ -4,6 +4,19 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [2.0.0] - 2026-10-17
+
+### Incompatível
+
+- **skills:** remove as skills spec-rule-create e spec-rule-curate (2d76484)
+
+  `/spec-rule-create` e `/spec-rule-curate` deixam de existir. Para
+  acrescentar uma regra ao projeto, use `/spec-claude`.
+
+### Adicionado
+
+- **behavior:** grava conteúdo com `\` pelo Write/Edit, não pelo Bash (6266a0e)
+
 ## [1.0.0] - 2026-10-17
 
 ### Incompatível
@@ -135,6 +148,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[2.0.0]: https://github.com/elimarcosmorais/specflow/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/elimarcosmorais/specflow/compare/v0.6.0...v1.0.0
 [0.6.0]: https://github.com/elimarcosmorais/specflow/compare/v0.5.2...v0.6.0
 [0.5.2]: https://github.com/elimarcosmorais/specflow/compare/v0.5.1...v0.5.2
