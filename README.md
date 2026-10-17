@@ -1,7 +1,7 @@
 # SpecFlow
 
 > Um framework enxuto de skills e agents do Claude Code para desenvolver software com specs,
-> em que você conversa com **um** agente, é interrompido **uma** vez, e recebe a tarefa
+> em que você conversa com **um** agente, só entra **antes** da execução, e recebe a tarefa
 > **pronta**: implementada, testada, revisada e documentada — sem lista de pendências.
 
 ## Sobre
@@ -31,7 +31,9 @@ você ──► /spec-lead "<pedido>"
       relatório final: pronto, ou parado por um motivo da lista
 ```
 
-Você entra **uma** vez: para aprovar o plano. Depois disso o lead decide, delega, confere e
+Você só entra **antes** da execução: numa rodada de perguntas, cada uma com a opção que o lead
+recomenda (sempre em projeto novo, para a plataforma, a stack e o escopo da primeira entrega), e
+para aprovar o plano. Depois disso o lead decide, delega, confere e
 conserta o que quebra — e só te chama de volta por um dos quatro motivos de uma lista fechada:
 
 | O agente para quando… | Exemplo |
@@ -101,7 +103,7 @@ Dentro do Claude Code, na pasta do seu projeto, descreva a mudança:
 ```
 
 O primeiro é direto: o lead faz ele mesmo — troca a cor, roda os testes que cobrem aquele ponto
-e entrega, sem plano e sem agents. O segundo é planejado: ele pergunta de uma vez só o que é decisão de produto, escreve o plano e
+e entrega, sem plano e sem agents. O segundo é planejado: ele pergunta de uma vez só o que é decisão de produto, com a recomendação dele em cada pergunta, escreve o plano e
 te mostra:
 
 ```

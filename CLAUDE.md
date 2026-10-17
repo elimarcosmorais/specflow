@@ -4,8 +4,9 @@
 
 Um framework enxuto de **skills e agents do Claude Code** para desenvolver software com specs,
 em que o usuário conversa com **um** agente — o lead — e ele distribui o trabalho para agents
-especializados em sessões isoladas. O usuário é interrompido **uma vez**: para aprovar o plano
-principal. Depois disso o lead decide, executa e revisa, e entrega a tarefa **pronta** — não
+especializados em sessões isoladas. O usuário só entra **antes** da execução: numa rodada de
+perguntas, cada uma com a opção recomendada (obrigatória em projeto novo, onde cobre a stack e o
+escopo), e para aprovar o plano. Depois disso o lead decide, executa e revisa, e entrega a tarefa **pronta** — não
 existe débito: o que atrapalha a tarefa é parte dela, o que não atrapalha não existe. Ele só
 volta pelos quatro motivos da lista fechada de paradas. O que descreve o sistema fica nas specs
 vivas em `docs/specs/`, que o agente mantém sozinho.

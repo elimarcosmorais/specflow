@@ -37,12 +37,12 @@ pequena e clara ela mesma faz; na maior, ela escreve o plano, quem escreve códi
   claro, uma passada,                      decisão de produto, contrato novo,
   sem decisão de produto                   área sensível ou vários passos
           │                                             │
-          │                                 1 rodada de perguntas (só produto)
+          │                                 1 rodada de perguntas (produto; fundação no novo)
           │                                             ▼
           │                                  o lead escreve o plano
           │                                             ▼
           │                                ╔════════════════════════╗
-          │                                ║  você aprova (ÚNICO)   ║  --autonomo pula
+          │                                ║  você aprova (ÚLTIMO)  ║  --autonomo pula
           │                                ╚════════════════════════╝
           ▼                                             ▼
    o lead faz sozinho:                   por passo: spec-executor → o lead confere
@@ -68,10 +68,12 @@ pequena e clara ela mesma faz; na maior, ela escreve o plano, quem escreve códi
 Na dúvida entre os dois, é direto: apareceu decisão de produto no meio, o lead promove ali
 mesmo. Critérios completos: `spec-lead`, Etapa 2.
 
-## O usuário é interrompido uma vez
+## O usuário só entra antes da execução
 
-Antes do plano, **uma** rodada de perguntas, só do que é decisão de produto. Depois da
-aprovação, o lead só volta por um dos **quatro motivos da lista fechada de paradas**
+Antes do plano, **uma** rodada de perguntas, do que é decisão de produto, cada pergunta com a
+opção que o lead recomenda. Em projeto novo ela é obrigatória e cobre também a fundação
+(plataforma, stack, banco, onde roda) e a primeira entrega, quando a proposta não as fixa: é a
+decisão de que todo passo depende. Depois vem a aprovação do plano. Depois da aprovação, o lead só volta por um dos **quatro motivos da lista fechada de paradas**
 (`behavior.md`, regra 1):
 
 | Motivo | Exemplo |
@@ -101,8 +103,9 @@ A revisão segue a mesma lógica: só **bloqueante** (um sênior recusaria o PR)
 executor agora. O que um sênior aceitaria, o revisor aceita calado.
 
 **A única exceção é risco:** segredo, credencial, dado pessoal ou de pagamento exposto, acesso
-indevido, dado que pode se corromper — com correção certa, resolve na mesma rodada; resolvido ou
-não, sai no relatório, em linha própria.
+indevido, dado que pode se corromper — com correção certa, resolve na mesma rodada e sai no
+relatório como entrega ("Riscos fechados"); aberto, só quando toda correção muda o que o produto
+entrega, e aí como "Decidir (risco)", com o ataque, o custo de cada opção e a recomendação.
 
 # 2. Os documentos
 
@@ -224,7 +227,8 @@ Documentar ou reorganizar specs não tem comando: o agente faz quando precisa (r
 Executar um plano também não tem comando próprio: quem executa é o lead, na mesma rodada em que
 o plano foi aprovado, ou `/spec-lead continuar`.
 
-**Próximo passo de um plano:** `rascunho` → o usuário revisa e aprova, e o lead segue na hora;
+**Próximo passo de um plano:** `rascunho` → o usuário revisa e aprova, e o lead segue na hora
+(rascunho de projeto novo parado pelo design system → `/spec-lead continuar`, depois dele);
 `aprovado` com passo pendente → `/spec-lead continuar`; plano sumiu de `docs/plans/` → foi
 executado por inteiro: commit, se houver algo em stage (`git diff --staged --stat`).
 
