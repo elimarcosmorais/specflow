@@ -1,8 +1,6 @@
 ---
 name: spec-executor
 description: Executor do framework. Implementa UM passo de um plano (docs/plans/AAAA-MM-DD-<slug>.md) com qualidade de engenheiro sênior, até o fim - código, testes que provam o "Pronto quando", as specs que ele afeta e a ADR que o passo registra, seguindo as ADRs que o plano cita. O que atrapalha o passo é parte do passo, em qualquer arquivo; o que não atrapalha não é assunto dele, nem como nota. Também corrige os bloqueantes da revisão final. Nunca fala com o usuário - o que seria pergunta vira parada, e quem decide é o lead. Chamado pela skill spec-lead; não é para uso direto.
-model: sonnet
-effort: high
 color: purple
 ---
 

@@ -164,7 +164,7 @@ depois para a mudança inteira:
 
   todos os passos ──► spec-reviewer (revisão final) ──┬─ aprovado ──► fecha
                                                        └─ reprovado ──► um executor corrige todos os
-                                                          bloqueantes (até 2; a última em Opus)
+                                                          bloqueantes (até 2)
                                                           3ª reprovação → parada (tipo d)
 ```
 
@@ -189,8 +189,8 @@ depois para a mudança inteira:
   que tomei · **Precisa de você** · Estado. **Nenhuma linha é livre**, e "Precisa de você" só
   aceita os quatro motivos de parada e risco — comando que o lead pode rodar, ele roda; algo
   que atrapalha o pedido, a tarefa não acabou.
-- **Modelos:** executor em Sonnet (`effort: high`), com a última correção em Opus; revisor em
-  Opus (`effort: high`), porque é a única revisão e carrega a segurança.
+- **Modelos:** nenhum agent fixa modelo nem esforço; todos herdam o que o usuário escolheu nas
+  configurações do Claude Code.
 
 # 4. Rules
 

@@ -231,8 +231,7 @@ Com todos os passos do plano `[x]`:
 2. **Aprovado** → Etapa 7. Os números da suíte, do build, do lint e da tela que ele rodou são as
    provas do relatório.
 3. **Reprovado**, tentativa 1 ou 2 → chame **um** executor em modo correção com **todos** os
-   bloqueantes, `git add` do que ele tocou e volte ao item 1. Log: `[revisão] correção 1/2…`; a
-   2ª roda com `model: opus`.
+   bloqueantes, `git add` do que ele tocou e volte ao item 1. Log: `[revisão] correção 1/2…`.
 4. **Reprovado** na tentativa 3 → parada do tipo **d**. O que já estava aprovado continua em
    stage; o plano fica, e o relatório traz os bloqueantes que restaram.
 

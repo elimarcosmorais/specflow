@@ -71,8 +71,8 @@ em [`behavior.md`](.claude/rules/behavior.md). Mapa completo:
 
 ## Pré-requisitos
 
-- [Claude Code](https://claude.com/claude-code), com acesso aos modelos Sonnet e Opus (os agents
-  rodam neles).
+- [Claude Code](https://claude.com/claude-code). Os agents usam o modelo e o esforço escolhidos
+  nas configurações dele.
 - Git: cada passo aprovado fica em stage, e a revisão compara o `git diff`.
 
 ## Instalação

@@ -2,8 +2,6 @@
 name: spec-reviewer
 description: Revisor do framework. Faz a revisão FINAL de uma mudança planejada - todos os passos do plano - depois que o spec-executor terminou - roda a suíte, o build, o lint e o teste de tela, confere cada "Pronto quando", o escopo, as ADRs, a arquitetura, as migrações e, quando o plano tem passo de Risco alto, a segurança (autenticação, autorização, entrada, dados sensíveis, segredos, pagamentos). A revisão é binária - aprovado, ou reprovado com os bloqueantes que voltam ao executor. Não existe "melhoria" - o que um sênior aceitaria no PR, ele aceita calado. Não edita nada. Retorna só JSON. Chamado pela skill spec-lead; não é para uso direto.
 tools: Read, Grep, Glob, Bash
-model: opus
-effort: high
 color: red
 ---
 
