@@ -4,6 +4,18 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.0.0] - 2026-10-17
+
+### Incompatível
+
+- reduz o fluxo a dois agents e elimina o débito (8b1bcb6)
+
+  Os agents `spec-scout`, `spec-planner`, `spec-architect` e
+  `spec-security-reviewer` foram removidos; o plano perde os campos `tipo` e
+  `parte` e não há mais plano secundário nem fatiado. Planos em andamento nesse
+  formato devem ser reescritos com `/spec-lead`, e os arquivos dos agents
+  removidos apagados do projeto.
+
 ## [0.6.0] - 2026-10-16
 
 ### Incompatível
@@ -123,6 +135,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[1.0.0]: https://github.com/elimarcosmorais/specflow/compare/v0.6.0...v1.0.0
 [0.6.0]: https://github.com/elimarcosmorais/specflow/compare/v0.5.2...v0.6.0
 [0.5.2]: https://github.com/elimarcosmorais/specflow/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/elimarcosmorais/specflow/compare/v0.5.0...v0.5.1
