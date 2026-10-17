@@ -33,7 +33,7 @@ Fronteiras:
   `docs/architecture.md`, `docs/adr/README.md`, `docs/design-system.md`).
 - **Sincronia de fato é do `/spec-lead`**, não sua. O comando de teste que mudou, a versão da
   stack, a pasta ou camada nova, a ferramenta de teste visual instalada: o lead corrige sozinho,
-  num item de débito, porque sai de um arquivo do repo (rule `docs.md`, "CLAUDE.md: fato é
+  na própria tarefa que o tornou falso, porque sai de um arquivo do repo (rule `docs.md`, "CLAUDE.md: fato é
   livre, regra é do usuário"). Você é para o que **exige o usuário**: criar o arquivo do zero,
   auditar o conjunto, enxugar, e toda **regra** nova — convenção, anti-padrão, "sempre"/"nunca".
   Rodar com o arquivo já em dia é esperado e barato: você confirma as fontes e sai.

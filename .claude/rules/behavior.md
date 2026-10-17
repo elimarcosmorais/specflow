@@ -28,32 +28,29 @@ que o humano aprovou. Devolver ao usuário o que o plano já autorizou não é c
 falhando. Plano que não dava para cumprir é defeito do plano: pare e diga **qual passo** falta,
 em vez de entregar o resto e relatar a lacuna.
 
-## 2. Nada volta como tarefa
+## 2. A tarefa é a entrega: não existe débito
 
-A mudança que você entrega é a pedida. O problema que aparecer **fora** dela tem três destinos,
-nesta ordem — e não existe um quarto:
+**Tarefa dada é tarefa cumprida.** Pronto é o pedido funcionando, testado, com as specs em dia e
+a suíte, o build e o lint inteiros verdes. Não existe "pronto, mas ficou X": o que falta para o
+pedido funcionar **é** o pedido. Só há duas saídas — **pronto**, ou **parado** por um dos quatro
+motivos da regra 1.
 
-1. **Corrige agora.** Cabe no mesmo diff, tem uma correção certa só, e o teste, o build ou o
-   lint que a tarefa já roda prova que entrou verde. Informa no relatório como corrigido.
-2. **Vira plano secundário.** Não cabe no diff, mas ainda tem uma correção certa e dá para
-   provar. Quem coordena escreve o plano secundário e o executa, **sem pedir aprovação**.
-   **Sem teto:** dez problemas → dez resolvidos, em lotes se preciso.
-3. **Vira proposta.** Só quando o item bate num motivo da lista de paradas da regra 1. Proposta
-   é: o que está errado (`arquivo:linha`), o que você recomenda, e o comando pronto para
-   resolver. Nunca "achei X, se vira".
+O problema que aparecer pelo caminho tem só duas leituras:
 
-**"Deixei para você", "fica a sugestão" e "vale revisar depois" não são destinos.** Item que
-cabe no 1 ou no 2 e mesmo assim aparece no relatório é falha da triagem, não cuidado.
+1. **Atrapalha a tarefa** — quebra o que você está fazendo, impede o teste de passar, é
+   pré-requisito do pedido, ou é algo que o próprio pedido tornou falso (um chamador, um teste,
+   uma spec, um fato do `CLAUDE.md`) → **é a tarefa**. Resolva, no arquivo que precisar, e diga
+   numa linha o que foi.
+2. **Não atrapalha** → **não é assunto seu**. Não corrige, não anota, não relata, nem como nota.
+   Não existe campo de "notei", fila, plano para depois nem "fica a sugestão".
 
-**O que não tem destino não existe.** Preferência de estilo, refatoração de oportunidade,
-"poderia ficar mais claro", TODO alheio antigo, sujeira que não atrapalha: não corrige e **não
-relata, nem como nota**. Entra na triagem só o que alguém **sente** se ficar como está — quebra,
-risco de segurança ou de dados, contrato errado, ou trabalho que o usuário ia pedir de qualquer
-jeito.
+**Revisão não gera trabalho.** O revisor aprova ou devolve o que impede o PR de entrar. "Melhoria",
+"sugestão" e "vale revisar depois" não existem: o que um sênior aceitaria no PR, ele aceita calado.
 
-**Risco sempre sobe.** Segredo, credencial, dado pessoal ou dado de pagamento expostos, caminho
-para acesso indevido, dado que pode corromper ou apagar: resolve pelo destino 1 ou 2 quando dá,
-e **sempre aparece no relatório**, resolvido ou não, em linha própria.
+**A única exceção é risco.** Segredo, credencial, dado pessoal ou de pagamento expostos, caminho
+para acesso indevido, dado que pode se corromper ou se apagar: tem uma correção certa → resolva
+na mesma rodada, é o único caso em que ela cresce além do pedido. Resolvido ou não, ele **sempre
+aparece no relatório**, em linha própria, com `arquivo:linha`.
 
 ## 3. "Funciona" só com evidência
 
@@ -80,7 +77,7 @@ acabou de escrever, `push --force`, commit e push, migração de schema em base 
 dados em massa.
 
 **Não pedem confirmação**, porque o fluxo já as autoriza: mexer nas specs e no
-`docs/architecture.md` (rule `docs.md`), criar e executar plano secundário (regra 2), corrigir o
+`docs/architecture.md` (rule `docs.md`), resolver o que atrapalha a tarefa (regra 2), corrigir o
 erro verificável numa ADR `proposto` ou `aceito`, apagar o plano que acabou de ser executado por
 inteiro, e desfazer o que a própria rodada acabou de escrever quando ela deixou o gate vermelho.
 

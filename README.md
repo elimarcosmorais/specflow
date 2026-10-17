@@ -1,8 +1,8 @@
 # SpecFlow
 
 > Um framework enxuto de skills e agents do Claude Code para desenvolver software com specs,
-> em que você conversa com **um** agente, é interrompido **uma** vez, e o resto o time de agents
-> resolve sozinho.
+> em que você conversa com **um** agente, é interrompido **uma** vez, e recebe a tarefa
+> **pronta**: implementada, testada, revisada e documentada — sem lista de pendências.
 
 ## Sobre
 
@@ -18,24 +18,21 @@ O SpecFlow inverte isso. **Decidir é o trabalho do agente, não um risco a evit
 você ──► /spec-lead "<pedido>"
             │
             ▼
-      ┌─────────────┐   mapeia o código ─► spec-scout
-      │    LEAD     │   escreve o plano ─► spec-planner
-      │  (a skill)  │   implementa ──────► spec-executor
-      │             │   revisa ──────────► spec-reviewer / spec-security-reviewer
-      │ decide,     │   registra ADR ────► spec-architect
-      │ nunca       │
-      │ escreve     │   débito achado ───► plano secundário, sem te perguntar ──┐
-      └─────────────┘                                                           │
-            ▲                                                                   │
-            └──────────────────── mesmo ciclo ──────────────────────────────────┘
+      ┌─────────────┐   lê o código e decide
+      │    LEAD     │
+      │  (a skill)  │   pequeno e claro ──► faz ele mesmo e prova
+      │             │
+      │             │   com plano: cada passo ──► spec-executor (sessão limpa, até o fim)
+      │             │              no fim ──────► spec-reviewer: aprova, ou devolve
+      │             │                             os bloqueantes ao executor
+      └─────────────┘
             │
             ▼
-      relatório final
+      relatório final: pronto, ou parado por um motivo da lista
 ```
 
-Você entra **uma** vez: para aprovar o plano. Depois disso o lead decide, delega, revisa,
-conserta o que quebra e resolve o débito que aparece — e só te chama de volta por um dos quatro
-motivos de uma lista fechada:
+Você entra **uma** vez: para aprovar o plano. Depois disso o lead decide, delega, confere e
+conserta o que quebra — e só te chama de volta por um dos quatro motivos de uma lista fechada:
 
 | O agente para quando… | Exemplo |
 |---|---|
@@ -47,15 +44,15 @@ motivos de uma lista fechada:
 Fora dessa lista, ele decide e segue — e tudo o que decidiu sai no relatório, em "Decisões que
 tomei". É ali que você confere de manhã, em vez de ser acordado.
 
-**Débito não vira recado.** Problema achado fora do escopo tem três destinos: o executor corrige
-junto quando cabe no mesmo diff; o que não cabe vira **plano secundário**, que o lead escreve e
-executa sem pedir nada a você; e só o que bate na lista de paradas chega ao relatório — como
-proposta pronta, com recomendação e comando. **Não há teto de itens:** dez problemas, dez
-resolvidos.
+**Tarefa dada é tarefa cumprida.** Não existe débito. O problema que aparece pelo caminho ou
+atrapalha a tarefa — e aí é parte dela, e o executor resolve — ou não atrapalha, e não é assunto
+de ninguém: não vira nota, fila nem plano para depois. A revisão é binária: aprova, ou devolve
+o que um sênior recusaria num PR; "melhoria" e "sugestão" não existem. A única coisa que sobe
+ao relatório sem ser pedida é **risco** — segredo, dado pessoal ou de pagamento exposto.
 
 E o plano só é apagado quando **acaba**: todo checkbox marcado, suíte, build e lint inteiros
-verdes, sem um único teste pulado. Faltou prova, o lead monta a precondição e roda de novo;
-quebrou, ele conserta. Plano com passo pendente fica, e `/spec-lead continuar` retoma.
+verdes, sem um único teste pulado, e a revisão final aprovada. Faltou prova, o lead monta a
+precondição e roda de novo; quebrou, ele conserta. Plano com passo pendente fica, e `/spec-lead continuar` retoma.
 
 O que sobrevive à mudança é a documentação viva em `docs/`, que o agente mantém sozinho, junto
 com o código:
@@ -103,17 +100,18 @@ Dentro do Claude Code, na pasta do seu projeto, descreva a mudança:
 /spec-lead "quero que o usuário faça login com o Google"
 ```
 
-O primeiro é direto: o lead manda um executor implementar, um revisor conferir, e entrega. O
-segundo é planejado: ele pergunta de uma vez só o que é decisão de produto, manda escrever o
-plano e te mostra:
+O primeiro é direto: o lead faz ele mesmo — troca a cor, roda os testes que cobrem aquele ponto
+e entrega, sem plano e sem agents. O segundo é planejado: ele pergunta de uma vez só o que é decisão de produto, escreve o plano e
+te mostra:
 
 ```
-Plano: docs/plans/2026-10-16-login-com-google.md · 6 passos · 1 parte · risco alto no passo 3
+Plano: docs/plans/2026-10-16-login-com-google.md · 6 passos · risco alto no passo 3
 Aprovado? Respondo a ajuste e executo em seguida; não preciso de você até o relatório.
 ```
 
-Aprovou, ele executa tudo — passo a passo, com revisão independente, ADRs registradas, specs
-atualizadas e os débitos resolvidos em planos secundários — e volta com o relatório.
+Aprovou, ele executa tudo — um executor por passo, a prova de cada um conferida, ADRs
+registradas, specs atualizadas e uma revisão independente da mudança inteira no fim — e volta
+com o relatório.
 
 Vai dormir e quer o sistema pronto de manhã? Pule até a aprovação:
 
@@ -130,22 +128,17 @@ foi commitado, `/spec-release`.
 
 | Skill | Faz |
 |---|---|
-| `/spec-lead` | Ponto único de contato: entende, decide, delega, executa, resolve o débito e entrega o relatório |
+| `/spec-lead` | Ponto único de contato: lê o código e decide; a mudança pequena faz sozinha, a maior planeja, delega, confere e entrega o relatório |
 
-Ela coordena seis agents, cada um em sessão isolada com contexto limpo:
+Na mudança planejada, ela coordena dois agents, cada um em sessão isolada com contexto limpo:
 
 | Agent | Faz |
 |---|---|
-| `spec-scout` | Lê o projeto e devolve o mapa do que o pedido toca; não escreve nada |
-| `spec-planner` | Escreve o plano principal, as partes e os planos secundários |
-| `spec-executor` | Implementa um passo, uma correção ou um item avulso, com os testes que provam |
-| `spec-reviewer` | Roda os testes e revisa o diff do passo; não edita nada |
-| `spec-security-reviewer` | Nos passos de risco alto, procura como alguém abusaria do código |
-| `spec-architect` | Registra a ADR de uma decisão já tomada e mantém o índice |
+| `spec-executor` | Implementa um passo do plano ou a correção dos bloqueantes, até o fim: código, testes que provam, specs e a ADR que o plano registra |
+| `spec-reviewer` | Revisão final da mudança inteira: roda a suíte, o build e o lint, confere o plano e, com risco alto, a segurança; aprova ou reprova, sem "melhoria" |
 
-Na revisão, só o que um sênior recusaria num PR volta para correção. O resto vira **melhoria**,
-e melhoria não é pendência: entra na fila de débito e é feita num plano secundário. O que é
-decisão de produto, e só isso, chega a você.
+Na revisão, só o que um sênior recusaria num PR volta para correção; o resto ele aceita calado.
+O que é decisão de produto, e só isso, chega a você.
 
 **Utilitários:**
 

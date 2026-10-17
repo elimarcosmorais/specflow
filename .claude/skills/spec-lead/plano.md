@@ -1,7 +1,5 @@
 ---
-status: rascunho      # rascunho | aprovado   (secundário já nasce aprovado)
-tipo: principal       # principal | secundário
-parte: 1 de 1         # só quando o plano foi fatiado
+status: rascunho      # rascunho | aprovado
 ---
 
 # <Título da mudança>
@@ -10,10 +8,10 @@ parte: 1 de 1         # só quando o plano foi fatiado
 - **ADRs que se aplicam:** [ADR NNN](../adr/NNN-<titulo>.md) | nenhuma
 - **Specs afetadas:** `docs/specs/<assunto>.md` (cria | altera) · `docs/architecture.md` (altera) | nenhuma
 
-<!-- LLM-ONLY: plano é temporário — o /spec-lead o executa e o apaga. O que vale depois da
-mudança (como funciona) vai para as specs afetadas, nos passos. Seção que não se aplica é
-REMOVIDA, não fica "N/A". Principal cabe em ~1 página (até 3 na mudança grande); secundário, em
-meia. Mais de 8 passos → fatie em partes, cada uma entregável sozinha. -->
+<!-- LLM-ONLY: plano é temporário — o /spec-lead o escreve, o executa e o apaga. O que vale
+depois da mudança (como funciona) vai para as specs afetadas, nos passos. Seção que não se
+aplica é REMOVIDA, não fica "N/A". Cabe em ~1 página (até 3 na mudança grande). Mudança grande
+é um plano com mais passos, nunca vários planos. -->
 
 ## 1. Problema e objetivo
 
@@ -41,7 +39,8 @@ nenhum passo, e o relatório o recolhe para o usuário. Só o que muda entra. --
 
 <!-- LLM-ONLY: só decisão não óbvia — a que o usuário respondeu, ou a que o lead tomou e foge do
 padrão do código. O que o código, uma spec ou uma ADR já respondem não entra. ADR só para
-decisão que vale para o projeto todo; quem a escreve é o spec-architect, antes do passo 1. -->
+decisão que vale para o projeto todo; o executor a registra no primeiro passo que depende dela
+(Arquivos: `docs/adr/NNN-<titulo>.md` e `docs/adr/README.md`). -->
 
 ## 4. Telas
 
@@ -74,12 +73,14 @@ desfaz cada uma, ou "irreversível: <plano>").>
   - [ ] …
 
 <!-- LLM-ONLY: passos na ordem de execução; cada um entregável e testável sozinho, numa passada.
-"Pronto quando" só tem o que um agente prova — teste com resultado concreto, comando, trecho da
-spec; nunca "funciona". Todo CA que não é "(manual: …)" aparece em algum "Pronto quando", e toda
-spec afetada é atualizada pelo passo que muda aquele comportamento. "Risco: alto" só no passo
-que toca autenticação, autorização, pagamentos, segredos ou dados pessoais: nele o lead chama
-também a revisão de segurança. Projeto sem suíte naquela camada → o "Pronto quando" descreve a
-conferência mecânica (behavior.md, regra 3), nunca fica sem prova. -->
+"Arquivos" é onde o passo deve mexer, não uma cerca: o que ele precisar a mais para funcionar
+(chamador, teste, config) o executor toca e diz. "Pronto quando" só tem o que um agente prova —
+teste com resultado concreto, comando, trecho da spec; nunca "funciona". Todo CA que não é
+"(manual: …)" aparece em algum "Pronto quando", e toda spec afetada é atualizada pelo passo que
+muda aquele comportamento. "Risco: alto" só no passo que toca autenticação, autorização,
+pagamentos, segredos ou dados pessoais: com ele, a revisão final aplica o checklist de
+segurança. Projeto sem suíte naquela camada → o "Pronto quando" descreve a conferência mecânica
+(behavior.md, regra 3), nunca fica sem prova. -->
 
 ## 7. Riscos e dúvidas
 

@@ -14,7 +14,7 @@ direta e não repete o que já está nas specs e nos planos.
 # Objetivo
 
 Registrar **uma decisão de arquitetura transversal** (que vale para o projeto todo) em um
-arquivo próprio. Os planos, o executor e os revisores tratam ADRs `aceito` como **restrições**:
+arquivo próprio. Os planos, o executor e o revisor tratam ADRs `aceito` como **restrições**:
 não reabrem o que uma ADR já decidiu.
 
 Saída: `docs/adr/NNN-<titulo>.md`, seguindo o [template](template.md), e a linha dela no
@@ -128,7 +128,7 @@ e faça no máximo **2 rodadas**. Se o usuário já decidiu algo, não pergunte 
 ## Etapa 5 — Atualizar a origem
 
 Se a origem for um plano, acrescente a ADR nova ao cabeçalho "ADRs que se aplicam" dele (assim
-o executor e os revisores a leem). Não mexa em mais nada do plano. O design system e as specs
+o executor e o revisor a leem). Não mexa em mais nada do plano. O design system e as specs
 não são editados: a spec que explica o porquê aponta para a ADR quando for atualizada.
 
 ## Etapa 6 — Resumo
