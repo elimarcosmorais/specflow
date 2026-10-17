@@ -4,6 +4,14 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [2.1.0] - 2026-10-17
+
+### Adicionado
+
+- **spec-lead:** pergunta a fundação e o escopo em projeto novo (26a0b94)
+- **behavior:** separa risco fechado de risco aberto no relatório (b522caa)
+- **agents:** herda o modelo e o esforço das configurações do usuário (82d7dae)
+
 ## [2.0.0] - 2026-10-17
 
 ### Incompatível
@@ -148,6 +156,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[2.1.0]: https://github.com/elimarcosmorais/specflow/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/elimarcosmorais/specflow/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/elimarcosmorais/specflow/compare/v0.6.0...v1.0.0
 [0.6.0]: https://github.com/elimarcosmorais/specflow/compare/v0.5.2...v0.6.0
