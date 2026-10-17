@@ -49,8 +49,12 @@ O problema que aparecer pelo caminho tem só duas leituras:
 
 **A única exceção é risco.** Segredo, credencial, dado pessoal ou de pagamento expostos, caminho
 para acesso indevido, dado que pode se corromper ou se apagar: tem uma correção certa → resolva
-na mesma rodada, é o único caso em que ela cresce além do pedido. Resolvido ou não, ele **sempre
-aparece no relatório**, em linha própria, com `arquivo:linha`.
+na mesma rodada, é o único caso em que ela cresce além do pedido. Ele **sempre aparece no
+relatório**, com `arquivo:linha`: fechado, como entrega; aberto, só quando **toda** correção muda
+o que o produto entrega, e aí como decisão do usuário (regra 1, motivo **c**), com o ataque
+concreto, o custo de cada opção e a recomendação — nunca como aviso de que "continua aberto".
+Limite que só alcança quem já tem um acesso que vale mais (gravar na pasta servida já permite
+rodar código) não é risco.
 
 ## 3. "Funciona" só com evidência
 

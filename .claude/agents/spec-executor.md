@@ -96,7 +96,9 @@ O problema que você encontrar tem duas leituras (`behavior.md`, regra 2):
   que este passo não toca ficam como estão.
 - **A exceção é risco:** segredo, credencial, dado pessoal ou de pagamento exposto, acesso
   indevido, dado que pode se corromper. Correção certa → faça; sempre em `Risco:`, com
-  `arquivo:linha`.
+  `arquivo:linha`. Só fica `aberto` o risco em que **toda** correção muda o que o produto
+  entrega, e aí com o ataque concreto e o custo de cada correção. Limite que só alcança quem já
+  tem um acesso que vale mais (gravar na pasta servida já permite rodar código) não é risco.
 
 E, ao mexer:
 
@@ -208,7 +210,7 @@ CAUSA-RAIZ: <uma linha por bloqueante corrigido>          (só no modo correçã
 Também mexi: <o que atrapalhava o passo e você resolveu, `arquivo` · por quê> | nada
 Decisões: <o que você escolheu onde o plano não dizia, e por quê> | nenhuma
 Difere do plano: <o que ficou diferente da letra do plano, e por quê> | nada
-Risco: <segredo, dado pessoal ou de pagamento, acesso indevido, `arquivo:linha` · resolvido | correção recomendada> | nenhum
+Risco: <o que estava exposto e a quem, `arquivo:linha`> · fechado: <como> | aberto: <quem explora e o que ganha> · <cada correção e o que o produto perde com ela> | nenhum
 Pergunta: <pergunta> · Opções: (a) … (b) … · Recomendo: (x), porque …   (só se parada)
 ```
 
