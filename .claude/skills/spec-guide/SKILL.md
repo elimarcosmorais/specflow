@@ -216,8 +216,6 @@ depois para a mudança inteira:
 | Lançar uma versão (SemVer, CHANGELOG, tag, GitHub Release), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |
 | Criar, auditar ou enxugar o CLAUDE.md, ou acrescentar uma regra a ele (e garantir `.temp/` no `.gitignore`) | `/spec-claude [pasta]` |
-| Definir as convenções de um tema (banco, erros HTTP…) | `/spec-rule-create "<tema>"` |
-| Decidir se algo vira regra, ou auditar as rules | `/spec-rule-curate "<item>"` · `/spec-rule-curate auditar` |
 | Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/spec-windows-mcp [ferramentas extras]` |
 | Deixar o agente ver e operar páginas web num navegador (print, clique, console) | `/spec-playwright-mcp [headed]` |
 | Trazer a versão nova do SpecFlow (skills, agents, rules) para o projeto | `/spec-upgrade [tag, branch ou commit]` |
@@ -279,6 +277,9 @@ docs/
   sugestões sempre acha, e cada passagem de bastão é um lugar para deixar recado. No lugar
   entraram **tarefa dada é tarefa cumprida** (`behavior.md`, regra 2), a **revisão final
   binária** e a **lista fechada de paradas**.
+- Da v1.0, removidas por falta de uso: as skills `spec-rule-create` (rule com as convenções de
+  um tema) e `spec-rule-curate` (decidir se um item vira regra, auditar as rules). Regra nova
+  vai pela `/spec-claude`.
 
 Não reintroduza nenhum deles sem um motivo concreto. Em especial: **regra nova que crie mais um
 motivo para o agente parar e perguntar** vai contra a `behavior.md`, regra 1; e **campo,

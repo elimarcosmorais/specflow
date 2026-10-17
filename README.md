@@ -151,8 +151,6 @@ O que é decisão de produto, e só isso, chega a você.
 | `/spec-release` | Lançar uma versão: calcula o número pelos commits, atualiza o `CHANGELOG.md`, cria a tag e o GitHub Release |
 | `/spec-readme` | Gerar ou completar o `README.md` |
 | `/spec-claude` | Gerar, auditar ou enxugar o `CLAUDE.md`, e acrescentar uma regra a ele (e pôr `.temp/` no `.gitignore`). Manter os **fatos** dele em dia — comando de teste, stack, pastas — é do próprio lead, sem você |
-| `/spec-rule-create` | Definir as convenções de um tema (banco, erros HTTP…) em uma rule |
-| `/spec-rule-curate` | Decidir se um item vira regra, e auditar as rules |
 | `/spec-windows-mcp` | Configurar o Windows-MCP para o agente ver e operar a tela (só Windows) |
 | `/spec-playwright-mcp` | Configurar o Playwright MCP para o agente ver e operar páginas web |
 | `/spec-upgrade` | Trazer as skills, os agents e as rules da versão nova do SpecFlow, preservando o que o projeto editou ou criou |

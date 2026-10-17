@@ -1,6 +1,6 @@
 ---
 name: spec-claude
-description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão, e em projeto com interface, como o agente confere uma mudança de tela (ex.: Dusk no Laravel, Playwright na web, Windows-MCP no desktop Windows) - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e grava direto, sem pedir confirmação: cria o CLAUDE.md se não existe ou, se existe, enxuga e complementa com edições pontuais. Também garante que `.temp/` (material de consulta temporário, não versionado) está no .gitignore do projeto. No fim, relata o que fez e a fonte de cada fato. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". A sincronia de rotina de um fato que o repo responde (comando de teste que mudou, pasta nova) é do /spec-lead, que a resolve sozinho; esta skill é para o que exige o usuário: o arquivo do zero, a auditoria do conjunto e toda regra nova. Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md), convenções de um tema inteiro (spec-rule-create), decidir se um item solto vira regra (spec-rule-curate) nem settings, hooks ou permissões.
+description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão, e em projeto com interface, como o agente confere uma mudança de tela (ex.: Dusk no Laravel, Playwright na web, Windows-MCP no desktop Windows) - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e grava direto, sem pedir confirmação: cria o CLAUDE.md se não existe ou, se existe, enxuga e complementa com edições pontuais. Também garante que `.temp/` (material de consulta temporário, não versionado) está no .gitignore do projeto. No fim, relata o que fez e a fonte de cada fato. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". A sincronia de rotina de um fato que o repo responde (comando de teste que mudou, pasta nova) é do /spec-lead, que a resolve sozinho; esta skill é para o que exige o usuário: o arquivo do zero, a auditoria do conjunto e toda regra nova. Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md) nem settings, hooks ou permissões.
 argument-hint: "[pasta do projeto (opcional; padrão: raiz do repositório)]"
 ---
 
@@ -27,8 +27,7 @@ Fronteiras:
   **não as repete**: ele só traz o que é específico deste projeto.
 - **Rules por área** (`.claude/rules/<tema>.md`, com `paths`) guardam as convenções de uma área só
   (banco, HTTP, um módulo) e só carregam ao tocar os arquivos dela. O `CLAUDE.md` carrega sempre,
-  então fica com o transversal. Tema inteiro → `/spec-rule-create`; um item novo, depois que
-  o `CLAUDE.md` existe → `/spec-rule-curate`.
+  então fica com o transversal. A rule por área que o projeto já tem se respeita, não se copia.
 - **Specs, arquitetura, ADRs e design system** se apontam, não se copiam (`docs/specs/README.md`,
   `docs/architecture.md`, `docs/adr/README.md`, `docs/design-system.md`).
 - **Sincronia de fato é do `/spec-lead`**, não sua. O comando de teste que mudou, a versão da
@@ -72,8 +71,6 @@ A pasta do projeto é `$ARGUMENTS`; vazio → a raiz do repositório. Procure `C
   - prosa, história da empresa, "código limpo", agradecimentos → corte;
   - regra frouxa → reescreva objetiva (Regra 3);
   - regra que já está em `.claude/rules/` (`behavior.md` ou rule por área) → corte (não duplique);
-  - bloco de convenções de uma área só, sem rule → corte e liste o tema na Etapa 6 (não crie a
-    rule: é da `/spec-rule-create`);
   - comando ou versão que não bate com o repo → corrija;
   - ferramenta citada que o repo não tem mais (servidor MCP fora do `.mcp.json`, pacote de teste
     fora do manifest) → a regra sai, e a ferramenta vira recomendação na Etapa 6. O `CLAUDE.md`
@@ -144,8 +141,7 @@ identificadores nunca se traduzem.
 3. **Preencha** cada `{{PLACEHOLDER}}` só com fatos que têm fonte (Regra 1), em bullets curtos.
 4. **Apague todos os comentários-guia** `<!-- -->`: são instrução para você, não para o agente.
 5. **Conte as linhas.** Passou de ~80 → corte prosa, regra óbvia da linguagem e seção fraca antes
-   de gravar. Convenções de uma área só também saem (vão para uma rule por área; liste o tema na
-   Etapa 6).
+   de gravar.
 
 ## Etapa 5 — Gravar
 
@@ -181,7 +177,6 @@ Comandos extraídos de: <arquivos> (não executados)
 Varredura de {{ }} e <!-- -->: limpa
 .gitignore: .temp/ <já ignorado | acrescentado | sem repositório git>
 behavior.md: <presente | ausente — copie a .claude/ do framework para o projeto>
-Convenções de área fora do CLAUDE.md: <tema → /spec-rule-create "<tema>"> (ou: nenhuma)
 Teste visual: <ferramenta (no repo | a instalar → /spec-lead "instalar <ferramenta>")> (ou: sem interface)
 MCP de tela: <servidor ativo | declarado mas inativo nesta sessão → /spec-windows-mcp ou /spec-playwright-mcp (reativa e verifica) | a configurar → /spec-playwright-mcp (web) ou /spec-windows-mcp (desktop Windows), que já o registra no CLAUDE.md> (ou: sem interface)
 Próximo passo: revisar o CLAUDE.md (git diff CLAUDE.md) e commitar → /spec-semantic-commit
