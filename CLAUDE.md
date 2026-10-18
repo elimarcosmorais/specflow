@@ -72,3 +72,6 @@ criar skills e documentos, e atualize-a quando o fluxo mudar.
 - Agents: `.claude/agents/<nome-do-agent>.md`
 - Rules: `.claude/rules/<nome>.md` (`behavior.md`, as regras de comportamento; `docs.md`, onde
   cada documento mora e quem mexe nele)
+- Settings: `.claude/settings.json`, só com as regras `permissions.ask` de que as rules dependem
+  (ex.: segurar o `RunAs` da regra 5). No projeto o arquivo é dele: a `spec-upgrade` só
+  acrescenta as regras que faltam, e o `classificar.sh` o deixa fora da cópia.

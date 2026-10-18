@@ -93,9 +93,12 @@ saída, então grave-a num log e leia-o depois (é a evidência da regra 3).
 **O diálogo é do humano, e tem prazo.** Ele nasce no desktop seguro, em integridade alta: nenhum
 MCP de tela o vê nem clica nele — não tente, nem com `PromptOnSecureDesktop=0`, porque o UIPI
 barra input sintético num processo de integridade alta. Ele expira em ~2 minutos, e expirar
-conta como recusa: a sessão tem como notificar (ex.: `PushNotification`) → avise ao elevar, para
-quem acompanha de longe chegar a tempo. Chame com timeout de 300000 ms, senão o default de 2
-minutos da ferramenta corta junto com o diálogo.
+conta como recusa. Por isso o `.claude/settings.json` do framework tem regras `ask` que
+**seguram** todo comando com `RunAs` antes de ele rodar, em qualquer modo de permissão e também
+num subagent: o Claude Code chama o usuário (no desktop e, com o Remote Control, no celular) e
+espera sem prazo, e o UAC só abre depois que ele aprova, já na frente do PC. Recusar esse pedido
+é UAC não autorizado. Chame com timeout de 300000 ms, senão o default de 2 minutos da ferramenta
+corta junto com o diálogo.
 
 O `Start-Process` **lança** quando ninguém autoriza. Sem o `try/catch`, o agente lê "ninguém
 autorizou" como erro do comando e vai procurar defeito no código:
@@ -115,7 +118,9 @@ que entra no relatório, com o comando pronto para o usuário rodar.
 (`runas /savecred`) e não crie tarefa agendada elevada: tarefa cuja ação está num caminho
 gravável pelo usuário é escalada de privilégio permanente, e a que aponta para saída de build
 (`bin/`, `dist/`) é a pior delas. Também não troque o alvo do teste por um caminho que não passa
-pelo UAC: aí ele fica verde provando outra coisa, que é o teste pulado com outra roupa. Precisa
+pelo UAC: aí ele fica verde provando outra coisa, que é o teste pulado com outra roupa. Nem
+escreva o `RunAs` de outro jeito (variável, string montada, codificada) para não casar com a
+regra `ask`, nem a tire do settings: é ela que traz o humano a tempo. Precisa
 de admin **sem** o gesto humano com frequência → é decisão do usuário, não atalho de
 execução.
 

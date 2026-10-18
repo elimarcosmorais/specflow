@@ -247,7 +247,9 @@ CLAUDE.md, README.md, CHANGELOG.md (só depois da primeira versão)
 │   consulta ou script quando a skill precisa — ex.: plano.md e relatorio.md na spec-lead,
 │   uso.md e verificar.py nas skills de MCP)
 ├── agents/spec-executor.md, spec-reviewer.md
-└── rules/behavior.md, docs.md (sempre) e <tema>.md (só ao tocar os paths dela)
+├── rules/behavior.md, docs.md (sempre) e <tema>.md (só ao tocar os paths dela)
+└── settings.json            do projeto; o framework só junta nele as regras `ask` (ex.: a que
+                             segura o `RunAs` até o usuário chegar, regra 5) — /spec-upgrade
 docs/
 ├── adr/README.md            índice; as ADRs NNN-<titulo>.md ao lado
 ├── specs/README.md          índice; os assuntos ao lado, subdivididos em pastas

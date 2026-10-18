@@ -79,19 +79,31 @@ em [`behavior.md`](.claude/rules/behavior.md). Mapa completo:
 
 ## Instalação
 
-Copie a pasta `.claude/` (skills, agents e rules) para a raiz do seu projeto:
+Copie a pasta `.claude/` (skills, agents, rules e o `settings.json`) para a raiz do seu projeto,
+sem sobrescrever o que ele já tem:
 
 ```bash
 git clone https://github.com/elimarcosmorais/specflow.git
-cp -r specflow/.claude <seu-projeto>/
+cp -rn specflow/.claude <seu-projeto>/
 ```
+
+O projeto já tinha um `.claude/settings.json` → rode `/spec-upgrade` em seguida: ele junta no
+seu as regras de permissão do framework, sem mexer no resto.
+
+Uma delas segura o comando que abre o UAC do Windows (`RunAs`) até você aprovar no Claude Code,
+mesmo em bypass e mesmo vindo de um subagent: o diálogo do UAC expira em ~2 minutos, e assim ele
+só abre com você na frente do PC. Para receber esse aviso no celular, ligue o
+[Remote Control](https://code.claude.com/docs/en/remote-control) e ative **Push when actions
+required** no `/config`. Aprove só quando estiver no PC: aprovar de longe abre um UAC sem
+ninguém para responder.
 
 O `CLAUDE.md` deste repositório descreve este repositório e não vai junto: gere o do seu projeto
 com `/spec-claude`.
 
 Para atualizar depois, rode `/spec-upgrade` no seu projeto: ele baixa a versão nova deste
 repositório, atualiza o que é do framework e pergunta antes de sobrescrever um arquivo que o
-projeto editou. Skills, agents e rules próprios do projeto ficam intocados.
+projeto editou. Skills, agents e rules próprios do projeto ficam intocados, e o
+`.claude/settings.json` só recebe as regras de permissão do framework que faltam.
 
 ## Uso
 
