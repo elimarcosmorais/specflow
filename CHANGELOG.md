@@ -4,6 +4,13 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [2.2.0] - 2026-10-18
+
+### Adicionado
+
+- **behavior:** segura o `RunAs` numa regra `ask` até o usuário aprovar (55ccab3)
+- **adr:** passa a criação, atualização e substituição de ADR ao agente (d144f00)
+
 ## [2.1.0] - 2026-10-17
 
 ### Adicionado
@@ -156,6 +163,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[2.2.0]: https://github.com/elimarcosmorais/specflow/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/elimarcosmorais/specflow/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/elimarcosmorais/specflow/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/elimarcosmorais/specflow/compare/v0.6.0...v1.0.0
