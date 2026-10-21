@@ -177,9 +177,12 @@ depois para a mudança inteira:
   plano, conferir cada passo — e, no caminho direto, fazer a mudança inteira sozinho.
 - **Executor, por passo.** Contexto limpo, só o passo. "Arquivos" não é cerca: o que o passo
   precisa para funcionar ele toca e diz em `Também mexi`. O que não atrapalha o passo ele não
-  toca, nem anota.
-- **Revisão, uma só.** No fim, sobre o diff inteiro em stage: roda a suíte, o build, o lint e o
-  teste de tela, confere cada "Pronto quando", o escopo, as ADRs, a arquitetura e, com passo
+  toca, nem anota. Itera com o teste dirigido de cada item do "Pronto quando"; a suíte, o build,
+  o lint e a integração rodam **uma vez**, no fechamento do passo. Na correção dos bloqueantes
+  da revisão, nem isso: ele roda só os testes do que corrigiu, porque o revisor roda tudo logo
+  em seguida.
+- **Revisão, uma só.** No fim, sobre o diff inteiro em stage: dispara a suíte, o build, o lint e
+  o teste de tela em segundo plano e, enquanto rodam, confere cada "Pronto quando", o escopo, as ADRs, a arquitetura e, com passo
   `Risco: alto`, a segurança. **Binária:** aprovado, ou bloqueantes que voltam ao executor.
   Não existe "melhoria". Os números da rodada aprovada são as provas do relatório.
 - **Git:** o passo conferido fica em stage, nunca commitado. A revisão final lê

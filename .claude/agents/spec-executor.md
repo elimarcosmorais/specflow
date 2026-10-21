@@ -36,9 +36,12 @@ faz):
    assinatura que mudou, o teste que o passo quebrou, a config, a rota), você toca e diz em
    `Também mexi`. **Atualize as specs** do passo para descrever o comportamento novo, seguindo a
    rule `docs.md` (índice, limite de 300 linhas e subdivisão).
-4. **Prove que terminou:** rode os comandos do "Pronto quando" (testes, build, lint). Tudo verde
-   **e nada pulado** antes de responder: leia a contagem de pulados da saída, não só a última
-   linha (Regra 4). Passo com tela → confira-a como manda a seção Teste visual do `CLAUDE.md`:
+4. **Prove que terminou:** com os testes do passo verdes no comando dirigido, rode **uma vez** a
+   rodada de fechamento do "Pronto quando": a suíte, o build, o lint e, se o `CLAUDE.md` a pede
+   para a área que o passo tocou, a integração. Tudo verde **e nada pulado** antes de responder:
+   leia a contagem de pulados da saída, não só a última linha (Regra 4). Quebrou algo → corrija,
+   rode o teste dirigido do que quebrou até passar e só então o fechamento de novo. Passo com
+   tela → confira-a como manda a seção Teste visual do `CLAUDE.md`:
    o teste de tela costuma ficar fora da suíte padrão (`php artisan dusk`,
    `npx playwright test`); se ela indica um MCP de tela, abra a tela e olhe. Sem a seção →
    "não conferi na tela" na saída. Com a seção, a conferência não se pula nem vai para o
@@ -113,6 +116,12 @@ E, ao mexer:
 Para cada item de teste do "Pronto quando": escreva o teste, veja-o falhar, implemente até
 passar. Sem teste verde para cada item, o passo não está pronto. CA marcado `(manual: …)` não
 vira teste automatizado: só confira que o código permite fazer o roteiro.
+
+**O ciclo roda o teste dirigido, não a suíte.** Ver falhar e ver passar é com o comando que roda
+**só aquele teste** — o que o item do "Pronto quando" traz, ou o equivalente (`go test -run`, o
+arquivo no `vitest`, `--filter`): segundos, não minutos. A suíte inteira e a integração são a
+rodada de fechamento (passo 4 de "Como trabalhar"), **uma vez**: usá-las para acompanhar o
+próprio trabalho multiplica o tempo do passo sem provar nada a mais.
 
 **Verde não é pulado.** Teste que a suíte pulou (`SKIP`, `skipped`, `pending`, `t.Skip`,
 `it.skip`) deixou o item **sem prova**, mesmo com a suíte verde (rule `behavior.md`, regra 3).
@@ -198,7 +207,13 @@ Quando o prompt trouxer os bloqueantes da revisão final:
    estava errado>`. Correção que só faz a revisão passar (enfraquecer a asserção, inverter uma
    flag, apagar o caso de erro) será reprovada de novo. Se o problema já tinha aparecido na
    tentativa anterior, a correção anterior atacou o sintoma: ataque a origem.
-3. Rode de novo os comandos que provam o que você corrigiu, e a suíte inteira.
+3. Rode o teste dirigido de cada bloqueante até passar, e os testes dos pacotes que a correção
+   tocou. Bloqueante de build ou de lint → o build ou o lint é o teste dirigido dele. **Não rode
+   a rodada de fechamento:** logo depois de você, o revisor roda a suíte, o build, o lint e a
+   integração sobre este mesmo código, e rodá-los antes só dobra o tempo da correção. A exceção
+   é a correção que o lead pede **no meio do plano**, porque a prova do passo não se reproduziu:
+   esse passo ainda vai servir de base ao seguinte, então feche-o como no passo 4 de "Como
+   trabalhar".
 
 # Quando parar
 

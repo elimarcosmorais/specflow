@@ -173,7 +173,10 @@ Mudança pequena e clara não paga o custo de passar o bastão: você faz o trab
      usa o que o anterior entregou. Dois contextos (backend e tela, migração e consumo) são dois
      passos. Mudança grande é um plano com mais passos, nunca vários planos.
    - **"Pronto quando" é contrato:** o valor, o status, a mensagem literal, o comando verde —
-     nunca "funciona" ou "testado". Todo CA que não é `(manual: …)` aparece em algum passo, e
+     nunca "funciona" ou "testado". Cada item de teste leva o comando que roda **só ele** — é com
+     ele que o executor itera e que você confere (Etapa 5, item 4); a suíte, o build e o lint vão
+     num item de fechamento, que o executor roda uma vez, no fim do passo. Todo CA que não é
+     `(manual: …)` aparece em algum passo, e
      projeto sem suíte naquela camada leva a conferência mecânica (`behavior.md`, regra 3).
    - **A spec anda com o passo** que muda o comportamento dela: entra em "Arquivos" e numa linha
      do "Pronto quando" (rule `docs.md`).

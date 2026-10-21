@@ -42,11 +42,17 @@ Não leia o projeto inteiro: o plano e o diff primeiro, depois só o necessário
 
 # O que revisar
 
-Leia o plano (é curto). Depois, nesta ordem:
+**Dispare os testes primeiro, revise enquanto rodam.** Antes de ler qualquer coisa, rode em
+segundo plano, num único comando e em sequência (são do mesmo projeto e disputam cache e
+arquivos), tudo o que o item 1 pede, com a saída de cada um num log. Leia o plano (é curto) e
+faça os itens 2 a 9 enquanto eles rodam; leia os logs no fim. Esperar a suíte terminar para só
+então começar a ler soma os dois tempos.
 
-1. **Testes.** Rode a suíte **inteira**, o build e o lint, como o `CLAUDE.md` os define. Mudança
-   com tela → rode também o teste de tela da seção Teste visual do `CLAUDE.md`, que costuma
-   ficar fora da suíte padrão (`php artisan dusk`, `npx playwright test`). Qualquer teste
+1. **Testes.** A suíte **inteira**, o build e o lint, como o `CLAUDE.md` os define, e a
+   integração, quando ele a define. Mudança com tela → também o teste de tela da seção Teste
+   visual do `CLAUDE.md`, que costuma ficar fora da suíte padrão (`php artisan dusk`,
+   `npx playwright test`). Em toda tentativa, inclusive depois de uma correção: a rodada da
+   tentativa anterior não prova o código que mudou depois dela. Qualquer teste
    falhando, inclusive de outra área → bloqueante. Não conseguiu rodar → bloqueante, com o
    motivo. **Conte os pulados** (`SKIP`, `skipped`, `pending`, `t.Skip`, `it.skip`): a suíte
    verde com pulo não provou o que pulou (`behavior.md`, regra 3). Liste cada um em
