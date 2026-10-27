@@ -17,10 +17,10 @@ X": o que falta para o passo funcionar **é** o passo.
 A skill `spec-lead` te passa um destes dois trabalhos (a mudança pequena, sem plano, ela mesma
 faz):
 
-| Modo | O que vem no prompt |
-|---|---|
-| **passo** | o caminho do plano e o número do passo, mais os passos já concluídos: **use o que eles entregaram, não recrie** |
-| **correção** | os bloqueantes da revisão final, que podem cair em qualquer passo (ver "Modo correção") |
+| Modo         | O que vem no prompt                                                                                             |
+| ------------ | --------------------------------------------------------------------------------------------------------------- |
+| **passo**    | o caminho do plano e o número do passo, mais os passos já concluídos: **use o que eles entregaram, não recrie** |
+| **correção** | os bloqueantes da revisão final, que podem cair em qualquer passo (ver "Modo correção")                         |
 
 # Como trabalhar
 
@@ -78,8 +78,8 @@ Mexer num arquivo fora de "Arquivos" **não é gatilho**: é o seu trabalho quan
 
 ## 2. Qualidade de produção, sem complexidade especulativa
 
-Antes de acrescentar algo, pergunte: *"isso deixa o que o passo pede **correto e robusto**, ou é
-capacidade para um **futuro hipotético**?"*
+Antes de acrescentar algo, pergunte: _"isso deixa o que o passo pede **correto e robusto**, ou é
+capacidade para um **futuro hipotético**?"_
 
 - **Correto e robusto → faça**, mesmo que o passo não tenha listado: tratar e registrar o erro
   nos pontos de falha, fechar o recurso que você abriu, validar o que o contrato exige, evitar a
@@ -171,12 +171,12 @@ ADR é sua para manter, como a spec (rule `docs.md`): o usuário aprovou o plano
 o que a tarefa decidiu. Nada aqui pede confirmação nem vira proposta para o usuário. Toda ADR
 que você toca entra em `Arquivos`; a que você criou fora do que o plano previa, em `Decisões`.
 
-| O passo… | Você |
-|---|---|
-| registra a ADR que o plano prevê ("ADR a registrar"), ou toma uma decisão transversal, cara de mudar e com alternativa real que o plano não previa | **cria** (abaixo) |
-| torna falso o que uma ADR afirma — caminho, mecanismo, nome, consequência —, e a decisão continua de pé | **atualiza** a frase no lugar, para dizer o que o código faz agora |
-| muda a própria decisão, como o plano manda ("ADR a registrar" com "substitui NNN") | **substitui** (abaixo) |
-| esbarra em link quebrado, referência inexistente ou erro de digitação numa ADR que usa | **corrige** |
+| O passo…                                                                                                                                           | Você                                                               |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| registra a ADR que o plano prevê ("ADR a registrar"), ou toma uma decisão transversal, cara de mudar e com alternativa real que o plano não previa | **cria** (abaixo)                                                  |
+| torna falso o que uma ADR afirma — caminho, mecanismo, nome, consequência —, e a decisão continua de pé                                            | **atualiza** a frase no lugar, para dizer o que o código faz agora |
+| muda a própria decisão, como o plano manda ("ADR a registrar" com "substitui NNN")                                                                 | **substitui** (abaixo)                                             |
+| esbarra em link quebrado, referência inexistente ou erro de digitação numa ADR que usa                                                             | **corrige**                                                        |
 
 **Criar.**
 
@@ -204,7 +204,7 @@ Quando o prompt trouxer os bloqueantes da revisão final:
 
 1. Corrija **todos**, em qualquer passo em que estejam.
 2. Para cada um, escreva antes de editar uma linha `CAUSA-RAIZ: <por que o código ou o teste
-   estava errado>`. Correção que só faz a revisão passar (enfraquecer a asserção, inverter uma
+estava errado>`. Correção que só faz a revisão passar (enfraquecer a asserção, inverter uma
    flag, apagar o caso de erro) será reprovada de novo. Se o problema já tinha aparecido na
    tentativa anterior, a correção anterior atacou o sintoma: ataque a origem.
 3. Rode o teste dirigido de cada bloqueante até passar, e os testes dos pacotes que a correção
