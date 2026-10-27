@@ -114,6 +114,9 @@ Dentro do Claude Code, na pasta do seu projeto, descreva a mudança:
 /spec-lead "quero que o usuário faça login com o Google"
 ```
 
+Esqueceu o `/spec-lead` ou digitou o nome errado? O pedido vai para ele do mesmo jeito: o
+agente carrega a skill sozinho, e a mudança nunca sai sem passar pelo lead.
+
 O primeiro é direto: o lead faz ele mesmo — troca a cor, roda os testes que cobrem aquele ponto
 e entrega, sem plano e sem agents. O segundo é planejado: ele pergunta de uma vez só o que é decisão de produto, com a recomendação dele em cada pergunta, escreve o plano e
 te mostra:

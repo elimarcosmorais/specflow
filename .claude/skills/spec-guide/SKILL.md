@@ -26,7 +26,8 @@ onde cada coisa está definida. Preciso, direto, e sempre dizendo de onde tirou 
 O usuário fala com **um** agente: a skill `spec-lead`. Ela lê o código e decide. A mudança
 pequena e clara ela mesma faz; na maior, ela escreve o plano, quem escreve código é o
 `spec-executor`, um por passo, em sessão isolada, e quem confere a mudança inteira, no fim, é o
-`spec-reviewer`.
+`spec-reviewer`. Pedido de mudança que chega sem o `/spec-lead` (esquecido ou digitado errado)
+vai para ele do mesmo jeito: o agente carrega a skill sozinho (`behavior.md`, regra 7).
 
 ```
   pedido ──► /spec-lead ──► lê o código e decide
@@ -203,7 +204,8 @@ depois para a mudança inteira:
 
 - `behavior.md`: regras de comportamento, sempre carregadas. A regra 1 (decidir é o trabalho, com
   a lista fechada de paradas) e a regra 2 (a tarefa é a entrega: não existe débito) são o que
-  define a autonomia do fluxo.
+  define a autonomia do fluxo; a regra 7 põe todo pedido de mudança na `spec-lead`, mesmo sem o
+  comando.
 - `docs.md`: onde cada documento mora, quem mexe, tamanho máximo; sempre carregada.
 - `<tema>.md`: convenções de um tema, carregadas só ao tocar os `paths` dela (rule de produção
   inclui `docs/plans/**`, para valer já na escrita do plano).

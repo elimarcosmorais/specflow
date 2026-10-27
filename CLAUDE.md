@@ -16,7 +16,9 @@ Este repositório é o próprio framework: o que se edita aqui são as skills, o
 
 ## Fluxo
 
-Uma skill de conversa, dois agents. O usuário fala **só** com o lead.
+Uma skill de conversa, dois agents. O usuário fala **só** com o lead, e o pedido de mudança que
+chega sem o `/spec-lead` vai para ele do mesmo jeito (regra 7 da `behavior.md`). Por isso a
+`spec-lead` não leva `disable-model-invocation`: com ele, o agente não conseguiria carregá-la.
 
 | Papel | Quem |
 |---|---|

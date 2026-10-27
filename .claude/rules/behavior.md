@@ -139,6 +139,23 @@ JSON) — se escreve e se edita **pelo Write/Edit**, nunca por heredoc, `echo`, 
 no Bash. Escreveu por outro caminho → confira os bytes (`od -c` ou `Format-Hex`) antes de contar
 o teste como prova (regra 3).
 
+## 7. Pedido de mudança entra pela `spec-lead`, mesmo sem o comando
+
+Pedido que muda o projeto (código, teste, spec, ADR, plano) é trabalho da skill `spec-lead`.
+Só ela escolhe entre o caminho direto e o plano, só ela escreve plano, e só ela chama o
+`spec-executor` e o `spec-reviewer`. Pedido desses chegou sem a skill carregada, porque o
+usuário não a chamou ou errou o nome (`/sepc-lead`, `/spec-led`)? Então **carregue a `spec-lead`
+pela ferramenta Skill**, com o pedido do usuário como argumento, e siga-a. Não comece pela
+edição nem por um plano seu: implementar direto pula a decisão de caminho, o executor e a
+revisão final, e planejar por fora pula o template e a aprovação.
+
+Isto não é parada nem pergunta: o usuário pediu a mudança, e a `spec-lead` é como ela se faz.
+`--autonomo` só vai no argumento quando o usuário o escreveu.
+
+Ficam de fora: pergunta, explicação ou leitura que não muda nada; a skill do framework que o
+usuário chamou para o que ela faz (`/spec-semantic-commit`, `/spec-claude`, `/spec-adr`…); e quem
+já está no fluxo, ou seja, a própria `spec-lead` e os agents que ela chama.
+
 ---
 
 Como evoluir esta lista: errou em algo que uma regra já cobria → reforce a redação dela; errou
