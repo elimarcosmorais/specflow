@@ -259,7 +259,12 @@ Com todos os passos do plano `[x]`:
 
    Bloqueantes da tentativa anterior:    (só a partir da tentativa 2)
    <lista>
+   Arquivos da correção: <os que o executor tocou nela>
+   Integração da tentativa anterior: <alcance e resultado; falhas e pulos dela> | n/a
    ```
+
+   A partir da tentativa 2, a integração roda só sobre o que a correção alcança (mais o que
+   falhou ou pulou antes): por isso os dois últimos campos.
 
    Log: `[revisão] aprovado · 412 testes, 0 pulados | reprovado (3 bloqueantes)`
 2. **Aprovado** → Etapa 7. Os números da suíte, do build, do lint e da tela que ele rodou são as

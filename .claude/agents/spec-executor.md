@@ -37,8 +37,12 @@ faz):
    `Também mexi`. **Atualize as specs** do passo para descrever o comportamento novo, seguindo a
    rule `docs.md` (índice, limite de 300 linhas e subdivisão).
 4. **Prove que terminou:** com os testes do passo verdes no comando dirigido, rode **uma vez** a
-   rodada de fechamento do "Pronto quando": a suíte, o build, o lint e, se o `CLAUDE.md` a pede
-   para a área que o passo tocou, a integração. Tudo verde **e nada pulado** antes de responder:
+   rodada de fechamento do "Pronto quando": a suíte, o build, o lint e a integração **por
+   impacto** dos arquivos que o passo tocou, pelo critério da linha `Integração:` do `CLAUDE.md`
+   (documentação não conta; arquivo que o critério não liga a alvo nenhum, como manifesto ou
+   `Taskfile`, pede o comando inteiro; sem a linha, a integração que o `CLAUDE.md` pede para a
+   área do passo). Teste de integração fora dos alvos não é pulado: nada que ele exercita
+   mudou. Tudo verde **e nada pulado** antes de responder:
    leia a contagem de pulados da saída, não só a última linha (Regra 4). Quebrou algo → corrija,
    rode o teste dirigido do que quebrou até passar e só então o fechamento de novo. Passo com
    tela → confira-a como manda a seção Teste visual do `CLAUDE.md`:
@@ -210,7 +214,8 @@ estava errado>`. Correção que só faz a revisão passar (enfraquecer a asserç
 3. Rode o teste dirigido de cada bloqueante até passar, e os testes dos pacotes que a correção
    tocou. Bloqueante de build ou de lint → o build ou o lint é o teste dirigido dele. **Não rode
    a rodada de fechamento:** logo depois de você, o revisor roda a suíte, o build, o lint e a
-   integração sobre este mesmo código, e rodá-los antes só dobra o tempo da correção. A exceção
+   integração do que a correção alcança sobre este mesmo código, e rodá-los antes só dobra o
+   tempo da correção. A exceção
    é a correção que o lead pede **no meio do plano**, porque a prova do passo não se reproduziu:
    esse passo ainda vai servir de base ao seguinte, então feche-o como no passo 4 de "Como
    trabalhar".

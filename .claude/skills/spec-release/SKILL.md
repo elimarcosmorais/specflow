@@ -1,6 +1,6 @@
 ---
 name: spec-release
-description: Utilitário do framework (transversal). Lança uma versão do projeto como os repositórios profissionais do GitHub - calcula a próxima versão SemVer a partir dos commits em Conventional Commits desde a última tag (breaking → major, feat → minor, fix/perf → patch; em 0.x, breaking → minor), atualiza o CHANGELOG.md no formato Keep a Changelog em português e o número de versão do manifesto (package.json, pyproject.toml, Cargo.toml, .csproj, VERSION) e dos arquivos que a linha `Release:` do CLAUDE.md declara, monta os anexos que ela declara (ex.: o instalador .exe ou o .apk) antes do commit - projeto que entrega um instalável e ainda não tem a linha ganha a linha, descoberta pelo repo -, commita `chore(release): vX.Y.Z`, cria a tag anotada, faz push do commit e da tag e publica o GitHub Release com as notas e os anexos. Mostra a versão e o changelog e pede UMA confirmação antes de publicar; depois segue sem perguntar. Primeira versão: 0.1.0 (ou 1.0.0 se já está em produção). Usar quando o usuário pedir para lançar, publicar ou gerar uma versão, release, tag ou changelog ("lança a versão", "cria a tag", "qual seria a próxima versão?"), caso em que só mostra e não publica. Não commita mudanças pendentes (isso é do spec-semantic-commit), não apaga nem move tag e não faz push --force.
+description: Utilitário do framework (transversal). Lança uma versão do projeto como os repositórios profissionais do GitHub - calcula a próxima versão SemVer a partir dos commits em Conventional Commits desde a última tag (breaking → major, feat → minor, fix/perf → patch; em 0.x, breaking → minor), atualiza o CHANGELOG.md no formato Keep a Changelog em português e o número de versão do manifesto (package.json, pyproject.toml, Cargo.toml, .csproj, VERSION) e dos arquivos que a linha `Release:` do CLAUDE.md declara, roda a integração inteira que a linha `Integração:` declara (a revisão só roda a do que a mudança alcança) e não lança com ela vermelha, monta os anexos que a linha `Release:` declara (ex.: o instalador .exe ou o .apk) antes do commit - projeto que entrega um instalável e ainda não tem a linha ganha a linha, descoberta pelo repo -, commita `chore(release): vX.Y.Z`, cria a tag anotada, faz push do commit e da tag e publica o GitHub Release com as notas e os anexos. Mostra a versão e o changelog e pede UMA confirmação antes de publicar; depois segue sem perguntar. Primeira versão: 0.1.0 (ou 1.0.0 se já está em produção). Usar quando o usuário pedir para lançar, publicar ou gerar uma versão, release, tag ou changelog ("lança a versão", "cria a tag", "qual seria a próxima versão?"), caso em que só mostra e não publica. Não commita mudanças pendentes (isso é do spec-semantic-commit), não apaga nem move tag e não faz push --force.
 argument-hint: "[major | minor | patch | X.Y.Z (opcional; padrão: calculada pelos commits)]"
 ---
 
@@ -226,6 +226,7 @@ Mostre:
 Versão: v1.4.2 → v1.5.0 (minor: 3 feat, 2 fix)
 Arquivos: package.json, package-lock.json, <arquivos da versão da linha Release:>, CHANGELOG.md[, CLAUDE.md (linha Release: escrita | corrigida)]
 Anexos: bin/app-1.5.0-setup.exe, montados por `task package` antes do commit | nenhum
+Integração: inteira, antes de editar (`<comando>`) | sem a linha Integração:
 Release: <a linha, quando a Etapa 5 a escreveu ou corrigiu>
 Avisos: <sem `gh` (ou sem login): a versão sai sem página de release | fora da branch principal | manifesto dizia 1.0.0 | commits sem tipo: a1b2c3d "ajustes" | instalável sem comando que o monte: <qual> | linha Release: errada: <o quê> | nenhum>
 Commit: chore(release): v1.5.0 · Tag: v1.5.0
@@ -253,8 +254,24 @@ sem perguntar de novo.
 
 ## Etapa 8 — Aplicar
 
-Nesta ordem: edições → anexos → commit. Os anexos saem do conteúdo que vai para a tag, e uma
-falha ao montá-los acontece antes de existir commit ou tag para desfazer.
+Nesta ordem: integração → edições → anexos → commit. Os anexos saem do conteúdo que vai para a
+tag, e uma falha da integração ou dos anexos acontece antes de existir commit ou tag para desfazer.
+
+### 8.0 — Integração inteira
+
+Só com a linha `Integração:` no `CLAUDE.md`; sem ela, siga para a 8.1. A revisão de cada mudança
+roda só a integração do que ela alcança. Aqui ela roda **inteira**, uma vez por versão, sobre o
+commit que vai virar a tag: é o que pega o que o critério de impacto não vê (dependência em
+tempo de execução, dado, ambiente).
+
+1. Rode o comando inteiro da linha, na raiz, em segundo plano e com a saída num log: pode levar
+   horas, além do timeout da ferramenta.
+2. **Pulou** por precondição (pacote, serviço, porta, variável) → monte-a e rode de novo
+   (`behavior.md`, regra 3). O que continuar pulado vai para o relatório como `Sem prova`, com o
+   teste e o motivo.
+3. **Falhou** → pare sem editar nada: a versão não é lançada. Mostre os testes que falharam e o
+   fim da saída deles. Corrigir é um pedido de mudança (`/spec-lead "corrigir <teste>"`); com a
+   correção commitada, a skill roda de novo do início.
 
 ### 8.1 — Editar
 
@@ -327,13 +344,16 @@ Mostre **apenas**:
 Versão: v1.5.0 (minor) — antes v1.4.2 | primeira versão
 Arquivos: <manifestos>, <arquivos da versão>, CHANGELOG.md[, CLAUDE.md]
 Anexos: <anexos> → no release | só locais: <comando para anexá-los depois> | nenhum
+Integração: `<comando>` inteira · <N> passando, 0 falhando | sem a linha Integração:
+Sem prova: <teste> — <motivo do pulo> | nada
 Commit: <saída de git log --oneline -1>
 Tag: v1.5.0 → origin | só local | push falhou: <erro>
 Release: <url> | não criado: <motivo>
 ```
 
 A montagem dos anexos falhou (8.2) → não há versão: mostre só `Versão: v1.5.0 não lançada`, a
-causa e `Edições desfeitas: <arquivos>`.
+causa e `Edições desfeitas: <arquivos>`. A integração falhou (8.0) → `Versão: v1.5.0 não
+lançada`, os testes que falharam e `Nada foi editado`.
 
 # Entrada
 

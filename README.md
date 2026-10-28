@@ -152,7 +152,7 @@ Na mudança planejada, ela coordena dois agents, cada um em sessão isolada com 
 | Agent | Faz |
 |---|---|
 | `spec-executor` | Implementa um passo do plano ou a correção dos bloqueantes, até o fim: código, testes que provam, specs e as ADRs que o passo cria, atualiza ou substitui |
-| `spec-reviewer` | Revisão final da mudança inteira: roda a suíte, o build e o lint, confere o plano e, com risco alto, a segurança; aprova ou reprova, sem "melhoria" |
+| `spec-reviewer` | Revisão final da mudança inteira: roda a suíte, o build, o lint e a integração do que a mudança alcança, confere o plano e, com risco alto, a segurança; aprova ou reprova, sem "melhoria" |
 
 Na revisão, só o que um sênior recusaria num PR volta para correção; o resto ele aceita calado.
 O que é decisão de produto, e só isso, chega a você.
@@ -165,7 +165,7 @@ O que é decisão de produto, e só isso, chega a você.
 | `/spec-adr` | Registrar direto uma decisão de arquitetura; `/spec-adr índice` organiza o índice |
 | `/spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface); em projeto novo, entrega um formulário técnico já pré-preenchido e escreve o design system quando ele volta |
 | `/spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
-| `/spec-release` | Lançar uma versão: calcula o número pelos commits, atualiza o `CHANGELOG.md`, cria a tag e o GitHub Release, com o instalável (`.exe`, `.apk`) anexado quando o projeto tem um |
+| `/spec-release` | Lançar uma versão: roda a integração inteira, calcula o número pelos commits, atualiza o `CHANGELOG.md`, cria a tag e o GitHub Release, com o instalável (`.exe`, `.apk`) anexado quando o projeto tem um |
 | `/spec-readme` | Gerar ou completar o `README.md` |
 | `/spec-claude` | Gerar, auditar ou enxugar o `CLAUDE.md`, e acrescentar uma regra a ele (e pôr `.temp/` no `.gitignore`). Manter os **fatos** dele em dia — comando de teste, stack, pastas — é do próprio lead, sem você |
 | `/spec-windows-mcp` | Configurar o Windows-MCP para o agente ver e operar a tela (só Windows) |

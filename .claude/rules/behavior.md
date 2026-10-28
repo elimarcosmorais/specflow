@@ -68,6 +68,11 @@ serviço, porta, dado de teste) é **sua para montar**, não tarefa do usuário 
 novo. Não conseguiu → conte o pulado junto com o não rodado, com o nome do teste e o motivo, e
 nunca o apresente como prova: o item que ele deveria provar continua **sem prova**.
 
+**Fora do alcance não é pulado.** A integração por impacto (linha `Integração:` do `CLAUDE.md`)
+roda só os testes que dependem do que mudou: o que ela não roda não tinha nada a provar sobre a
+mudança, e a `/spec-release` o roda inteiro a cada versão. Pulado é o teste do alcance que rodou e
+não exerceu.
+
 **Projeto sem suíte não impede provar.** Onde não há o que rodar naquela camada, a prova é a
 conferência mecânica que o "Pronto quando" descreve: abrir o link e ver que resolve, conferir
 que o arquivo citado existe, reler a linha e ver que ela diz o que o código faz. Falta de prova

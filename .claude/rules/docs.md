@@ -95,7 +95,7 @@ governa o próprio agente, e por isso o corte é mais estreito que o das specs:
 
 | O que mudou | Quem resolve |
 |---|---|
-| **Fato que um arquivo do repo responde:** comando de teste, build ou lint, versão da stack, pasta ou camada que passou a existir, ferramenta de teste visual instalada, `.temp/` fora do `.gitignore` | o agente, **livremente** — é sincronizar documento com código, como numa spec |
+| **Fato que um arquivo do repo responde:** comando de teste, integração, build ou lint, versão da stack, pasta ou camada que passou a existir, ferramenta de teste visual instalada, `.temp/` fora do `.gitignore` | o agente, **livremente** — é sincronizar documento com código, como numa spec |
 | **Regra nova:** convenção que ninguém escreveu, anti-padrão, "sempre faça X", "nunca edite Y" | o **usuário**: `/spec-claude` |
 
 O teste é mecânico: **deu para extrair de um arquivo do repo?** É fato. **Veio do juízo de alguém

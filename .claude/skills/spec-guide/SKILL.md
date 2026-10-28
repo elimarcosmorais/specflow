@@ -180,13 +180,19 @@ depois para a mudança inteira:
 - **Executor, por passo.** Contexto limpo, só o passo. "Arquivos" não é cerca: o que o passo
   precisa para funcionar ele toca e diz em `Também mexi`. O que não atrapalha o passo ele não
   toca, nem anota. Itera com o teste dirigido de cada item do "Pronto quando"; a suíte, o build,
-  o lint e a integração rodam **uma vez**, no fechamento do passo. Na correção dos bloqueantes
+  o lint e a integração por impacto rodam **uma vez**, no fechamento do passo. Na correção dos bloqueantes
   da revisão, nem isso: ele roda só os testes do que corrigiu, porque o revisor roda tudo logo
   em seguida.
-- **Revisão, uma só.** No fim, sobre o diff inteiro em stage: dispara a suíte, o build, o lint e
-  o teste de tela em segundo plano e, enquanto rodam, confere cada "Pronto quando", o escopo, as ADRs, a arquitetura e, com passo
+- **Revisão, uma só.** No fim, sobre o diff inteiro em stage: dispara a suíte, o build, o lint, a
+  integração por impacto e o teste de tela em segundo plano e, enquanto rodam, confere cada "Pronto quando", o escopo, as ADRs, a arquitetura e, com passo
   `Risco: alto`, a segurança. **Binária:** aprovado, ou bloqueantes que voltam ao executor.
   Não existe "melhoria". Os números da rodada aprovada são as provas do relatório.
+- **Integração por impacto.** A linha `Integração:` do `CLAUDE.md` traz o comando inteiro, o
+  comando por impacto e o critério dos alvos (em Go, os pacotes que dependem do que mudou). A
+  revisão roda só os alvos da rodada e, numa nova tentativa, só os da correção, mais o que falhou
+  ou pulou antes; arquivo que o critério não liga a alvo nenhum (manifesto, `Taskfile`, CI) pede
+  o comando inteiro. Teste fora dos alvos não é pulado (`behavior.md`, regra 3). A integração
+  **inteira** roda na `/spec-release`, uma vez por versão, e vermelha não lança.
 - **Git:** o passo conferido fica em stage, nunca commitado. A revisão final lê
   `git diff --staged` da rodada inteira.
 - **Fechamento:** revisão aprovada, com suíte, build e lint **inteiros** verdes e **sem teste
@@ -223,7 +229,7 @@ depois para a mudança inteira:
 | Criar, corrigir ou reorganizar o índice das ADRs | `/spec-adr índice` |
 | Criar ou atualizar o design system | `/spec-design-system [proposta, Figma, docs ou o formulário preenchido]` |
 | Commitar todas as mudanças | `/spec-semantic-commit` |
-| Lançar uma versão (SemVer, CHANGELOG, tag, GitHub Release com o instalável), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
+| Lançar uma versão (integração inteira, SemVer, CHANGELOG, tag, GitHub Release com o instalável), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |
 | Criar, auditar ou enxugar o CLAUDE.md, ou acrescentar uma regra a ele (e garantir `.temp/` no `.gitignore`) | `/spec-claude [pasta]` |
 | Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/spec-windows-mcp [ferramentas extras]` |

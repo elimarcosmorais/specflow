@@ -32,6 +32,7 @@ aberto" sem ação para o usuário não existe: risco aberto é a linha "Decidir
 | suíte | `<comando>` | <N> passando, 0 falhando, 0 pulados |
 | build | `<comando>` | ok |
 | lint | `<comando>` | ok |
+| integração | `<comando>` | <alcance: por impacto em <alvos> \| inteira \| nenhum alvo> · ok |
 | tela | <teste de tela ou MCP> | <o que viu> |
 
 **Sem prova:** <o que ficou> — <por quê> | nada
