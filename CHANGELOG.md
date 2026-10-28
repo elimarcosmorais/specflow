@@ -4,6 +4,13 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [2.4.0] - 2026-10-28
+
+### Adicionado
+
+- **release:** anexa o instalável ao GitHub Release pela linha `Release:` (ee0fffb)
+- **rules:** impede editar no projeto os arquivos do framework (84c1ef5)
+
 ## [2.3.0] - 2026-10-27
 
 ### Adicionado
@@ -175,6 +182,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[2.4.0]: https://github.com/elimarcosmorais/specflow/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/elimarcosmorais/specflow/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/elimarcosmorais/specflow/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/elimarcosmorais/specflow/compare/v2.1.0...v2.2.0
