@@ -122,7 +122,8 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | `.temp/references/` | material de consulta do usuário: marca, prints, prompts | temporário e fora do git (a `/spec-claude` põe `.temp/` no `.gitignore`); só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
 | `.temp/design-system-formulario.md` | a especificação de entrada do design system ([formulário](../spec-design-system/formulario.md)) | temporário; `/spec-design-system` emite pré-preenchido, o usuário ou outro agente preenche, a skill lê e escreve o design system |
 | `CLAUDE.md` | o contrato do agente com este projeto: stack, comandos reais, convenções, onde coisas novas vão | vivo só nos **fatos** (o agente sincroniza com o repo); criar, auditar e toda **regra** nova são do usuário, por `/spec-claude` |
-| `CHANGELOG.md` | o que mudou para quem usa, por versão lançada | só `spec-release` escreve, uma seção por versão; a versão em si é a tag |
+| `CHANGELOG.md` | o que mudou para quem usa, por versão lançada | só `spec-release` escreve, uma seção por versão; a versão em si é a tag; o instalável vai anexado ao GitHub Release, pela linha `Release:` do `CLAUDE.md` |
+| `.claude/` do framework: skills e agents `spec-*`, `behavior.md`, `docs.md` | o SpecFlow | não se edita no projeto: a `/spec-upgrade` sobrescreve; o que o projeto tem de próprio vai para o `CLAUDE.md` ou para skill ou rule dele |
 
 - **Plano** junta problema, comportamento (CAs), decisões, telas, contratos, specs afetadas e os
   **passos**. Seção que não se aplica é removida. Mudança grande é um plano com mais passos,
@@ -222,7 +223,7 @@ depois para a mudança inteira:
 | Criar, corrigir ou reorganizar o índice das ADRs | `/spec-adr índice` |
 | Criar ou atualizar o design system | `/spec-design-system [proposta, Figma, docs ou o formulário preenchido]` |
 | Commitar todas as mudanças | `/spec-semantic-commit` |
-| Lançar uma versão (SemVer, CHANGELOG, tag, GitHub Release), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
+| Lançar uma versão (SemVer, CHANGELOG, tag, GitHub Release com o instalável), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |
 | Criar, auditar ou enxugar o CLAUDE.md, ou acrescentar uma regra a ele (e garantir `.temp/` no `.gitignore`) | `/spec-claude [pasta]` |
 | Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/spec-windows-mcp [ferramentas extras]` |

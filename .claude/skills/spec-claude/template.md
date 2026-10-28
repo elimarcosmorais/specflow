@@ -19,6 +19,9 @@ Só os que existem: sem script de lint no repo, sem linha de lint. -->
 - Dev: `{{COMANDO}}`
 - Testes: `{{COMANDO}}`
 - Lint / typecheck / build: `{{COMANDO}}`
+<!-- [OPCIONAL · versão fora dos manifestos ou instalável para o release (.exe, .apk)] A linha que a
+/spec-release lê; o formato está nela. -->
+- Release: versão em `{{ARQUIVO}}` (`{{CAMPO}}`) · anexos: `{{COMANDO}}` → `{{ANEXO}}`
 
 ## Convenções
 <!-- [quase sempre] Regras objetivas, que dá para conferir olhando um diff. Nunca "escreva código
