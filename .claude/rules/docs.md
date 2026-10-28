@@ -15,6 +15,7 @@ Onde cada documento mora, quem pode mexer nele e quando. Vale em qualquer tarefa
 | `.temp/design-system-formulario.md` | a especificação de entrada do design system, até ser preenchida e consumida | `/spec-design-system` cria, o usuário (ou um agente) preenche, a skill lê |
 | `CLAUDE.md` | o contrato do agente com **este** projeto: stack, comandos reais, convenções, onde coisas novas vão | `/spec-claude` cria e audita, com o usuário; o **fato** que o repo responde, o agente sincroniza livremente (abaixo) |
 | `CHANGELOG.md` | o que mudou para quem usa, em cada versão lançada | `/spec-release`, a cada versão |
+| `.claude/skills/spec-*`, `.claude/agents/spec-*`, `.claude/rules/behavior.md` e `docs.md` | o framework SpecFlow | ninguém no projeto: a `/spec-upgrade` os traz do SpecFlow (abaixo) |
 
 **Não duplique.** A spec diz **como funciona** e aponta para a ADR que diz **por quê**. O plano
 diz o que uma mudança vai fazer e some depois dela: o que sobrevive vai para a spec (como
@@ -113,6 +114,20 @@ não responde (o idioma, os anti-padrões que o time mais corrige). Mas a ausên
 trava** demanda nenhuma: o agente lê o repo e trabalha sem ele, e `/spec-claude` vai para o
 relatório como proposta. Nisso ele é o oposto do design system, que trava de propósito — tela
 sem identidade visual sai para ser jogada fora; código sem `CLAUDE.md` sai um pouco pior.
+
+## Arquivos do framework: não se editam no projeto
+
+As skills e os agents `spec-*` e as rules `behavior.md` e `docs.md` vêm do SpecFlow, e a
+`/spec-upgrade` os traz de novo a cada versão: editado no projeto, um deles perde a edição na
+atualização seguinte ou fica preso a uma versão velha. Por isso o "resolva no arquivo que
+precisar" (`behavior.md`, regra 2) não os alcança.
+
+Faltou algo numa skill do framework para cumprir o pedido → cumpra-o sem editá-la: rode você os
+comandos que ela rodaria, com o que o projeto pede. O que o projeto tem de próprio vai para um
+arquivo dele: o fato para o `CLAUDE.md` (como a linha `Release:` que a `/spec-release` lê), o
+procedimento para uma skill ou rule do projeto, com nome sem o prefixo `spec-`. O
+`.claude/settings.json` é do projeto e fica fora desta regra. No repositório do próprio SpecFlow
+esses arquivos são a fonte, e editá-los é o trabalho.
 
 ## Planos: temporários
 

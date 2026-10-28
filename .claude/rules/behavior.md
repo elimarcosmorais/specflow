@@ -39,7 +39,7 @@ O problema que aparecer pelo caminho tem só duas leituras:
 
 1. **Atrapalha a tarefa** — quebra o que você está fazendo, impede o teste de passar, é
    pré-requisito do pedido, ou é algo que o próprio pedido tornou falso (um chamador, um teste,
-   uma spec, uma ADR, um fato do `CLAUDE.md`) → **é a tarefa**. Resolva, no arquivo que precisar, e diga
+   uma spec, uma ADR, um fato do `CLAUDE.md`) → **é a tarefa**. Resolva, no arquivo que precisar (menos os do framework: rule `docs.md`), e diga
    numa linha o que foi.
 2. **Não atrapalha** → **não é assunto seu**. Não corrige, não anota, não relata, nem como nota.
    Não existe campo de "notei", fila, plano para depois nem "fica a sugestão".
