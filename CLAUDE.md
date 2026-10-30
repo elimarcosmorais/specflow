@@ -34,7 +34,7 @@ Skills **utilitárias**:
 |---|---|
 | Guia do framework | `spec-guide` |
 | Decisão de arquitetura (ADR) e o índice delas | `spec-adr` |
-| Design system (obrigatório com interface) | `spec-design-system` |
+| Design system (obrigatório com interface), do zero ou a partir de um modelo salvo | `spec-design-system` |
 | Commit semântico | `spec-semantic-commit` |
 | Versão: integração inteira, SemVer, CHANGELOG, tag e GitHub Release com os instaláveis | `spec-release` |
 | README do projeto | `spec-readme` |

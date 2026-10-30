@@ -121,6 +121,8 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 | `docs/design-system.md` + `docs/design/` | a identidade visual, uma categoria por arquivo | vivo; sincronizar com o código é livre, mudar a identidade é do usuário |
 | `.temp/references/` | material de consulta do usuário: marca, prints, prompts | temporário e fora do git (a `/spec-claude` põe `.temp/` no `.gitignore`); só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
 | `.temp/design-system-formulario.md` | a especificação de entrada do design system ([formulário](../spec-design-system/formulario.md)) | temporário; `/spec-design-system` emite pré-preenchido, o usuário ou outro agente preenche, a skill lê e escreve o design system |
+| `.temp/design-system-modelo-formulario.md` | o retrato de um design system que já existe ([formulário de clonagem](../spec-design-system/formulario-modelo.md)) | temporário; `/spec-design-system` emite em branco, o usuário preenche pela documentação oficial, a skill o salva como modelo |
+| `.claude/skills/spec-design-system/modelos/<slug>.md` | um modelo de design system pronto (ex.: o Primer, do GitHub) | `/spec-design-system` grava ao cadastrar e aplica com `modelo <slug>`; o do projeto a `/spec-upgrade` não toca |
 | `CLAUDE.md` | o contrato do agente com este projeto: stack, comandos reais, convenções, onde coisas novas vão | vivo só nos **fatos** (o agente sincroniza com o repo); criar, auditar e toda **regra** nova são do usuário, por `/spec-claude` |
 | `CHANGELOG.md` | o que mudou para quem usa, por versão lançada | só `spec-release` escreve, uma seção por versão; a versão em si é a tag; o instalável vai anexado ao GitHub Release, pela linha `Release:` do `CLAUDE.md` |
 | `.claude/` do framework: skills e agents `spec-*`, `behavior.md`, `docs.md` | o SpecFlow | não se edita no projeto: a `/spec-upgrade` sobrescreve; o que o projeto tem de próprio vai para o `CLAUDE.md` ou para skill ou rule dele |
@@ -155,7 +157,8 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
   tela sem ele — é parada do tipo **a**. Em projeto novo, a `spec-design-system` tira as dúvidas
   de direção, entrega o formulário pré-preenchido em `.temp/design-system-formulario.md` e só
   escreve `docs/` quando ele volta preenchido; em projeto que já tem design system, ela atualiza
-  por perguntas, e o formulário só sai se o usuário pedir.
+  por perguntas, e o formulário só sai se o usuário pedir. Pedido "do modelo X" dispensa o
+  formulário: a skill aplica o modelo salvo em `modelos/` e pergunta só o que é do projeto.
 
 # 3. A execução
 
@@ -228,6 +231,8 @@ depois para a mudança inteira:
 | Ver as ADRs que os planos pedem e ainda faltam | `/spec-adr` (vazio) |
 | Criar, corrigir ou reorganizar o índice das ADRs | `/spec-adr índice` |
 | Criar ou atualizar o design system | `/spec-design-system [proposta, Figma, docs ou o formulário preenchido]` |
+| Usar um design system pronto (ex.: o do GitHub) | `/spec-design-system modelo <slug>` |
+| Guardar um design system que já existe como modelo | `/spec-design-system cadastrar modelo <nome>` |
 | Commitar todas as mudanças | `/spec-semantic-commit` |
 | Lançar uma versão (integração inteira, SemVer, CHANGELOG, tag, GitHub Release com o instalável), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |
@@ -271,7 +276,8 @@ docs/
 └── design/<categoria>.md
 .temp/                       fora do git (está no .gitignore)
 ├── references/              brand/, prompts/, screens/…
-└── design-system-formulario.md   só até a spec-design-system consumi-lo
+├── design-system-formulario.md          só até a spec-design-system consumi-lo
+└── design-system-modelo-formulario.md   só até a spec-design-system salvar o modelo
 ```
 
 - Nomes em kebab-case, sem acentos. ADR com numeração de três dígitos, sequencial, nunca

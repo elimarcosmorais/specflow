@@ -13,6 +13,8 @@ Onde cada documento mora, quem pode mexer nele e quando. Vale em qualquer tarefa
 | `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança, até ser executado | o `/spec-lead` escreve, o usuário aprova, o lead executa e apaga |
 | `.temp/references/` | material de consulta temporário do usuário: marca, prints, prompts | o usuário |
 | `.temp/design-system-formulario.md` | a especificação de entrada do design system, até ser preenchida e consumida | `/spec-design-system` cria, o usuário (ou um agente) preenche, a skill lê |
+| `.temp/design-system-modelo-formulario.md` | o retrato de um design system que já existe, até virar modelo | `/spec-design-system` cria em branco, o usuário preenche, a skill o salva em `modelos/` |
+| `.claude/skills/spec-design-system/modelos/<slug>.md` | os modelos de design system prontos para aplicar | `/spec-design-system` grava, ao cadastrar um modelo (abaixo) |
 | `CLAUDE.md` | o contrato do agente com **este** projeto: stack, comandos reais, convenções, onde coisas novas vão | `/spec-claude` cria e audita, com o usuário; o **fato** que o repo responde, o agente sincroniza livremente (abaixo) |
 | `CHANGELOG.md` | o que mudou para quem usa, em cada versão lançada | `/spec-release`, a cada versão |
 | `.claude/skills/spec-*`, `.claude/agents/spec-*`, `.claude/rules/behavior.md` e `docs.md` | o framework SpecFlow | ninguém no projeto: a `/spec-upgrade` os traz do SpecFlow (abaixo) |
@@ -129,6 +131,11 @@ procedimento para uma skill ou rule do projeto, com nome sem o prefixo `spec-`. 
 `.claude/settings.json` é do projeto e fica fora desta regra. No repositório do próprio SpecFlow
 esses arquivos são a fonte, e editá-los é o trabalho.
 
+A exceção é `.claude/skills/spec-design-system/modelos/`: a `/spec-design-system` grava ali o
+modelo que o usuário cadastra. Modelo criado no projeto nunca existiu no framework, e por isso a
+`/spec-upgrade` o trata como do projeto e não o toca; cadastrado no repositório do SpecFlow, ele
+chega a todos os projetos na atualização seguinte.
+
 ## Planos: temporários
 
 Plano não vira documentação: ele é executado e **apagado pelo `/spec-lead`** no fechamento, e a
@@ -153,7 +160,9 @@ Quem apaga é o usuário; o agente não apaga nem move nada ali.
 O formulário do design system (`.temp/design-system-formulario.md`) mora em `.temp/` pela mesma
 razão: a `/spec-design-system` o cria pré-preenchido e o lê de volta, o usuário (ou outro agente)
 o preenche, e quem o apaga é o usuário. Ele é entrada, não documentação: o que ele responde vai
-para `docs/design-system.md` e `docs/design/`, e nenhum documento permanente o cita.
+para `docs/design-system.md` e `docs/design/`, e nenhum documento permanente o cita. O formulário
+de modelo (`.temp/design-system-modelo-formulario.md`) segue a mesma regra: o que ele responde
+vai para `modelos/<slug>.md`.
 
 ## Nomes
 

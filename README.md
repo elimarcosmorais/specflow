@@ -163,7 +163,7 @@ O que é decisão de produto, e só isso, chega a você.
 |---|---|
 | `/spec-guide` | Tirar dúvidas: qual skill rodar, próximo passo de um plano, onde fica cada documento |
 | `/spec-adr` | Registrar direto uma decisão de arquitetura; `/spec-adr índice` organiza o índice |
-| `/spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface); em projeto novo, entrega um formulário técnico já pré-preenchido e escreve o design system quando ele volta |
+| `/spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface); em projeto novo, entrega um formulário técnico já pré-preenchido e escreve o design system quando ele volta; também guarda modelos de design systems que já existem (ex.: o do GitHub) e aplica um deles com `modelo <slug>`, sem formulário |
 | `/spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
 | `/spec-release` | Lançar uma versão: roda a integração inteira, calcula o número pelos commits, atualiza o `CHANGELOG.md`, cria a tag e o GitHub Release, com o instalável (`.exe`, `.apk`) anexado quando o projeto tem um |
 | `/spec-readme` | Gerar ou completar o `README.md` |
