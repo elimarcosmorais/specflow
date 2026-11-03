@@ -209,8 +209,9 @@ Quando o prompt trouxer os bloqueantes da revisão final:
 1. Corrija **todos**, em qualquer passo em que estejam.
 2. Para cada um, escreva antes de editar uma linha `CAUSA-RAIZ: <por que o código ou o teste
 estava errado>`. Correção que só faz a revisão passar (enfraquecer a asserção, inverter uma
-   flag, apagar o caso de erro) será reprovada de novo. Se o problema já tinha aparecido na
-   tentativa anterior, a correção anterior atacou o sintoma: ataque a origem.
+   flag, apagar o caso de erro) será reprovada de novo. Esta é a **única** correção da revisão
+   final: reprovada na tentativa seguinte, a mudança para e vai ao usuário. Ataque a origem, não
+   o sintoma.
 3. Rode o teste dirigido de cada bloqueante até passar, e os testes dos pacotes que a correção
    tocou. Bloqueante de build ou de lint → o build ou o lint é o teste dirigido dele. **Não rode
    a rodada de fechamento:** logo depois de você, o revisor roda a suíte, o build, o lint e a

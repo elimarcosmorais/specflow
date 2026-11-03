@@ -8,6 +8,9 @@ curta, no fim deste arquivo. -->
 
 **Status:** concluído · <N> passos · revisão aprovada na tentativa <T>
 <!-- ou: parado no passo <N> de `<plano>` — <qual dos quatro motivos da lista de paradas> -->
+<!-- ou: parado na revisão final de `<plano>` — d: reprovada nas 2 tentativas -->
+<!-- LLM-ONLY: <T> é 1 ou 2: a revisão final não tem terceira tentativa (spec-lead, Etapa 6). -->
+
 
 ### O que foi entregue
 
@@ -62,11 +65,16 @@ escreva literalmente "Precisa de você: nada." -->
 - **Decidir:** <o que muda no que o produto entrega> · Recomendo: <…> → `/spec-lead "<pedido pronto>"`
 - **Decidir (risco):** <quem explora, como, e o que ganha, `arquivo:linha`> · (a) <correção> — custa <o que o produto perde> (b) <…> · Recomendo: <x>, porque <…> → `/spec-lead "<pedido pronto>"`
 - **Fazer:** <exige UAC, 2FA, conta externa ou aparelho> → `<comando pronto>`
+- **Destravar:** <passo N | revisão final, B1> `arquivo:linha` — <o que falha ou o que o revisor recusa> · tentei: <a CAUSA-RAIZ de cada tentativa> · não bastou porque <…> · (a) <saída> — custa <…> (b) <…> · Recomendo: <x>, porque <…> → `<comando pronto>`
 
 <!-- LLM-ONLY: risco aberto só chega aqui quando TODA correção muda o que o produto entrega
 (behavior.md, regra 1, motivo c) — e chega como escolha, com o ataque concreto, o custo de cada
 opção e a recomendação. Existe correção que não muda o produto → a tarefa não terminou: volte à
-Etapa 5 ou 6 e corrija. -->
+Etapa 5 ou 6 e corrija.
+"Destravar" é a parada do tipo d (behavior.md, regra 1): um item por passo que falhou 3 vezes
+ou por bloqueante que restou da revisão final reprovada nas 2 tentativas. Ele é o relatório do
+que fazer — nunca "continua reprovado" sem saída, recomendação e comando. -->
+
 
 ### Estado
 

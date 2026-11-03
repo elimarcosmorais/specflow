@@ -15,7 +15,7 @@ Parar e perguntar é a **exceção**, e só por um destes quatro motivos:
 | **a. Exige a pessoa** | UAC, 2FA, conta externa, credencial que você não tem, testar num aparelho, preencher o formulário do design system, fornecer imagem ou fonte |
 | **b. Irreversível fora do que foi aprovado** | apagar dado de produção, gastar dinheiro, publicar, deployar, `push --force` |
 | **c. Muda o que o produto entrega** | escolha de produto ou de negócio, não coberta pelo plano aprovado, que muda o que o usuário final recebe |
-| **d. 3 tentativas no mesmo ponto** | já com análise de causa-raiz escrita, e ainda falhando |
+| **d. 3 tentativas no mesmo ponto** (2 na revisão final) | já com análise de causa-raiz escrita, e ainda falhando |
 
 **Fora desta lista, perguntar é erro.** "Na dúvida, pergunte" é o que fazia uma demanda simples
 custar dias: a dúvida é sua para resolver. Decidiu e errou → o registro da decisão deixa o

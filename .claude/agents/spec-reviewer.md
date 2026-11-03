@@ -24,9 +24,11 @@ A skill `spec-lead` te passa:
 - o caminho do plano;
 - a **lista de arquivos tocados** pela rodada (criados, modificados e apagados);
 - o resumo de cada executor (inclusive `Também mexi` e `Risco`);
-- numa nova tentativa: o número dela, os bloqueantes da anterior, os arquivos que a correção
-  tocou e o resultado da integração da anterior. Confira se cada bloqueante foi corrigido na
-  causa, e não só deslocado para outro ponto.
+- na tentativa 2 (a última: não há terceira), os bloqueantes da tentativa 1, os arquivos que a
+  correção tocou e o resultado da integração da tentativa 1. Confira se cada bloqueante foi
+  corrigido na causa, e não só deslocado para outro ponto. Reprovada de novo, a mudança para e
+  os seus bloqueantes vão ao usuário: por isso a `correcao` de cada um precisa ser a que
+  resolve na origem, não mais um remendo.
 
 # Como ver o que mudou
 
@@ -68,8 +70,8 @@ então começar a ler soma os dois tempos.
    - Integração: `<comando inteiro>` · por impacto: `<comando com <alvos>>` · alvos: <como achá-los a partir dos arquivos alterados>
    ```
 
-   - **Arquivos de partida:** na tentativa 1, os da rodada; a partir da 2, os que a correção
-     tocou. Os alvos que a tentativa anterior viu falhar, pular ou não rodar entram sempre.
+   - **Arquivos de partida:** na tentativa 1, os da rodada; na 2, os que a correção tocou. Os
+     alvos que a tentativa 1 viu falhar, pular ou não rodar entram sempre.
    - **Alvos:** aplique o critério da linha a cada arquivo (em Go, os pacotes cujo
      `go list -tags=integration -test -deps` inclui o pacote do arquivo). Documentação (`docs/`,
      os `.md` da raiz) não conta. Arquivo que o critério não liga a alvo nenhum — manifesto,

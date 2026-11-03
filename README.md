@@ -24,7 +24,7 @@ você ──► /spec-lead "<pedido>"
       │             │
       │             │   com plano: cada passo ──► spec-executor (sessão limpa, até o fim)
       │             │              no fim ──────► spec-reviewer: aprova, ou devolve
-      │             │                             os bloqueantes ao executor
+      │             │                             os bloqueantes ao executor (1 vez)
       └─────────────┘
             │
             ▼
@@ -41,7 +41,7 @@ conserta o que quebra — e só te chama de volta por um dos quatro motivos de u
 | **exige você fisicamente** | UAC, 2FA, conta externa, testar num aparelho, fornecer imagem ou fonte |
 | **é irreversível e fora do plano** | apagar dado de produção, gastar dinheiro, publicar |
 | **muda o que o produto entrega** | escolha de produto que o plano aprovado não cobre |
-| **falhou 3 vezes no mesmo passo** | já com análise de causa-raiz |
+| **falhou 3 vezes no mesmo passo** (2 na revisão final) | já com análise de causa-raiz; o relatório traz o que fazer |
 
 Fora dessa lista, ele decide e segue — e tudo o que decidiu sai no relatório, em "Decisões que
 tomei". É ali que você confere de manhã, em vez de ser acordado.

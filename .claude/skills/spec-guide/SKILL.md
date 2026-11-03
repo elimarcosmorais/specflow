@@ -51,7 +51,7 @@ vai para ele do mesmo jeito: o agente carrega a skill sozinho (`behavior.md`, re
    que cobrem o que mudou                               ▼
    (ou confere à mão), git add        spec-reviewer: revisão FINAL da mudança inteira
           │                           (suíte, build, lint e tela; segurança se Risco: alto)
-          │                           aprovado │ reprovado → executor corrige (até 2) → de novo
+          │                           aprovado │ reprovado → executor corrige (1 vez) → de novo
           │                                             ▼
           │                                  plano apagado (em stage)
           └──────────────────┬──────────────────────────┘
@@ -82,7 +82,7 @@ decisão de que todo passo depende. Depois vem a aprovação do plano. Depois da
 | **a. Exige a pessoa** | UAC, 2FA, conta externa, credencial, testar num aparelho, preencher o formulário do design system, fornecer imagem ou fonte |
 | **b. Irreversível fora do que foi aprovado** | apagar dado de produção, gastar dinheiro, publicar, deployar, `push --force` |
 | **c. Muda o que o produto entrega** | escolha de produto ou de negócio que o plano aprovado não cobre |
-| **d. 3 tentativas no mesmo ponto** | já com causa-raiz escrita, e ainda falhando |
+| **d. 3 tentativas no mesmo ponto** (2 na revisão final) | já com causa-raiz escrita, e ainda falhando |
 
 Fora dessa lista, **perguntar é erro**: decidir é o trabalho do lead, e toda escolha que ele faz
 sai no relatório, em "Decisões que tomei". É ali que o usuário audita a autonomia, em vez de ser
@@ -172,8 +172,9 @@ depois para a mudança inteira:
 
   todos os passos ──► spec-reviewer (revisão final) ──┬─ aprovado ──► fecha
                                                        └─ reprovado ──► um executor corrige todos os
-                                                          bloqueantes (até 2)
-                                                          3ª reprovação → parada (tipo d)
+                                                          bloqueantes (1 vez) → revisão de novo
+                                                          2ª reprovação → parada (tipo d), com o
+                                                          que fazer em cada bloqueante
 ```
 
 - **A equipe:** `spec-executor` (implementa passo ou correção, e cria, atualiza ou substitui as
@@ -192,7 +193,7 @@ depois para a mudança inteira:
   Não existe "melhoria". Os números da rodada aprovada são as provas do relatório.
 - **Integração por impacto.** A linha `Integração:` do `CLAUDE.md` traz o comando inteiro, o
   comando por impacto e o critério dos alvos (em Go, os pacotes que dependem do que mudou). A
-  revisão roda só os alvos da rodada e, numa nova tentativa, só os da correção, mais o que falhou
+  revisão roda só os alvos da rodada e, na tentativa 2, só os da correção, mais o que falhou
   ou pulou antes; arquivo que o critério não liga a alvo nenhum (manifesto, `Taskfile`, CI) pede
   o comando inteiro. Teste fora dos alvos não é pulado (`behavior.md`, regra 3). A integração
   **inteira** roda na `/spec-release`, uma vez por versão, e vermelha não lança.
@@ -302,6 +303,9 @@ docs/
   sugestões sempre acha, e cada passagem de bastão é um lugar para deixar recado. No lugar
   entraram **tarefa dada é tarefa cumprida** (`behavior.md`, regra 2), a **revisão final
   binária** e a **lista fechada de paradas**.
+- A **terceira tentativa** da revisão final (a segunda correção dos bloqueantes): quando a
+  primeira correção não passava, a segunda também não passava, e só adiava o relatório. Hoje são
+  2 tentativas, e a segunda reprovação para com o que fazer em cada bloqueante.
 - Da v1.0, removidas por falta de uso: as skills `spec-rule-create` (rule com as convenções de
   um tema) e `spec-rule-curate` (decidir se um item vira regra, auditar as rules). Regra nova
   vai pela `/spec-claude`.
