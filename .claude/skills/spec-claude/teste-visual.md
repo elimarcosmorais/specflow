@@ -9,13 +9,21 @@ decide quando o repo não tem nenhuma, e aí vira a recomendação da pergunta d
 | Laravel com páginas no navegador (Blade, Livewire, Inertia) | `laravel/framework` no `composer.json` | Laravel Dusk (`laravel/dusk`) | teste em `tests/Browser/`, `php artisan dusk`; na falha, o print fica em `tests/Browser/screenshots/` e o agente o abre |
 | Rails | `rails` no `Gemfile` | system tests (Capybara) | teste em `test/system/`, `bin/rails test:system`; `take_screenshot` no ponto a conferir |
 | Web em JS/TS (React, Vue, Svelte, Angular, Next, Nuxt) ou backend web sem ferramenta própria (Django, Flask, Go, .NET) | `package.json` com o framework de front; ou templates HTML servidos pelo backend | Playwright (`@playwright/test`; em Python, `pytest-playwright`) | `npx playwright test`; `expect(page).toHaveScreenshot()` compara com a imagem aprovada (`--update-snapshots` só quando a mudança visual é a pedida) |
-| Desktop Windows (WPF, WinForms, WinUI, MAUI, Delphi, VB6) | `.csproj` com `UseWPF`/`UseWindowsForms`/`UseWinUI`, `.dproj`, `.vbp` | Windows-MCP (`/spec-windows-mcp`) | o agente abre o app e confere com `Snapshot`/`Screenshot`, clicando e digitando como o usuário |
+| Desktop Windows (WPF, WinForms, WinUI, MAUI, Delphi, VB6) | `.csproj` com `UseWPF`/`UseWindowsForms`/`UseWinUI`, `.dproj`, `.vbp` | Windows-MCP (`/spec-windows-mcp`); com teste de tela automatizado em .NET, também FlaUI (`FlaUI.UIA3`) | Windows-MCP: o agente abre o app e confere com `Snapshot`/`Screenshot`, clicando e digitando como o usuário. FlaUI: teste num projeto xUnit ou NUnit (ex.: `tests/<App>.UiTests/`) que abre o app, opera pela automação da interface e confere o que a tela mostra, `dotnet test` |
 | Electron ou Tauri | `electron` ou `@tauri-apps/api` no `package.json` | Playwright (Electron) ou Windows-MCP (os dois, no Windows) | Electron: `_electron.launch()` do Playwright, preferido porque Electron é o alvo mais pesado do `Snapshot` (chega a pendurar o app); Tauri ou sem teste: Windows-MCP como no desktop |
 | Flutter | `flutter` no `pubspec.yaml` | golden tests | `matchesGoldenFile` em `test/`, `flutter test`; `--update-goldens` só quando a mudança visual é a pedida |
 | React Native ou Expo | `react-native` ou `expo` no `package.json` | Maestro | fluxo YAML em `.maestro/` com `assertVisible` e `takeScreenshot`, `maestro test .maestro/`; precisa de emulador ou aparelho ligado (iOS só no macOS) |
 
 Repo já tem Cypress, Selenium, Detox, Storybook com teste visual (Chromatic, Loki) ou outra
 ferramenta → use a dele, com o comando que estiver nos scripts; não proponha trocar.
+
+**Windows-MCP ou FlaUI.** O Windows-MCP é olhar: o agente confere a tela do passo e nada fica no
+repo. O FlaUI é teste: fica no repo, entra no portão (`spec-check`) por impacto e pega a regressão
+nas versões seguintes, mas é código a manter. Ele precisa da sessão do Windows desbloqueada e
+abre o app de verdade, então roda com a máquina livre. Projeto .NET com tela que muda com
+frequência ou com fluxo crítico → ofereça os dois na pergunta da Etapa 3, com o Windows-MCP como
+recomendado para começar. Delphi e VB6 ficam no Windows-MCP: o FlaUI é biblioteca .NET, e a
+automação da interface do VCL e do VB6 cobre menos controles.
 
 ## Ver a tela sem escrever teste
 
