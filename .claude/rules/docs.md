@@ -16,6 +16,7 @@ Onde cada documento mora, quem pode mexer nele e quando. Vale em qualquer tarefa
 | `.temp/design-system-modelo-formulario.md` | o retrato de um design system que já existe, até virar modelo | `/spec-design-system` cria em branco, o usuário preenche, a skill o salva em `modelos/` |
 | `.claude/skills/spec-design-system/modelos/<slug>.md` | os modelos de design system prontos para aplicar | `/spec-design-system` grava, ao cadastrar um modelo (abaixo) |
 | `CLAUDE.md` | o contrato do agente com **este** projeto: stack, comandos reais, convenções, onde coisas novas vão | `/spec-claude` cria e audita, com o usuário; o **fato** que o repo responde, o agente sincroniza livremente (abaixo) |
+| `.claude/spec-check.json` | os comandos de teste e o mapa "pasta → testes" do portão `spec-check` | o agente, livremente: é fato tirado do repo; a `/spec-upgrade` não o toca |
 | `CHANGELOG.md` | o que mudou para quem usa, em cada versão lançada | `/spec-release`, a cada versão |
 | `.claude/skills/spec-*`, `.claude/agents/spec-*`, `.claude/rules/behavior.md` e `docs.md` | o framework SpecFlow | ninguém no projeto: a `/spec-upgrade` os traz do SpecFlow (abaixo) |
 

@@ -1,6 +1,6 @@
 ---
 name: spec-claude
-description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão, e em projeto com interface, como o agente confere uma mudança de tela (ex.: Dusk no Laravel, Playwright na web, Windows-MCP no desktop Windows) - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e grava direto, sem pedir confirmação: cria o CLAUDE.md se não existe ou, se existe, enxuga e complementa com edições pontuais. Também garante que `.temp/` (material de consulta temporário, não versionado) está no .gitignore do projeto. No fim, relata o que fez e a fonte de cada fato. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". A sincronia de rotina de um fato que o repo responde (comando de teste que mudou, pasta nova) é do /spec-lead, que a resolve sozinho; esta skill é para o que exige o usuário: o arquivo do zero, a auditoria do conjunto e toda regra nova. Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md) nem settings, hooks ou permissões.
+description: Utilitário do framework (transversal). Gera ou audita o CLAUDE.md de um projeto - o contrato do agente de coding com a stack, os comandos reais, as convenções e onde coisas novas vão, e em projeto com interface, como o agente confere uma mudança de tela (Dusk no Laravel, Playwright na web, Windows-MCP no desktop Windows) - a partir de um template enxuto (até ~80 linhas, regras objetivas e negativas). Todo fato sai de um arquivo do repo ou do usuário; o que não tem fonte é perguntado ou fica de fora. Pergunta só o que o repo não responde (sempre o idioma e os anti-padrões que o time mais corrige) e grava direto, sem pedir confirmação - cria o CLAUDE.md se não existe ou, se existe, enxuga e complementa com edições pontuais. Também gera o .claude/spec-check.json (o mapa de testes do portão) e garante que `.temp/` (material de consulta temporário, não versionado) está no .gitignore do projeto. No fim, relata o que fez e a fonte de cada fato. Usar quando o usuário pedir para criar, gerar, auditar, enxugar ou melhorar o CLAUDE.md, ou para "configurar o agente para este projeto". A sincronia de rotina de um fato que o repo responde (comando de teste que mudou, pasta nova) é do /spec-lead, que a resolve sozinho; esta skill é para o que exige o usuário - o arquivo do zero, a auditoria do conjunto e toda regra nova. Não serve para README (documentação para pessoas), regras de comportamento (ficam em .claude/rules/behavior.md) nem settings, hooks ou permissões.
 argument-hint: "[pasta do projeto (opcional; padrão: raiz do repositório)]"
 ---
 
@@ -92,16 +92,11 @@ mostrar ao usuário de onde veio cada regra (Etapa 6). Olhe por três ângulos:
 - **Configuração** (fatos mais firmes): linguagem e versão, framework e libs principais
   (manifest), gerenciador de pacotes (lockfile), comandos de install/dev/build/lint/test
   (scripts, `Makefile`, CI), variáveis de ambiente (`.env.example`).
-  **Integração fora da suíte padrão** (build tag `integration`, `vitest.integration.config.*`,
-  script `test:integration`, grupo do PHPUnit) → linha `Integração:` com o comando inteiro e,
-  quando o ecossistema sabe achar os testes afetados, o comando por impacto e o critério:
-  - Go: `` por impacto: `go test -tags=integration <alvos>` · alvos: os pacotes cujo `go list -tags=integration -test -deps` inclui o pacote de um arquivo alterado ``;
-  - Jest: `` por impacto: `npx jest -c <config> --findRelatedTests <alvos>` · alvos: os arquivos alterados ``.
-
-  O comando por impacto precisa do mesmo ambiente do inteiro: se a task da integração exporta
-  variáveis ou sobe serviços, ele passa por ela, com os alvos como argumento; sem isso, os testes
-  pulam. A task não aceita alvos, ou não há como achá-los → a linha fica só com o comando
-  inteiro, e a revisão a roda inteira.
+  **Testes do projeto** (suíte, build, lint, integração fora da suíte padrão — build tag
+  `integration`, `vitest.integration.config.*`, script `test:integration`, grupo do PHPUnit — e
+  teste de tela automatizado) → `.claude/spec-check.json`, gerado na Etapa 5 como manda a skill
+  [`spec-check`](../spec-check/SKILL.md). Os comandos de integração e de tela moram nele, não
+  no `CLAUDE.md`; uma linha `Integração:` antiga vai para ele e sai do `CLAUDE.md`.
 - **Estrutura:** layout de pastas e 1 ou 2 arquivos exemplares por camada → onde cada tipo de
   arquivo nasce, convenções de organização, código gerado que não se edita à mão. Tem interface
   (componentes, CSS, tokens, janelas)? → habilita as seções UI e Teste visual: procure a
@@ -159,6 +154,9 @@ Grave **direto, sem pedir confirmação**: rodar a skill já é a autorização.
 `CLAUDE.md`; modo complementar → aplique as edições pontuais no arquivo atual (o `git diff`
 mostra depois exatamente o que mudou).
 
+Projeto com testes → grave também o `.claude/spec-check.json` (Etapa 2); já existe → confira os
+comandos e o mapa com o repo e corrija o que estiver falso.
+
 Garanta também que **`.temp/` está fora do git**: é onde mora o material de consulta temporário
 do usuário (`.temp/references/`, rule [`docs.md`](../../rules/docs.md)), criado e apagado toda
 hora, que não se versiona. Rode `git check-ignore -q .temp/`:
@@ -186,6 +184,7 @@ Fontes:
 Comandos extraídos de: <arquivos> (não executados)
 Varredura de {{ }} e <!-- -->: limpa
 .gitignore: .temp/ <já ignorado | acrescentado | sem repositório git>
+spec-check.json: <gerado | corrigido | em dia | projeto sem testes>
 behavior.md: <presente | ausente — copie a .claude/ do framework para o projeto>
 Teste visual: <ferramenta (no repo | a instalar → /spec-lead "instalar <ferramenta>")> (ou: sem interface)
 MCP de tela: <servidor ativo | declarado mas inativo nesta sessão → /spec-windows-mcp ou /spec-playwright-mcp (reativa e verifica) | a configurar → /spec-playwright-mcp (web) ou /spec-windows-mcp (desktop Windows), que já o registra no CLAUDE.md> (ou: sem interface)

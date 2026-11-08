@@ -36,18 +36,18 @@ faz):
    assinatura que mudou, o teste que o passo quebrou, a config, a rota), você toca e diz em
    `Também mexi`. **Atualize as specs** do passo para descrever o comportamento novo, seguindo a
    rule `docs.md` (índice, limite de 300 linhas e subdivisão).
-4. **Prove que terminou:** com os testes do passo verdes no comando dirigido, rode **uma vez** a
-   rodada de fechamento do "Pronto quando": a suíte, o build, o lint e a integração **por
-   impacto** dos arquivos que o passo tocou, pelo critério da linha `Integração:` do `CLAUDE.md`
-   (documentação não conta; arquivo que o critério não liga a alvo nenhum, como manifesto ou
-   `Taskfile`, pede o comando inteiro; sem a linha, a integração que o `CLAUDE.md` pede para a
-   área do passo). Teste de integração fora dos alvos não é pulado: nada que ele exercita
-   mudou. Tudo verde **e nada pulado** antes de responder:
-   leia a contagem de pulados da saída, não só a última linha (Regra 4). Quebrou algo → corrija,
-   rode o teste dirigido do que quebrou até passar e só então o fechamento de novo. Passo com
-   tela → confira-a como manda a seção Teste visual do `CLAUDE.md`:
-   o teste de tela costuma ficar fora da suíte padrão (`php artisan dusk`,
-   `npx playwright test`); se ela indica um MCP de tela, abra a tela e olhe. Sem a seção →
+4. **Prove que terminou:** com os testes do passo verdes no comando dirigido, rode **uma vez** o
+   fechamento do "Pronto quando": `sh .claude/skills/spec-check/check.sh passo '<comando>' …`,
+   com os comandos de teste do passo. Ele roda esses testes, o build e o lint. **Não rode a suíte
+   padrão, a integração nem o teste de tela inteiros**, mesmo que o passo mexa em arquivo
+   compartilhado: isso é do portão que o lead roda no fim (`behavior.md`, regra 8). Saída 0 antes
+   de responder; 2 é teste pulado (Regra 4); 3 é "ainda rodando" → `check.sh esperar`. Quebrou
+   algo → corrija, rode o teste dirigido do que quebrou até passar e só então o fechamento de
+   novo. **Passo com tela:** o spec da tela nasce neste passo e entra no `check.sh passo`. Imagem
+   de referência que o plano manda mudar: regrave uma vez, só nos specs do passo
+   (`--update-snapshots=changed` ou o equivalente da ferramenta), confira o diff das imagens pelo
+   git e rode só os specs regravados; não rode a suíte para descobrir o que mudou. Confira a tela
+   como manda a seção Teste visual do `CLAUDE.md`: se ela indica um MCP de tela, abra a tela e olhe. Sem a seção →
    "não conferi na tela" na saída. Com a seção, a conferência não se pula nem vai para o
    usuário: não conseguiu operar a ferramenta (sem as ferramentas do MCP nesta sessão, mouse em
    uso depois de esperar e tentar de novo) → `parada` (Regra 1).
@@ -123,9 +123,9 @@ vira teste automatizado: só confira que o código permite fazer o roteiro.
 
 **O ciclo roda o teste dirigido, não a suíte.** Ver falhar e ver passar é com o comando que roda
 **só aquele teste** — o que o item do "Pronto quando" traz, ou o equivalente (`go test -run`, o
-arquivo no `vitest`, `--filter`): segundos, não minutos. A suíte inteira e a integração são a
-rodada de fechamento (passo 4 de "Como trabalhar"), **uma vez**: usá-las para acompanhar o
-próprio trabalho multiplica o tempo do passo sem provar nada a mais.
+arquivo no `vitest`, `--filter`): segundos, não minutos. O fechamento é o `check.sh passo`, **uma
+vez** (passo 4 de "Como trabalhar"). Rodar a suíte para acompanhar o próprio trabalho multiplica o
+tempo do passo sem provar nada a mais.
 
 **Verde não é pulado.** Teste que a suíte pulou (`SKIP`, `skipped`, `pending`, `t.Skip`,
 `it.skip`) deixou o item **sem prova**, mesmo com a suíte verde (rule `behavior.md`, regra 3).
@@ -214,9 +214,8 @@ estava errado>`. Correção que só faz a revisão passar (enfraquecer a asserç
    o sintoma.
 3. Rode o teste dirigido de cada bloqueante até passar, e os testes dos pacotes que a correção
    tocou. Bloqueante de build ou de lint → o build ou o lint é o teste dirigido dele. **Não rode
-   a rodada de fechamento:** logo depois de você, o revisor roda a suíte, o build, o lint e a
-   integração do que a correção alcança sobre este mesmo código, e rodá-los antes só dobra o
-   tempo da correção. A exceção
+   o fechamento:** logo depois de você, o lead roda o portão (`check.sh mudanca`) sobre este
+   mesmo código, e rodá-lo antes só dobra o tempo da correção. A exceção
    é a correção que o lead pede **no meio do plano**, porque a prova do passo não se reproduziu:
    esse passo ainda vai servir de base ao seguinte, então feche-o como no passo 4 de "Como
    trabalhar".
@@ -239,7 +238,7 @@ Responda **apenas** este bloco (sem diff, sem explicação longa):
 ```
 RESULTADO: concluído | parada
 Arquivos: criados `a`, `b` · modificados `c`
-Testes: `<comando>` → N passando, M falhando, P pulados · build: ok | falhou | n/a
+Testes: `check.sh passo …` → <status do spec-check; N passando, M falhando, P pulados> · build: ok | falhou | n/a
 Pulados: <teste> — <motivo do pulo> · <como resolvi> | nenhum
 Tela: `<comando>` → ok | falhou · conferida por <MCP>: <o que viu> · não conferi na tela   (só se o passo tem tela)
 CAUSA-RAIZ: <uma linha por bloqueante corrigido>          (só no modo correção)

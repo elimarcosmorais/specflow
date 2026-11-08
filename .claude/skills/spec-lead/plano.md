@@ -64,7 +64,7 @@ desfaz cada uma, ou "irreversível: <plano>").>
 - **Pronto quando:**
   - [ ] <teste: entrada → resultado concreto> (CA-1) · `<comando que roda só este teste>`
   - [ ] `docs/specs/<assunto>.md` descreve <o comportamento novo>
-  - [ ] fechamento, uma vez no fim do passo: `<suíte, build e lint do projeto>` sem erros nem pulados
+  - [ ] fechamento, uma vez no fim do passo: `sh .claude/skills/spec-check/check.sh passo '<comando>' …`, com os comandos acima, saída 0
 
 ### Passo 2 — <nome>
 
@@ -78,8 +78,10 @@ desfaz cada uma, ou "irreversível: <plano>").>
 "Arquivos" é onde o passo deve mexer, não uma cerca: o que ele precisar a mais para funcionar
 (chamador, teste, config) o executor toca e diz. "Pronto quando" só tem o que um agente prova —
 teste com resultado concreto, comando, trecho da spec; nunca "funciona". Cada item de teste leva
-o comando que roda SÓ ele: é com ele que o executor itera e que o lead confere. A suíte, o build
-e o lint ficam num item só de fechamento, que o executor roda uma vez, no fim do passo. Todo CA que não é
+o comando que roda SÓ ele: é com ele que o executor itera. O item de fechamento é o check.sh
+passo com esses comandos, uma vez no fim do passo. Nenhum passo pede suíte inteira (padrão, de
+integração ou de tela): ela é do portão, na revisão final. O teste de tela nasce no passo que faz
+a tela, nunca num passo separado no fim. Todo CA que não é
 "(manual: …)" aparece em algum "Pronto quando", e toda spec afetada é atualizada pelo passo que
 muda aquele comportamento. "Risco: alto" só no passo que toca autenticação, autorização,
 pagamentos, segredos ou dados pessoais: com ele, a revisão final aplica o checklist de

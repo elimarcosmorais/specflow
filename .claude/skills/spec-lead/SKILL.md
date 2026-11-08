@@ -26,8 +26,8 @@ há o que perguntar, e a aprovação do plano.
 1. **O tamanho decide quem escreve.** No **caminho direto** você faz o trabalho inteiro — o
    código, o teste que muda junto, a spec — porque passar o bastão custaria mais que a mudança
    (Etapa 3). No **caminho planejado** você não escreve código: código, testes, specs e ADRs são
-   do `spec-executor`, e você escreve o plano, roda git e os comandos de teste, build e lint, e
-   monta a **precondição** deles (subir ou parar um serviço, liberar uma porta, gerar o dado ou
+   do `spec-executor`, e você escreve o plano, roda git e o `spec-check` e monta a
+   **precondição** dele (subir ou parar um serviço, liberar uma porta, gerar o dado ou
    o pacote de teste, exportar uma variável). Precondição é ambiente, não código.
 2. **O usuário só entra antes de executar.** Antes do plano, **uma** rodada de perguntas
    (`AskUserQuestion`): do que é decisão de produto e, em projeto novo, da fundação — nele, a
@@ -54,7 +54,7 @@ há o que perguntar, e a aprovação do plano.
 | Agent | Faz | Você chama quando |
 |---|---|---|
 | `spec-executor` | implementa um passo do plano ou a correção dos bloqueantes, até o fim | a cada passo, e a cada reprovação |
-| `spec-reviewer` | roda a suíte inteira e revisa o diff da mudança toda; aprova ou reprova, sem "melhoria" | uma vez, no fim do plano — de novo só depois de uma correção |
+| `spec-reviewer` | revisa o diff da mudança toda sobre o portão verde, sem rodar testes; aprova ou reprova, sem "melhoria" | uma vez, no fim do plano — de novo só depois de uma correção |
 
 O caminho direto não chama nenhum dos dois.
 
@@ -128,7 +128,8 @@ Mudança pequena e clara não paga o custo de passar o bastão: você faz o trab
 2. **Prove na medida da mudança** (`behavior.md`, regra 3) — não a suíte inteira:
    - ache o que cobre o que mudou: `Grep` do texto, símbolo ou rota, **antigo e novo**, nas
      pastas de teste (inclusive as de tela, como `tests/Browser`, `e2e/`);
-   - achou → rode **só esses** testes, verdes e sem pulo;
+   - achou → rode **só esses**, com `sh .claude/skills/spec-check/check.sh passo '<comando>'`:
+     saída 0, verde e sem pulo;
    - não achou → a prova é a conferência mecânica: o valor antigo não aparece mais onde não
      devia (`grep` vazio) e a linha nova diz o que foi pedido;
    - o projeto tem lint ou formatador → rode-o nos arquivos tocados.
@@ -173,10 +174,15 @@ Mudança pequena e clara não paga o custo de passar o bastão: você faz o trab
      passos. Mudança grande é um plano com mais passos, nunca vários planos.
    - **"Pronto quando" é contrato:** o valor, o status, a mensagem literal, o comando verde —
      nunca "funciona" ou "testado". Cada item de teste leva o comando que roda **só ele** — é com
-     ele que o executor itera e que você confere (Etapa 5, item 4); a suíte, o build e o lint vão
-     num item de fechamento, que o executor roda uma vez, no fim do passo. Todo CA que não é
-     `(manual: …)` aparece em algum passo, e
+     ele que o executor itera; o item de fechamento é o `check.sh passo` com esses comandos, que
+     o executor roda uma vez e você confere (Etapa 5, item 4). **Nenhum passo pede suíte
+     inteira**, nem padrão, nem de integração, nem de tela: ela é do portão (Etapa 6). Todo CA que
+     não é `(manual: …)` aparece em algum passo, e
      projeto sem suíte naquela camada leva a conferência mecânica (`behavior.md`, regra 3).
+   - **O teste de tela nasce no passo que faz a tela**, no "Pronto quando" dele, nunca num passo
+     separado no fim. Imagem de referência que o passo muda vem dita nele, com os specs regravados.
+   - **Portão.** Projeto com testes e sem `.claude/spec-check.json` → o passo 1 o gera, como manda
+     a skill [`spec-check`](../spec-check/SKILL.md): é fato tirado do repo, não pergunta.
    - **A spec anda com o passo** que muda o comportamento dela: entra em "Arquivos" e numa linha
      do "Pronto quando" (rule `docs.md`).
    - **Nenhum passo pode precisar do usuário.** Decisão em aberto você toma e registra em
@@ -228,8 +234,9 @@ Na ordem, um de cada vez.
    ```
 
    Log: `[passo 2] executando…` (risco alto: `[passo 2] executando… (risco alto: pagamentos)`)
-4. **Conferir a prova.** Rode você mesmo o comando de teste dirigido do "Pronto quando" (não a
-   suíte inteira: ela é da revisão final) e leia a contagem de pulados.
+4. **Conferir a prova.** Rode o `check.sh passo` do fechamento, com os mesmos comandos do
+   "Pronto quando", e leia a saída (0 verde, 1 vermelho, 2 pulou, 3 → `check.sh esperar`). Com o
+   código igual ao que o executor deixou, o resultado vem do cache em segundos.
 
    | Resultado | O que fazer |
    |---|---|
@@ -246,11 +253,24 @@ Na ordem, um de cada vez.
 
 Com todos os passos do plano `[x]`:
 
-1. Chame o **`spec-reviewer`**:
+1. **Portão.** `sh .claude/skills/spec-check/check.sh mudanca` (saída 3 → `check.sh esperar`). Na
+   tentativa 2, acrescente `--arquivos <os que a correção tocou>`: integração e tela rodam só o
+   que a correção alcança, mais o que falhou antes. Projeto sem testes e sem
+   `.claude/spec-check.json` → pule para o item 2.
+
+   | Saída | O que fazer |
+   |---|---|
+   | `0` | siga |
+   | `1` | **não chame o revisor:** um executor em modo correção, com a saída, `git add` do que ele tocou e o portão de novo. Não conta como tentativa da revisão; 3 no mesmo ponto → parada do tipo **d** |
+   | `2` | precondição (abaixo) |
+
+   Log: `[portão] verde · suíte ok · tela por impacto: 2 specs`
+2. Chame o **`spec-reviewer`**:
 
    ```
    Revisão final do plano <caminho>. Tentativa <T> de 2.
    Risco alto: passo <N> — <área> | nenhum
+   Portão: .git/spec-check/ultimo.json
 
    Arquivos da rodada: criados <lista> · modificados <lista> · apagados <lista>
 
@@ -260,27 +280,22 @@ Com todos os passos do plano `[x]`:
    Bloqueantes da tentativa 1:    (só na tentativa 2)
    <lista>
    Arquivos da correção: <os que o executor tocou nela>
-   Integração da tentativa 1: <alcance e resultado; falhas e pulos dela> | n/a
    ```
 
-   Na tentativa 2, a integração roda só sobre o que a correção alcança (mais o que falhou ou
-   pulou antes): por isso os dois últimos campos.
-
-   Log: `[revisão] aprovado · 412 testes, 0 pulados | reprovado (3 bloqueantes)`
-2. **Aprovado** → Etapa 7. Os números da suíte, do build, do lint e da tela que ele rodou são as
-   provas do relatório.
-3. **Reprovado** na tentativa 1 → chame **um** executor em modo correção com **todos** os
+   Log: `[revisão] aprovado | reprovado (3 bloqueantes)`
+3. **Aprovado** → Etapa 7. O `ultimo.json` do portão verde traz as provas do relatório.
+4. **Reprovado** na tentativa 1 → chame **um** executor em modo correção com **todos** os
    bloqueantes, `git add` do que ele tocou e volte ao item 1. É a **única** correção da revisão.
    Log: `[revisão] correção…`.
-4. **Reprovado** na tentativa 2 → parada do tipo **d**: não há terceira tentativa, porque
+5. **Reprovado** na tentativa 2 → parada do tipo **d**: não há terceira tentativa, porque
    correção que não passou na segunda não passa na terceira — ela só adia o relatório. O código
    continua em stage e o plano fica. O relatório (Etapa 8) traz, por bloqueante que restou, o que
    fazer: `arquivo:linha`, o que o revisor recusa, a `CAUSA-RAIZ` que a correção atacou e por que
    não bastou (compare os bloqueantes das duas tentativas), as saídas concretas com o custo de
    cada uma, a sua recomendação e o comando pronto.
 
-**Precondição.** A suíte não rodou, ou pulou por falta de pacote, serviço, porta ou variável →
-monte-a (regra 1) e chame a revisão de novo; isso não conta como tentativa. Esgotou o que você
+**Precondição.** O portão não rodou, ou pulou por falta de pacote, serviço, porta ou variável →
+monte-a (regra 1) e rode o portão de novo; isso não conta como tentativa. Esgotou o que você
 pode fazer e ainda falta prova → é parada da lista, com o teste, o motivo e as opções concretas.
 
 ## Etapa 7 — Fechar
@@ -297,7 +312,7 @@ pode fazer e ainda falta prova → é parada da lista, com o teste, o motivo e a
 ## Etapa 8 — Relatório
 
 Preencha o [template](relatorio.md) — no caminho direto, a forma curta dele. Ele não tem linha
-livre: toda linha vem de um campo do executor, do JSON da revisão final, da Etapa 7 ou, no
+livre: toda linha vem de um campo do executor, do `ultimo.json` do portão, do JSON da revisão final, da Etapa 7 ou, no
 caminho direto, do que você mesmo fez e rodou.
 
 Antes de escrever qualquer coisa em **"Precisa de você"**, passe o item por esta ordem:

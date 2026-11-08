@@ -36,11 +36,11 @@ aberto" sem ação para o usuário não existe: risco aberto é a linha "Decidir
 | build | `<comando>` | ok |
 | lint | `<comando>` | ok |
 | integração | `<comando>` | <alcance: por impacto em <alvos> \| inteira \| nenhum alvo> · ok |
-| tela | <teste de tela ou MCP> | <o que viu> |
+| tela | <comando de tela ou MCP> | <alcance: por impacto em <alvos> \| inteira \| nenhum alvo> · <o que viu> |
 
 **Sem prova:** <o que ficou> — <por quê> | nada
 
-<!-- LLM-ONLY: os números saem da rodada da revisão final aprovada. "0 pulados" é literal
+<!-- LLM-ONLY: os números saem do ultimo.json do portão verde (check.sh mudanca). "0 pulados" é literal
 (behavior.md, regra 3). Pulo que você não conseguiu resolver entra em "Sem prova", com o nome do
 teste e o motivo, e nunca na linha de verde. -->
 

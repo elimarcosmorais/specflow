@@ -68,10 +68,10 @@ serviço, porta, dado de teste) é **sua para montar**, não tarefa do usuário 
 novo. Não conseguiu → conte o pulado junto com o não rodado, com o nome do teste e o motivo, e
 nunca o apresente como prova: o item que ele deveria provar continua **sem prova**.
 
-**Fora do alcance não é pulado.** A integração por impacto (linha `Integração:` do `CLAUDE.md`)
-roda só os testes que dependem do que mudou: o que ela não roda não tinha nada a provar sobre a
-mudança, e a `/spec-release` o roda inteiro a cada versão. Pulado é o teste do alcance que rodou e
-não exerceu.
+**Fora do alcance não é pulado.** A integração e o teste de tela rodam por impacto (`spec-check`,
+regra 8): só os testes que dependem do que mudou. O que não rodou não tinha nada a provar sobre a
+mudança, e a `/spec-release` roda tudo a cada versão. Pulado é o teste do alcance que rodou e não
+exerceu.
 
 **Projeto sem suíte não impede provar.** Onde não há o que rodar naquela camada, a prova é a
 conferência mecânica que o "Pronto quando" descreve: abrir o link e ver que resolve, conferir
@@ -160,6 +160,19 @@ Isto não é parada nem pergunta: o usuário pediu a mudança, e a `spec-lead` �
 Ficam de fora: pergunta, explicação ou leitura que não muda nada; a skill do framework que o
 usuário chamou para o que ela faz (`/spec-semantic-commit`, `/spec-claude`, `/spec-adr`…); e quem
 já está no fluxo, ou seja, a própria `spec-lead` e os agents que ela chama.
+
+## 8. Teste roda pelo `spec-check`
+
+A prova de que algo funciona sai de `sh .claude/skills/spec-check/check.sh`: é ele que escolhe o
+alcance, roda fora da sessão, não repete o que já passou no mesmo código e grava o resultado. O
+modo diz o que roda (`passo`, `mudanca` ou `versao`), e **nenhum passo roda suíte inteira**. A
+exceção é o ciclo escrever → ver falhar → ver passar: ali o teste dirigido roda direto, porque são
+segundos.
+
+Não embrulhe teste em `timeout` nem acompanhe log com laço de `grep` ou `sleep`: cada turno de
+vigia gasta contexto sem provar nada. Saída 3 do script é "ainda rodando": chame `check.sh
+esperar`. Imagem de referência que o plano manda mudar se regrava uma vez, se confere pelo diff do
+git e se confirma só nos specs regravados, nunca com uma rodada para descobrir o que mudou.
 
 ---
 

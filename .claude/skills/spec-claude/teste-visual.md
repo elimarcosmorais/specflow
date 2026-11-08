@@ -32,6 +32,20 @@ Projeto web com Playwright → o mesmo teste checa acessibilidade com `@axe-core
 de contraste que ele define (AA ou AAA) nas tags. Só entra na seção Teste visual se o pacote já
 está no repo ou se o usuário o escolher na Etapa 3; sem isso, fica de fora.
 
+## Suíte de tela barata
+
+Teste de tela custa tempo em toda rodada, multiplicado pela matriz de larguras e temas. Em teste
+automatizado:
+
+- **Imagem de referência recorta a área da tela** (`expect(page.locator('main')).toHaveScreenshot()`,
+  não a página inteira), e a moldura (sidebar, cabeçalho) é fotografada só no spec dela. Senão,
+  todo item novo na sidebar muda a imagem de todas as telas.
+- **Comportamento roda numa combinação; aparência, na matriz.** Clicar, conferir texto e conferir
+  a requisição não mudam com o tema. Só a imagem de referência, a acessibilidade e o layout
+  responsivo percorrem as larguras e os temas.
+
+O alcance por impacto do teste de tela fica no `.claude/spec-check.json` (skill `spec-check`).
+
 ## O que vai para o `CLAUDE.md`
 
 A seção **Teste visual** do template, em 2 a 4 bullets, só com fato que tem fonte:
@@ -43,7 +57,8 @@ A seção **Teste visual** do template, em 2 a 4 bullets, só com fato que tem f
   conseguiu usar a ferramenta → pergunte no chat, sem pular a conferência nem passá-la ao
   usuário;
 - o que não fazer, se houver: atualizar imagem de referência (`--update-snapshots`,
-  `--update-goldens`) sem a mudança visual ter sido pedida.
+  `--update-goldens`) sem a mudança visual ter sido pedida;
+- em teste automatizado, as duas regras de "Suíte de tela barata".
 
 Ferramenta recomendada que **ainda não está instalada** (o usuário a escolheu na Etapa 3): a
 seção diz qual é, sem comando, e a instalação vai para a Etapa 6 como próximo passo. Instalar é

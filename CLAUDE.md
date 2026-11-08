@@ -24,9 +24,11 @@ chega sem o `/spec-lead` vai para ele do mesmo jeito (regra 7 da `behavior.md`).
 |---|---|
 | Ponto único de contato: lê o código e decide; faz sozinho a mudança pequena; na maior, escreve o plano, confere cada passo, fecha e relata | skill `spec-lead` |
 | Implementa um passo do plano ou a correção dos bloqueantes; cria, atualiza e substitui as ADRs que o passo pede | `spec-executor` |
-| Revisão final, binária, da mudança inteira (segurança quando há `Risco: alto`) | `spec-reviewer` |
+| Revisão final, binária, da mudança inteira, sem rodar testes (segurança quando há `Risco: alto`) | `spec-reviewer` |
 
-Tarefa dada é tarefa cumprida: não há fila de débito, plano secundário nem "melhoria".
+Tarefa dada é tarefa cumprida: não há fila de débito, plano secundário nem "melhoria". Nenhum
+agent roda testes: quem roda é o portão `spec-check` (`check.sh`), no passo, na mudança e na
+versão, cada um na medida dele (regra 8 da `behavior.md`).
 
 Skills **utilitárias**:
 
@@ -36,7 +38,8 @@ Skills **utilitárias**:
 | Decisão de arquitetura (ADR) e o índice delas | `spec-adr` |
 | Design system (obrigatório com interface), do zero ou a partir de um modelo salvo | `spec-design-system` |
 | Commit semântico | `spec-semantic-commit` |
-| Versão: integração inteira, SemVer, CHANGELOG, tag e GitHub Release com os instaláveis | `spec-release` |
+| Portão de testes: o que rodar pelo `git diff`, sem repetir o que já passou | `spec-check` |
+| Versão: portão inteiro, SemVer, CHANGELOG, tag e GitHub Release com os instaláveis | `spec-release` |
 | README do projeto | `spec-readme` |
 | CLAUDE.md do projeto | `spec-claude` |
 | Windows-MCP: agente vê e opera a tela (só Windows) | `spec-windows-mcp` |
@@ -70,7 +73,8 @@ O fluxo, a estrutura de diretórios e as convenções estão na skill `spec-guid
 criar skills e documentos, e atualize-a quando o fluxo mudar.
 
 - Skills: `.claude/skills/<nome-da-skill>/SKILL.md` (templates ao lado: a `spec-lead` tem
-  `plano.md` e `relatorio.md`)
+  `plano.md` e `relatorio.md`; a `spec-check` tem o `check.sh`, em POSIX sh e com fim de linha
+  LF, testado num repositório descartável antes de cada mudança)
 - Agents: `.claude/agents/<nome-do-agent>.md`
 - Rules: `.claude/rules/<nome>.md` (`behavior.md`, as regras de comportamento; `docs.md`, onde
   cada documento mora e quem mexe nele)

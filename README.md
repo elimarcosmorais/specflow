@@ -52,8 +52,8 @@ de ninguém: não vira nota, fila nem plano para depois. A revisão é binária:
 o que um sênior recusaria num PR; "melhoria" e "sugestão" não existem. A única coisa que sobe
 ao relatório sem ser pedida é **risco** — segredo, dado pessoal ou de pagamento exposto.
 
-E o plano só é apagado quando **acaba**: todo checkbox marcado, suíte, build e lint inteiros
-verdes, sem um único teste pulado, e a revisão final aprovada. Faltou prova, o lead monta a
+E o plano só é apagado quando **acaba**: todo checkbox marcado, o portão de testes com suíte,
+build e lint inteiros verdes, sem um único teste pulado, e a revisão final aprovada. Faltou prova, o lead monta a
 precondição e roda de novo; quebrou, ele conserta. Plano com passo pendente fica, e `/spec-lead continuar` retoma.
 
 O que sobrevive à mudança é a documentação viva em `docs/`, que o agente mantém sozinho, junto
@@ -152,7 +152,12 @@ Na mudança planejada, ela coordena dois agents, cada um em sessão isolada com 
 | Agent | Faz |
 |---|---|
 | `spec-executor` | Implementa um passo do plano ou a correção dos bloqueantes, até o fim: código, testes que provam, specs e as ADRs que o passo cria, atualiza ou substitui |
-| `spec-reviewer` | Revisão final da mudança inteira: roda a suíte, o build, o lint e a integração do que a mudança alcança, confere o plano e, com risco alto, a segurança; aprova ou reprova, sem "melhoria" |
+| `spec-reviewer` | Revisão final da mudança inteira, sobre o portão de testes verde e sem rodar testes: confere o plano e, com risco alto, a segurança; aprova ou reprova, sem "melhoria" |
+
+Os testes não são rodados por nenhum agent: quem roda é o portão `spec-check`, um script que
+decide o alcance pelo `git diff`, não repete o que já passou no mesmo código e roda cada nível na
+medida: no passo, só os testes dele; antes da revisão, a suíte inteira e a integração e a tela do
+que mudou; na versão, tudo.
 
 Na revisão, só o que um sênior recusaria num PR volta para correção; o resto ele aceita calado.
 O que é decisão de produto, e só isso, chega a você.
@@ -165,7 +170,8 @@ O que é decisão de produto, e só isso, chega a você.
 | `/spec-adr` | Registrar direto uma decisão de arquitetura; `/spec-adr índice` organiza o índice |
 | `/spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface); em projeto novo, entrega um formulário técnico já pré-preenchido e escreve o design system quando ele volta; também guarda modelos de design systems que já existem (ex.: o do GitHub) e aplica um deles com `modelo <slug>`, sem formulário |
 | `/spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
-| `/spec-release` | Lançar uma versão: roda a integração inteira, calcula o número pelos commits, atualiza o `CHANGELOG.md`, cria a tag e o GitHub Release, com o instalável (`.exe`, `.apk`) anexado quando o projeto tem um |
+| `/spec-check` | Rodar o portão de testes na mão, ou criar e corrigir o mapa de impacto dele (`.claude/spec-check.json`) |
+| `/spec-release` | Lançar uma versão: roda o portão inteiro (suíte, integração e tela), calcula o número pelos commits, atualiza o `CHANGELOG.md`, cria a tag e o GitHub Release, com o instalável (`.exe`, `.apk`) anexado quando o projeto tem um |
 | `/spec-readme` | Gerar ou completar o `README.md` |
 | `/spec-claude` | Gerar, auditar ou enxugar o `CLAUDE.md`, e acrescentar uma regra a ele (e pôr `.temp/` no `.gitignore`). Manter os **fatos** dele em dia — comando de teste, stack, pastas — é do próprio lead, sem você |
 | `/spec-windows-mcp` | Configurar o Windows-MCP para o agente ver e operar a tela (só Windows) |

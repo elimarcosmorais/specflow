@@ -49,8 +49,11 @@ vai para ele do mesmo jeito: o agente carrega a skill sozinho (`behavior.md`, re
    o lead faz sozinho:                   por passo: spec-executor → o lead confere
    edita, roda só os testes              o teste do passo → git add
    que cobrem o que mudou                               ▼
-   (ou confere à mão), git add        spec-reviewer: revisão FINAL da mudança inteira
-          │                           (suíte, build, lint e tela; segurança se Risco: alto)
+   (ou confere à mão), git add        portão: check.sh mudanca (suíte; integração e
+          │                           tela por impacto) · vermelho volta ao executor
+          │                                             ▼
+          │                           spec-reviewer: revisão FINAL do diff inteiro
+          │                           (sem rodar testes; segurança se Risco: alto)
           │                           aprovado │ reprovado → executor corrige (1 vez) → de novo
           │                                             ▼
           │                                  plano apagado (em stage)
@@ -183,25 +186,31 @@ depois para a mudança inteira:
   plano, conferir cada passo — e, no caminho direto, fazer a mudança inteira sozinho.
 - **Executor, por passo.** Contexto limpo, só o passo. "Arquivos" não é cerca: o que o passo
   precisa para funcionar ele toca e diz em `Também mexi`. O que não atrapalha o passo ele não
-  toca, nem anota. Itera com o teste dirigido de cada item do "Pronto quando"; a suíte, o build,
-  o lint e a integração por impacto rodam **uma vez**, no fechamento do passo. Na correção dos bloqueantes
-  da revisão, nem isso: ele roda só os testes do que corrigiu, porque o revisor roda tudo logo
-  em seguida.
-- **Revisão, uma só.** No fim, sobre o diff inteiro em stage: dispara a suíte, o build, o lint, a
-  integração por impacto e o teste de tela em segundo plano e, enquanto rodam, confere cada "Pronto quando", o escopo, as ADRs, a arquitetura e, com passo
+  toca, nem anota. Itera com o teste dirigido de cada item do "Pronto quando" e fecha **uma
+  vez** com `check.sh passo` (os testes do passo, o build e o lint). Nunca roda suíte inteira.
+  Na correção dos bloqueantes, nem o fechamento: o portão roda logo em seguida.
+- **Portão (`spec-check`).** Um script roda os testes, não um agent: decide o alcance pelo
+  `git diff` e pelo mapa do `.claude/spec-check.json`, roda fora da sessão e não repete, pelo
+  hash do código, o que já passou. Três níveis:
+
+  | Nível | Quem chama | Roda |
+  |---|---|---|
+  | `passo` | executor; o lead confere, pelo cache | testes do passo, build, lint |
+  | `mudanca` | lead, antes da revisão final | suíte, build e lint inteiros; integração e tela por impacto |
+  | `versao` | `/spec-release` | tudo inteiro; vermelho não lança |
+
+  Teste fora do alcance não é pulado (`behavior.md`, regra 3). Vermelho no `mudanca` volta ao
+  executor sem gastar a revisão. Na tentativa 2, o portão roda só o que a correção alcança, mais
+  o que falhou antes.
+- **Revisão, uma só.** No fim, sobre o diff inteiro em stage e o portão verde: **não roda
+  testes**; confere cada "Pronto quando", o escopo, as ADRs, a arquitetura e, com passo
   `Risco: alto`, a segurança. **Binária:** aprovado, ou bloqueantes que voltam ao executor.
-  Não existe "melhoria". Os números da rodada aprovada são as provas do relatório.
-- **Integração por impacto.** A linha `Integração:` do `CLAUDE.md` traz o comando inteiro, o
-  comando por impacto e o critério dos alvos (em Go, os pacotes que dependem do que mudou). A
-  revisão roda só os alvos da rodada e, na tentativa 2, só os da correção, mais o que falhou
-  ou pulou antes; arquivo que o critério não liga a alvo nenhum (manifesto, `Taskfile`, CI) pede
-  o comando inteiro. Teste fora dos alvos não é pulado (`behavior.md`, regra 3). A integração
-  **inteira** roda na `/spec-release`, uma vez por versão, e vermelha não lança.
+  Não existe "melhoria". O resultado do portão é a prova do relatório.
 - **Git:** o passo conferido fica em stage, nunca commitado. A revisão final lê
   `git diff --staged` da rodada inteira.
-- **Fechamento:** revisão aprovada, com suíte, build e lint **inteiros** verdes e **sem teste
-  pulado** → o lead apaga o plano (remoção em stage, entra no mesmo commit). Não rodou ou verde
-  com pulo → ele monta a precondição (pacote, variável, serviço, porta) e revisa de novo, porque
+- **Fechamento:** portão verde (suíte, build e lint **inteiros**, **sem teste pulado**) e revisão
+  aprovada → o lead apaga o plano (remoção em stage, entra no mesmo commit). Não rodou ou verde
+  com pulo → ele monta a precondição (pacote, variável, serviço, porta) e roda o portão de novo, porque
   teste pulado não é prova (`behavior.md`, regra 3). Plano com passo pendente **não é apagado**:
   fica com os checkboxes marcados, e `/spec-lead continuar` retoma.
 - **Relatório** ([template](../spec-lead/relatorio.md)): O que foi entregue · Provas · Decisões
@@ -235,7 +244,8 @@ depois para a mudança inteira:
 | Usar um design system pronto (ex.: o do GitHub) | `/spec-design-system modelo <slug>` |
 | Guardar um design system que já existe como modelo | `/spec-design-system cadastrar modelo <nome>` |
 | Commitar todas as mudanças | `/spec-semantic-commit` |
-| Lançar uma versão (integração inteira, SemVer, CHANGELOG, tag, GitHub Release com o instalável), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
+| Lançar uma versão (portão inteiro, SemVer, CHANGELOG, tag, GitHub Release com o instalável), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
+| Rodar o portão de testes na mão, ou criar e corrigir o mapa de impacto (`.claude/spec-check.json`) | `/spec-check [passo <comandos> \| mudanca \| versao]` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |
 | Criar, auditar ou enxugar o CLAUDE.md, ou acrescentar uma regra a ele (e garantir `.temp/` no `.gitignore`) | `/spec-claude [pasta]` |
 | Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/spec-windows-mcp [ferramentas extras]` |
@@ -263,9 +273,10 @@ CLAUDE.md, README.md, CHANGELOG.md (só depois da primeira versão)
 .claude/
 ├── skills/spec-<nome>/SKILL.md (+ ao lado: template.md quando gera documento, arquivo de
 │   consulta ou script quando a skill precisa — ex.: plano.md e relatorio.md na spec-lead,
-│   uso.md e verificar.py nas skills de MCP)
+│   check.sh na spec-check, uso.md e verificar.py nas skills de MCP)
 ├── agents/spec-executor.md, spec-reviewer.md
 ├── rules/behavior.md, docs.md (sempre) e <tema>.md (só ao tocar os paths dela)
+├── spec-check.json          do projeto: comandos de teste e mapa de impacto do portão
 └── settings.json            do projeto; o framework só junta nele as regras `ask` (ex.: a que
                              segura o `RunAs` até o usuário chegar, regra 5) — /spec-upgrade
 docs/
@@ -303,6 +314,10 @@ docs/
   sugestões sempre acha, e cada passagem de bastão é um lugar para deixar recado. No lugar
   entraram **tarefa dada é tarefa cumprida** (`behavior.md`, regra 2), a **revisão final
   binária** e a **lista fechada de paradas**.
+- Os **agents rodando testes**: executor, lead e revisor rodavam cada um a sua rodada, o mesmo
+  teste sobre o mesmo código, e o revisor rodava o teste de tela inteiro a cada tentativa. Num
+  módulo, um passo chegou a 131 min, 97 deles em três rodadas e2e inteiras de 35 min, para provar
+  um spec de 3 min. Hoje quem roda é o `spec-check`, e cada nível roda só o que lhe cabe.
 - A **terceira tentativa** da revisão final (a segunda correção dos bloqueantes): quando a
   primeira correção não passava, a segunda também não passava, e só adiava o relatório. Hoje são
   2 tentativas, e a segunda reprovação para com o que fazer em cada bloqueante.
