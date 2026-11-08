@@ -43,7 +43,10 @@ faz):
    compartilhado: isso é do portão que o lead roda no fim (`behavior.md`, regra 8). Saída 0 antes
    de responder; 2 é teste pulado (Regra 4); 3 é "ainda rodando" → `check.sh esperar`. Quebrou
    algo → corrija, rode o teste dirigido do que quebrou até passar e só então o fechamento de
-   novo. **Passo com tela:** o spec da tela nasce neste passo e entra no `check.sh passo`. Imagem
+   novo. **Teste novo precisa estar no mapa:** arquivo de teste que nenhuma linha do
+   `.claude/spec-check.json` alcança deixa o portão do lead vermelho; acrescente a linha e rode
+   `check.sh auditar` até sair 0. O mesmo vale para o passo que cria ou edita o arquivo.
+   **Passo com tela:** o spec da tela nasce neste passo e entra no `check.sh passo`. Imagem
    de referência que o plano manda mudar: regrave uma vez, só nos specs do passo
    (`--update-snapshots=changed` ou o equivalente da ferramenta), confira o diff das imagens pelo
    git e rode só os specs regravados; não rode a suíte para descobrir o que mudou. Confira a tela

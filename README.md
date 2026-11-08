@@ -170,7 +170,7 @@ O que é decisão de produto, e só isso, chega a você.
 | `/spec-adr` | Registrar direto uma decisão de arquitetura; `/spec-adr índice` organiza o índice |
 | `/spec-design-system` | Criar ou atualizar o design system do produto (obrigatório com interface); em projeto novo, entrega um formulário técnico já pré-preenchido e escreve o design system quando ele volta; também guarda modelos de design systems que já existem (ex.: o do GitHub) e aplica um deles com `modelo <slug>`, sem formulário |
 | `/spec-semantic-commit` | Commitar tudo com mensagem em Conventional Commits |
-| `/spec-check` | Rodar o portão de testes na mão, ou criar e corrigir o mapa de impacto dele (`.claude/spec-check.json`) |
+| `/spec-check` | Rodar o portão de testes na mão, ou criar, auditar e corrigir o mapa de impacto dele (`.claude/spec-check.json`) |
 | `/spec-release` | Lançar uma versão: roda o portão inteiro (suíte, integração e tela), calcula o número pelos commits, atualiza o `CHANGELOG.md`, cria a tag e o GitHub Release, com o instalável (`.exe`, `.apk`) anexado quando o projeto tem um |
 | `/spec-readme` | Gerar ou completar o `README.md` |
 | `/spec-claude` | Gerar, auditar ou enxugar o `CLAUDE.md`, e acrescentar uma regra a ele (e pôr `.temp/` no `.gitignore`). Manter os **fatos** dele em dia — comando de teste, stack, pastas — é do próprio lead, sem você |

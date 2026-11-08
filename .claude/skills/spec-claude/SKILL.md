@@ -155,7 +155,8 @@ Grave **direto, sem pedir confirmação**: rodar a skill já é a autorização.
 mostra depois exatamente o que mudou).
 
 Projeto com testes → grave também o `.claude/spec-check.json` (Etapa 2); já existe → confira os
-comandos e o mapa com o repo e corrija o que estiver falso.
+comandos e o mapa com o repo e corrija o que estiver falso. Nos dois casos, rode
+`sh .claude/skills/spec-check/check.sh auditar` e corrija até sair 0.
 
 Garanta também que **`.temp/` está fora do git**: é onde mora o material de consulta temporário
 do usuário (`.temp/references/`, rule [`docs.md`](../../rules/docs.md)), criado e apagado toda

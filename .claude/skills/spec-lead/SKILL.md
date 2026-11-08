@@ -182,7 +182,9 @@ Mudança pequena e clara não paga o custo de passar o bastão: você faz o trab
    - **O teste de tela nasce no passo que faz a tela**, no "Pronto quando" dele, nunca num passo
      separado no fim. Imagem de referência que o passo muda vem dita nele, com os specs regravados.
    - **Portão.** Projeto com testes e sem `.claude/spec-check.json` → o passo 1 o gera, como manda
-     a skill [`spec-check`](../spec-check/SKILL.md): é fato tirado do repo, não pergunta.
+     a skill [`spec-check`](../spec-check/SKILL.md): é fato tirado do repo, não pergunta. O
+     "Pronto quando" desse passo, e de todo passo que edita o arquivo, leva `check.sh auditar`
+     com saída 0.
    - **A spec anda com o passo** que muda o comportamento dela: entra em "Arquivos" e numa linha
      do "Pronto quando" (rule `docs.md`).
    - **Nenhum passo pode precisar do usuário.** Decisão em aberto você toma e registra em
@@ -261,7 +263,7 @@ Com todos os passos do plano `[x]`:
    | Saída | O que fazer |
    |---|---|
    | `0` | siga |
-   | `1` | **não chame o revisor:** um executor em modo correção, com a saída, `git add` do que ele tocou e o portão de novo. Não conta como tentativa da revisão; 3 no mesmo ponto → parada do tipo **d** |
+   | `1` | **não chame o revisor:** um executor em modo correção, com a saída (etapa `mapa` vermelha é teste do diff fora do mapa: a correção é a linha no `spec-check.json`), `git add` do que ele tocou e o portão de novo. Não conta como tentativa da revisão; 3 no mesmo ponto → parada do tipo **d** |
    | `2` | precondição (abaixo) |
 
    Log: `[portão] verde · suíte ok · tela por impacto: 2 specs`

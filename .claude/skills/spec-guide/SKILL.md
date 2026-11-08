@@ -200,7 +200,9 @@ depois para a mudança inteira:
   | `versao` | `/spec-release` | tudo inteiro; vermelho não lança |
 
   Teste fora do alcance não é pulado (`behavior.md`, regra 3). Vermelho no `mudanca` volta ao
-  executor sem gastar a revisão. Na tentativa 2, o portão roda só o que a correção alcança, mais
+  executor sem gastar a revisão. Quem confere o mapa é o próprio script: o `auditar` aponta
+  comando inexistente, linha morta e teste que nenhuma linha alcança, e o `mudanca` fica vermelho
+  com teste do diff fora do mapa; o `spec-check.json` no diff pede integração e tela inteiras. Na tentativa 2, o portão roda só o que a correção alcança, mais
   o que falhou antes.
 - **Revisão, uma só.** No fim, sobre o diff inteiro em stage e o portão verde: **não roda
   testes**; confere cada "Pronto quando", o escopo, as ADRs, a arquitetura e, com passo
@@ -245,7 +247,7 @@ depois para a mudança inteira:
 | Guardar um design system que já existe como modelo | `/spec-design-system cadastrar modelo <nome>` |
 | Commitar todas as mudanças | `/spec-semantic-commit` |
 | Lançar uma versão (portão inteiro, SemVer, CHANGELOG, tag, GitHub Release com o instalável), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
-| Rodar o portão de testes na mão, ou criar e corrigir o mapa de impacto (`.claude/spec-check.json`) | `/spec-check [passo <comandos> \| mudanca \| versao]` |
+| Rodar o portão de testes na mão, ou criar, auditar e corrigir o mapa de impacto (`.claude/spec-check.json`) | `/spec-check [passo <comandos> \| mudanca \| versao \| auditar]` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |
 | Criar, auditar ou enxugar o CLAUDE.md, ou acrescentar uma regra a ele (e garantir `.temp/` no `.gitignore`) | `/spec-claude [pasta]` |
 | Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/spec-windows-mcp [ferramentas extras]` |

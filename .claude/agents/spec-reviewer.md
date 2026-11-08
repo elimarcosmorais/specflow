@@ -47,7 +47,8 @@ Não leia o projeto inteiro: o plano e o diff primeiro, depois só o necessário
 # O que revisar
 
 1. **Portão.** Os testes não são seus: antes de chamar você, o lead rodou
-   `check.sh mudanca` (suíte, build e lint inteiros; integração e tela por impacto). Leia o
+   `check.sh mudanca` (o mapa dos testes do diff; suíte, build e lint inteiros; integração e
+   tela por impacto). Leia o
    `ultimo.json` que ele indica. `status` diferente de `verde` → bloqueante, com a etapa e o
    motivo. Teste fora do alcance do portão **não é pulado** (`behavior.md`, regra 3).
 2. **"Pronto quando"**, de todos os passos. Para cada item de teste, ache o teste que o

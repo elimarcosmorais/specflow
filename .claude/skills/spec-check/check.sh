@@ -7,12 +7,14 @@
 #   sh check.sh mudanca [--arquivos <arquivo> ...]             suíte, build, lint; integração e tela por impacto
 #   sh check.sh versao                                         tudo inteiro, sem cache
 #   sh check.sh esperar                                        continua esperando a execução em andamento
+#   sh check.sh auditar                                        confere o spec-check.json com o repo
 #
 # Saída: 0 verde · 1 vermelho · 2 verde com teste pulado · 3 ainda rodando · 4 erro de uso ou config
 set -u
 
 ESPERA=${SPEC_CHECK_ESPERA:-540}
 CONFIG=.claude/spec-check.json
+TAB=$(printf '\t')
 
 case $0 in
   /* | ?:*) self=$0 ;;
@@ -28,7 +30,7 @@ base=$(git rev-parse --absolute-git-dir)/spec-check
 mkdir -p "$base/cache" "$base/execucoes"
 
 uso() {
-  sed -n '5,9p' "$self" | sed 's/^# *//' >&2
+  sed -n '5,10p' "$self" | sed 's/^# *//' >&2
   exit 4
 }
 
@@ -113,6 +115,7 @@ validar_config() {
     case $chave in
       suite | build | lint | integracao | tela) ;;
       integracao_alvos | tela_alvos | integracao_inteira | tela_inteira) ;;
+      integracao_testes | tela_testes) ;;
       integracao_impacto | tela_impacto)
         case $valor in
           *'{alvos}'*) ;;
@@ -171,7 +174,7 @@ etapa() { # <nome> <comando> <alcance>
   sh -c "$comando" > "$log" 2>&1 < /dev/null
   rc=$?
   dur=$(($(date +%s) - inicio))
-  grep -En '(^|[^0-9])[1-9][0-9]* ([Ss]kipped|[Pp]ending|[Tt]odo)([^a-z]|$)|--- SKIP|[Ss]kipped: [1-9]|(^|[^A-Za-z])SKIPPED([^A-Za-z]|$)' "$log" > "$dir/$nome.pulos"
+  grep -En '(^|[^0-9])[1-9][0-9]* ([Ss]kipped|[Pp]ending|[Tt]odo)([^a-z]|$)|--- SKIP|[Ss]kipped:[[:space:]]*[1-9]|(^|[^A-Za-z])SKIPPED([^A-Za-z]|$)' "$log" > "$dir/$nome.pulos"
   if [ "$rc" -ne 0 ]; then
     geral=vermelho
     registrar "$nome" falhou "$dur" "$alcance" "$log" "$comando"
@@ -211,6 +214,106 @@ alvos_do_mapa() { # <tipo>
   done
 }
 
+lista_repo() {
+  {
+    git -c core.quotepath=off ls-files
+    git -c core.quotepath=off ls-files -o --exclude-standard
+  } | tr -d '\r' | sort -u
+}
+
+# Lê linhas do mapa na entrada e escreve "alvo<TAB>origem" para cada arquivo do <arquivo> que casa.
+pares_do_mapa() { # <arquivo com a lista>
+  while IFS= read -r m; do
+    re=$(regex_de "${m%% => *}")
+    destino=$(printf '%s' "${m#* => }" | sed -e 's/[&#\\]/\\&/g' -e 's/{x}/\\2/g')
+    sed -nE "s#^($re)\$#$destino$TAB\\1#p" "$1"
+  done
+}
+
+# Testes (arquivo ou pasta) que algum arquivo do repo alcança pelo mapa. Origem que é o próprio
+# alvo, ou está dentro dele, não conta: com a linha e2e/{x}.spec.ts => e2e/{x}.spec.ts, ou
+# tests/{x}.Tests/ => tests/{x}.Tests/, o teste só roda quando é editado.
+alcancados() { # <tipo>
+  cfg "$1_mapa" | pares_do_mapa "$dir/repo" | sort -u > "$dir/pares-$1"
+  cut -f1 "$dir/pares-$1" | sort -u | while IFS= read -r alvo; do
+    for f in $alvo; do
+      [ -e "$f" ] || continue
+      f=${f%/}
+      awk -F'\t' -v a="$alvo" -v f="$f" '
+        $1 == a && $2 != f && index($2, f "/") != 1 { achou = 1; exit }
+        END { exit !achou }
+      ' "$dir/pares-$1" && printf '%s\n' "$f"
+    done
+  done | sort -u
+}
+
+# Testes da lista que nenhuma linha do mapa alcança. Com *_alvos, quem acha os testes é a
+# ferramenta do ecossistema (go list, --findRelatedTests), e não há órfão a apontar.
+orfaos() { # <tipo> <arquivo com a lista>
+  [ -n "$(cfg "$1_testes")" ] || return 0
+  [ -z "$(cfg "$1_alvos")" ] || return 0
+  cfg "$1_testes" | while IFS= read -r p; do
+    grep -E "^$(regex_de "$p")\$" "$2"
+  done | sort -u | while IFS= read -r f; do
+    [ -e "$f" ] && printf '%s\n' "$f"
+  done > "$dir/orfaos-$1.candidatos"
+  [ -s "$dir/orfaos-$1.candidatos" ] || return 0
+  alcancados "$1" > "$dir/orfaos-$1.alcancados"
+  # Alcançado é o próprio arquivo ou uma pasta acima dele (o projeto de teste no .NET).
+  awk '
+    NR == FNR { a[$0] = 1; next }
+    {
+      ok = ($0 in a)
+      p = $0
+      while (!ok && sub(/\/[^\/]*$/, "", p)) if (p in a) ok = 1
+      if (!ok) print
+    }
+  ' "$dir/orfaos-$1.alcancados" "$dir/orfaos-$1.candidatos"
+}
+
+auditar() {
+  lista_repo > "$dir/repo"
+  problemas="$dir/problemas"
+  : > "$problemas"
+  for chave in suite build lint integracao tela integracao_impacto tela_impacto integracao_alvos tela_alvos; do
+    c=$(cfg "$chave")
+    [ -n "$c" ] || continue
+    prog=$(printf '%s\n' "$c" | awk '{ for (i = 1; i <= NF; i++) if ($i !~ /^[A-Za-z_][A-Za-z0-9_]*=/) { print $i; exit } }')
+    [ -n "$prog" ] || continue
+    command -v "$prog" > /dev/null 2>&1 \
+      || echo "$chave: o comando '$prog' não existe nesta máquina" >> "$problemas"
+  done
+  for tipo in integracao tela; do
+    cfg "${tipo}_mapa" | while IFS= read -r m; do
+      if ! grep -Eq "^$(regex_de "${m%% => *}")\$" "$dir/repo"; then
+        echo "${tipo}_mapa: '$m' não casa com nenhum arquivo do repo"
+        continue
+      fi
+      existe=$(printf '%s\n' "$m" | pares_do_mapa "$dir/repo" | cut -f1 | sort -u | while IFS= read -r g; do
+        for f in $g; do
+          if [ -e "$f" ]; then
+            echo sim
+            break 2
+          fi
+        done
+      done)
+      [ -n "$existe" ] || echo "${tipo}_mapa: '$m' não leva a nenhum teste que existe"
+    done >> "$problemas"
+    cfg "${tipo}_testes" | while IFS= read -r p; do
+      grep -Eq "^$(regex_de "$p")\$" "$dir/repo" \
+        || echo "${tipo}_testes: '$p' não casa com nenhum arquivo do repo"
+    done >> "$problemas"
+    orfaos "$tipo" "$dir/repo" | sed "s/^/${tipo}: nenhuma linha do mapa alcança /" >> "$problemas"
+  done
+  if [ -s "$problemas" ]; then
+    echo "spec-check auditar: $(wc -l < "$problemas" | tr -d ' ') problema(s) em $CONFIG"
+    sed 's/^/  - /' "$problemas"
+    return 1
+  fi
+  echo "spec-check auditar: ok ($CONFIG confere com o repo)"
+  return 0
+}
+
 resolver() { # <tipo> → define cmd_final e alcance
   cmd_final=
   inteiro=$(cfg "$1")
@@ -233,6 +336,11 @@ resolver() { # <tipo> → define cmd_final e alcance
   if [ "$dados" = 1 ] && [ -f "$pendente" ] && grep -qx INTEIRA "$pendente"; then
     cmd_final=$inteiro
     alcance="inteira: falhou na tentativa anterior"
+    return
+  fi
+  if grep -qxF "$CONFIG" "$dir/arquivos"; then
+    cmd_final=$inteiro
+    alcance="inteira: $CONFIG mudou"
     return
   fi
   motivo=$(cfg "$1_inteira" | while IFS= read -r p; do
@@ -370,6 +478,23 @@ executar() { # <id>
     rodar_fixa build
     rodar_fixa lint
   else
+    if [ "$modo" = mudanca ]; then
+      if [ -n "$(cfg tela_testes)$(cfg integracao_testes)" ]; then
+        lista_repo > "$dir/repo"
+        {
+          orfaos integracao "$dir/arquivos" | sed 's/^/integracao: nenhuma linha do mapa alcança /'
+          orfaos tela "$dir/arquivos" | sed 's/^/tela: nenhuma linha do mapa alcança /'
+        } > "$dir/mapa.log"
+        if [ -s "$dir/mapa.log" ]; then
+          geral=vermelho
+          registrar mapa falhou 0 "teste do diff fora do mapa" "$dir/mapa.log" ""
+        else
+          registrar mapa ok 0 "testes do diff no mapa" "" ""
+        fi
+      else
+        registrar mapa n/a 0 "sem *_testes" "" ""
+      fi
+    fi
     rodar_fixa lint
     rodar_fixa build
     rodar_fixa suite
@@ -432,13 +557,26 @@ case $comando in
       [ "$1" = --arquivos ] && [ $# -ge 2 ] || uso
     fi
     ;;
-  versao)
+  versao | auditar)
     [ $# -eq 0 ] || uso
     ;;
   *)
     uso
     ;;
 esac
+
+if [ "$comando" = auditar ]; then
+  dir=$(mktemp -d)
+  trap 'rm -rf "$dir"' EXIT
+  [ -f "$CONFIG" ] || {
+    echo "spec-check: falta $CONFIG. Gere-o como manda a skill spec-check." >&2
+    exit 4
+  }
+  ler_config > "$dir/config"
+  validar_config
+  auditar
+  exit $?
+fi
 
 if [ -f "$base/atual" ]; then
   anterior=$(cat "$base/atual")
