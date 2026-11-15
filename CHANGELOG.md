@@ -4,6 +4,20 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [2.5.0] - 2026-11-15
+
+### Adicionado
+
+- **spec-setup:** adiciona a skill que prepara o ambiente após um clone (e880df7)
+- **spec-claude:** adiciona FlaUI como teste de tela no desktop .NET (1059ef8)
+- **spec-check:** adiciona o modo `auditar` e confere o mapa na mudança (7284744)
+- **spec-check:** adiciona o portão de testes que roda pelo `git diff` (b46fc3f)
+- **spec-lead:** limita a revisão final a uma correção dos bloqueantes (b3a357d)
+- **design-system:** adiciona quatro modelos de design system (a218c2c)
+- **design-system:** cadastra e aplica modelos de design system (cf96e66)
+- **design-system:** adiciona campos de formulário e barra de rolagem (6917786)
+- roda a integração por impacto na revisão e inteira no release (84d8690)
+
 ## [2.4.0] - 2026-10-28
 
 ### Adicionado
@@ -182,6 +196,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[2.5.0]: https://github.com/elimarcosmorais/specflow/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/elimarcosmorais/specflow/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/elimarcosmorais/specflow/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/elimarcosmorais/specflow/compare/v2.2.0...v2.2.1
