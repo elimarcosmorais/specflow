@@ -14,6 +14,20 @@ Visão geral, instalação e uso estão no [README.md](README.md).
 
 Este repositório é o próprio framework: o que se edita aqui são as skills, os agents e as rules.
 
+## Como trabalhar neste repositório
+
+O fluxo do SpecFlow (lead, plano, executor, revisor, `docs/`) é para os projetos que o usam,
+**não para este**. Aqui:
+
+- **Não existe `docs/`.** Nem plano (`docs/plans/`), nem specs, nem ADRs: não crie a pasta nem
+  nada dentro dela. O mapa do framework é a skill `spec-guide`.
+- **Pedido de criar ou alterar skill, agent ou rule se faz direto na sessão.** Não carregue a
+  `spec-lead` (a regra 7 da `behavior.md` não vale aqui), não escreva plano e não chame o
+  `spec-executor` nem o `spec-reviewer`: leia os arquivos afetados, edite e explique as decisões.
+- **Não há suíte de testes.** A prova é a conferência mecânica (regra 3 da `behavior.md`): reler
+  o trecho, conferir com `grep` que links, nomes e referências existem e que as tabelas estão em
+  sincronia. A exceção é o `check.sh`, testado num repositório descartável.
+
 ## Fluxo
 
 Uma skill de conversa, dois agents. O usuário fala **só** com o lead, e o pedido de mudança que
@@ -44,6 +58,7 @@ Skills **utilitárias**:
 | CLAUDE.md do projeto | `spec-claude` |
 | Windows-MCP: agente vê e opera a tela (só Windows) | `spec-windows-mcp` |
 | Playwright MCP: agente vê e opera páginas web | `spec-playwright-mcp` |
+| Ambiente depois de um clone: levanta o que falta, relata e, aprovado, instala, configura e prova | `spec-setup` |
 | Atualizar o SpecFlow no projeto a partir do GitHub | `spec-upgrade` |
 
 ## Ao alterar o framework
