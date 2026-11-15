@@ -252,6 +252,7 @@ depois para a mudança inteira:
 | Criar, auditar ou enxugar o CLAUDE.md, ou acrescentar uma regra a ele (e garantir `.temp/` no `.gitignore`) | `/spec-claude [pasta]` |
 | Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/spec-windows-mcp [ferramentas extras]` |
 | Deixar o agente ver e operar páginas web num navegador (print, clique, console) | `/spec-playwright-mcp [headed]` |
+| Preparar a máquina para o projeto depois de um clone (programas, dependências, `.env`, serviços, banco local) | `/spec-setup [pasta]` |
 | Trazer a versão nova do SpecFlow (skills, agents, rules) para o projeto | `/spec-upgrade [tag, branch ou commit]` |
 
 Documentar ou reorganizar specs não tem comando: o agente faz quando precisa (rule `docs.md`).

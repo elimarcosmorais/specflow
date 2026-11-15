@@ -136,6 +136,9 @@ Vai dormir e quer o sistema pronto de manhã? Pule até a aprovação:
 /spec-lead "<pedido>" --autonomo
 ```
 
+Clonou um projeto que já usa o SpecFlow numa máquina nova? Rode `/spec-setup` antes de tudo: ele
+mostra o que falta para o projeto rodar e, aprovado, deixa o ambiente pronto.
+
 Nada é commitado sozinho: no fim, `/spec-semantic-commit`. Para lançar uma versão com o que já
 foi commitado, `/spec-release`.
 
@@ -176,6 +179,7 @@ O que é decisão de produto, e só isso, chega a você.
 | `/spec-claude` | Gerar, auditar ou enxugar o `CLAUDE.md`, e acrescentar uma regra a ele (e pôr `.temp/` no `.gitignore`). Manter os **fatos** dele em dia — comando de teste, stack, pastas — é do próprio lead, sem você |
 | `/spec-windows-mcp` | Configurar o Windows-MCP para o agente ver e operar a tela (só Windows) |
 | `/spec-playwright-mcp` | Configurar o Playwright MCP para o agente ver e operar páginas web |
+| `/spec-setup` | Preparar a máquina depois de um clone: levanta o que o projeto exige (programas e versões, dependências, `.env`, serviços, banco local), mostra o que falta e, com a sua aprovação, instala, configura e prova que o projeto roda |
 | `/spec-upgrade` | Trazer as skills, os agents e as rules da versão nova do SpecFlow, preservando o que o projeto editou ou criou |
 
 Argumentos de cada comando: [mapa de roteamento](.claude/skills/spec-guide/SKILL.md#5-mapa-de-roteamento).
