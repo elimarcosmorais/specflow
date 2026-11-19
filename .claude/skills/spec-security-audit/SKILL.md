@@ -220,11 +220,11 @@ A aprovação da Etapa 5 **é** a aprovação do plano — a única do fluxo —
 
 1. **Escreva** a partir do [template da `spec-lead`](../spec-lead/plano.md), em
    `docs/plans/AAAA-MM-DD-<modulo>-spec-security-audit.md`, `status: aprovado`. O sufixo
-   `-spec-security-audit.md` é fixo: é por ele que a `/spec-semantic-commit` deixa o plano fora
-   do commit e do push, porque ele descreve ataques que ainda funcionam. Use as regras de escrita
-   da [`spec-lead`, Etapa 4, item 2](../spec-lead/SKILL.md) (terreno confirmado, um passo é uma
-   passada, "Pronto quando" é contrato, portão, spec que anda com o passo, nenhum passo que
-   precise do usuário, curto). O que é próprio deste plano:
+   identifica a origem do plano. Como todo plano, ele fica fora do commit e do push da
+   `/spec-semantic-commit` — e neste isso pesa mais, porque ele descreve ataques que ainda
+   funcionam. Use as regras de escrita da [`spec-lead`, Etapa 4, item 2](../spec-lead/SKILL.md)
+   (terreno confirmado, um passo é uma passada, "Pronto quando" é contrato, portão, spec que
+   anda com o passo, nenhum passo que precise do usuário, curto). O que é próprio deste plano:
    - **Pedido:** `/spec-security-audit <módulo>` e os achados aprovados (`S1, S2, S4`).
    - **Problema e objetivo:** os achados em 2 a 5 linhas, sem segredo (Regra 8).
    - **CAs:** cada achado vira um CA do ataque — "dado <o ator>, quando <a entrada do ataque>,
@@ -250,7 +250,7 @@ A aprovação da Etapa 5 **é** a aprovação do plano — a única do fluxo —
 ```
 Plano: docs/plans/<arquivo> · <N> passos · risco alto nos passos <X> | nenhum · aprovado
 Para executar, numa sessão nova: /spec-lead docs/plans/<arquivo>
-O /spec-semantic-commit deixa este plano fora do commit pelo sufixo; um `git add -A` na mão, não.
+O /spec-semantic-commit deixa este plano fora do commit, como todo plano; um `git add -A` na mão, não.
 ```
 
 # Entrada

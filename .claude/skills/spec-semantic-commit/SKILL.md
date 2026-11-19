@@ -1,6 +1,6 @@
 ---
 name: spec-semantic-commit
-description: Utilitário do framework (transversal). Commita TODAS as mudanças do projeto (modificados, novos e apagados, respeitando o .gitignore) - coloca tudo em stage, gera a mensagem em português seguindo o Conventional Commits (tipo, escopo, assunto no imperativo em até 72 caracteres, corpo e rodapé quando fazem falta), commita e faz push para o remoto direto, sem pedir aprovação; se as mudanças misturam assuntos, divide em um commit por assunto. Só pergunta antes de commitar arquivo que parece segredo. Nenhum arquivo fica sem commit no final, menos o plano de segurança aberto (docs/plans/*-spec-security-audit.md), que fica sempre de fora sem perguntar. Usar quando o usuário pedir para commitar ("commita isso", "gera o commit"), inclusive depois do spec-lead, que deixa o código sem commit, ou só quiser ver a mensagem ("qual seria o commit?"), caso em que mostra e não commita. Não faz amend nem push --force.
+description: Utilitário do framework (transversal). Commita TODAS as mudanças do projeto (modificados, novos e apagados, respeitando o .gitignore) - coloca tudo em stage, gera a mensagem em português seguindo o Conventional Commits (tipo, escopo, assunto no imperativo em até 72 caracteres, corpo e rodapé quando fazem falta), commita e faz push para o remoto direto, sem pedir aprovação; se as mudanças misturam assuntos, divide em um commit por assunto. Só pergunta antes de commitar arquivo que parece segredo. Nenhum arquivo fica sem commit no final, menos os planos de trabalho (docs/plans/), que ficam sempre de fora do commit e do push, sem perguntar. Usar quando o usuário pedir para commitar ("commita isso", "gera o commit"), inclusive depois do spec-lead, que deixa o código sem commit, ou só quiser ver a mensagem ("qual seria o commit?"), caso em que mostra e não commita. Não faz amend nem push --force.
 argument-hint: "[o que mudou, em poucas palavras (opcional)]"
 ---
 
@@ -25,10 +25,12 @@ commitam**: o commit é do usuário, e esta skill é a forma de fazê-lo.
    não. O `.gitignore` decide o que fica de fora; você não escolhe arquivos. Duas exceções:
    - arquivo que parece segredo e não está no `.gitignore` (`.env`, `*.pem`, `*.key`,
      credenciais) → tire de stage e pergunte ao usuário antes (Etapa 1);
-   - **plano de segurança aberto**: `docs/plans/*-spec-security-audit.md` novo ou modificado →
-     tire de stage, sem perguntar, e nunca o commite. Ele descreve ataques que a correção ainda
-     não fechou, e o push os publicaria. A remoção dele entra normalmente: é o `/spec-lead`
-     fechando o plano, e tirar o arquivo da árvore é o que se quer.
+   - **plano de trabalho**: qualquer arquivo de `docs/plans/` novo ou modificado → tire de
+     stage, sem perguntar, e nunca o commite. Plano é temporário (rule `docs.md`): existe só até
+     ser executado, e commitado ele vira histórico permanente que o push publica — o rascunho que
+     não foi aprovado, o passo pela metade e, no de segurança (`*-spec-security-audit.md`), os
+     ataques que a correção ainda não fechou. A remoção (linha `D`) entra normalmente: é o plano
+     que um commit antigo deixou no git saindo da árvore, e é o que se quer.
 
    Dividir em mais de um commit pode, mas a soma das partes cobre todos os arquivos.
 2. **Commite e faça push sem perguntar.** O usuário aprova de antemão a mensagem, a divisão e o
@@ -60,10 +62,10 @@ git diff --staged          # o conteúdo
 - **Arquivo que parece segredo** (Regra 1) → `git restore --staged -- <arquivo>` e pergunte com
   `AskUserQuestion`: commitar mesmo assim, ou deixar de fora e sugerir colocá-lo no `.gitignore`.
   É o único caso em que você pergunta, e um dos dois em que um arquivo fica sem commit.
-- **Plano de segurança aberto** (Regra 1) → `git reset -q -- <arquivo>`, sem perguntar (não o
-  `git restore --staged`, que falha no repositório ainda sem o primeiro commit).
-  Confira com `git diff --staged --name-status -- 'docs/plans/*-spec-security-audit.md'`: só pode
-  sobrar linha `D` (o plano executado e apagado).
+- **Plano de trabalho** (Regra 1) → `git reset -q -- <arquivo>` em cada linha de
+  `docs/plans/` que não é `D`, sem perguntar (não o `git restore --staged`, que falha no
+  repositório ainda sem o primeiro commit). Confira com
+  `git diff --staged --name-status -- docs/plans/`: só pode sobrar linha `D`.
 - **Diff grande** → leia por arquivo (`git diff --staged -- <arquivo>`), priorizando o código de
   produção; testes e docs costumam confirmar o que o código já disse.
 - Se o usuário descreveu a mudança (`$ARGUMENTS` ou na conversa), use isso para entender a
@@ -106,7 +108,6 @@ alterado), marque com `!` depois do tipo/escopo **e** explique no rodapé `BREAK
 [corpo: o quê e por quê, não o como]
 
 [rodapé: BREAKING CHANGE: <o que quebra e como migrar>]
-[rodapé: Refs: plano AAAA-MM-DD-<slug>]
 ```
 
 **Assunto (primeira linha):**
@@ -121,10 +122,9 @@ alterado), marque com `!` depois do tipo/escopo **e** explique no rodapé `BREAK
 **Corpo:** só quando o assunto não basta (o motivo não é óbvio, ou há um efeito colateral que vale
 registrar). Linhas de até 72 caracteres, separado do assunto por uma linha em branco.
 
-**Rodapé `Refs:`** — quando o commit fecha um plano (o stage apaga um arquivo de
-`docs/plans/`, como o `spec-lead` deixa no fim), cite-o pelo nome:
-`Refs: plano 2026-10-08-login-com-google`. É o que liga o histórico do git ao plano, que só
-continua existindo no git.
+O commit não cita o plano: ele nunca entrou no git e some depois de executado, então a
+referência não levaria a lugar nenhum. O que o plano decidiu e sobrevive já está nas specs e nas
+ADRs do próprio commit.
 
 ### Exemplos
 
@@ -154,8 +154,6 @@ BREAKING CHANGE: clientes que leem `preco` devem passar a ler `valor`.
 
 ```
 feat(projects): implementa cadastro e listagem de projetos
-
-Refs: plano 2026-10-08-cadastro-de-projetos
 ```
 
 ```
@@ -199,8 +197,6 @@ git commit -m "$(cat <<'EOF'
 tipo(escopo): descrição
 
 Corpo explicando o porquê.
-
-Refs: plano AAAA-MM-DD-<slug>
 EOF
 )"
 ```
@@ -221,7 +217,7 @@ git rev-parse --abbrev-ref --symbolic-full-name @{u}   # a branch tem upstream?
   `git pull --rebase` e enviar de novo) e deixe o usuário decidir; não rode nada por conta própria.
 
 Antes do resumo, confira com `git status --short` que não sobrou nada. Sobrou arquivo (fora o
-segredo que o usuário decidiu deixar de fora e o plano de segurança aberto) → algo deu errado:
+segredo que o usuário decidiu deixar de fora e os planos de `docs/plans/`) → algo deu errado:
 diga quais e por quê; não esconda.
 
 Depois, mostre **apenas**:
@@ -229,7 +225,7 @@ Depois, mostre **apenas**:
 ```
 Commit criado: <saída de git log --oneline do(s) commit(s) criado(s)>
 Push: <branch> → <remoto>/<branch> | não feito (só commit) | falhou: <erro>
-Sem commit: nada | <arquivos e o motivo> | docs/plans/<arquivo> (plano de segurança aberto: sai do git só quando o /spec-lead o executar)
+Sem commit: nada | <arquivos e o motivo> | docs/plans/<arquivo> (plano de trabalho: nunca entra no git; o /spec-lead o apaga quando o executa)
 ```
 
 # Entrada
