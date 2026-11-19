@@ -179,6 +179,7 @@ O que é decisão de produto, e só isso, chega a você.
 | `/spec-claude` | Gerar, auditar ou enxugar o `CLAUDE.md`, e acrescentar uma regra a ele (e pôr `.temp/` no `.gitignore`). Manter os **fatos** dele em dia — comando de teste, stack, pastas — é do próprio lead, sem você |
 | `/spec-windows-mcp` | Configurar o Windows-MCP para o agente ver e operar a tela (só Windows) |
 | `/spec-playwright-mcp` | Configurar o Playwright MCP para o agente ver e operar páginas web |
+| `/spec-security-audit` | Levantamento de segurança profundo de um módulo: entende a proposta dele, pesquisa na internet os ataques e as vulnerabilidades atuais que se aplicam, confirma cada um no código e explica o ataque e a correção. Só aponta risco com ataque concreto, e não corrige nada: aprovada a proposta, escreve o plano que o `/spec-lead` executa |
 | `/spec-setup` | Preparar a máquina depois de um clone: levanta o que o projeto exige (programas e versões, dependências, `.env`, serviços, banco local), mostra o que falta e, com a sua aprovação, instala, configura e prova que o projeto roda |
 | `/spec-upgrade` | Trazer as skills, os agents e as rules da versão nova do SpecFlow, preservando o que o projeto editou ou criou |
 

@@ -119,7 +119,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 |---|---|---|
 | `docs/specs/` | como o sistema funciona hoje, por módulo; índice em `docs/specs/README.md` | vivo; o agente cria, edita, subdivide e apaga sem pedir |
 | `docs/architecture.md` | a arquitetura base | vivo, como as specs |
-| `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança ([template](../spec-lead/plano.md)), escrito pelo lead | `rascunho` → `aprovado` (pelo usuário) → executado e apagado pelo lead |
+| `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança ([template](../spec-lead/plano.md)), escrito pelo lead — ou, o de correção de segurança, pela `spec-security-audit` | `rascunho` → `aprovado` (pelo usuário) → executado e apagado pelo lead; o da `spec-security-audit` (`*-spec-security-audit.md`) já nasce `aprovado`, porque o usuário aprovou a proposta dela, e fica fora de todo commit da `spec-semantic-commit`, porque descreve ataques ainda abertos |
 | `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada; índice em `docs/adr/README.md` | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova; do agente: cria, atualiza e substitui conforme a tarefa pede, sem perguntar; `/spec-adr` para o usuário registrar direto |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, uma categoria por arquivo | vivo; sincronizar com o código é livre, mudar a identidade é do usuário |
 | `.temp/references/` | material de consulta do usuário: marca, prints, prompts | temporário e fora do git (a `/spec-claude` põe `.temp/` no `.gitignore`); só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
@@ -252,6 +252,8 @@ depois para a mudança inteira:
 | Criar, auditar ou enxugar o CLAUDE.md, ou acrescentar uma regra a ele (e garantir `.temp/` no `.gitignore`) | `/spec-claude [pasta]` |
 | Deixar o agente ver e operar a tela do Windows (screenshot, clique, teclado) | `/spec-windows-mcp [ferramentas extras]` |
 | Deixar o agente ver e operar páginas web num navegador (print, clique, console) | `/spec-playwright-mcp [headed]` |
+| Levantamento de segurança profundo de um módulo, com pesquisa atual de ataques e vulnerabilidades e a correção proposta; aprovada, vira plano para o lead | `/spec-security-audit <módulo> [foco]` |
+| Executar o plano de correção que a `/spec-security-audit` deixou aprovado | `/spec-lead docs/plans/<arquivo>` |
 | Preparar a máquina para o projeto depois de um clone (programas, dependências, `.env`, serviços, banco local) | `/spec-setup [pasta]` |
 | Trazer a versão nova do SpecFlow (skills, agents, rules) para o projeto | `/spec-upgrade [tag, branch ou commit]` |
 

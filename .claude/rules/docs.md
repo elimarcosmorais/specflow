@@ -10,7 +10,7 @@ Onde cada documento mora, quem pode mexer nele e quando. Vale em qualquer tarefa
 | `docs/architecture.md` | a arquitetura base: camadas, módulos, fluxos e integrações principais | o agente, livremente |
 | `docs/adr/NNN-<titulo>.md` + índice `docs/adr/README.md` | **por que** uma decisão transversal foi tomada | o agente: cria, atualiza e substitui conforme a tarefa pede (abaixo); `/spec-adr` quando o usuário registra direto |
 | `docs/design-system.md` + `docs/design/` | a identidade visual: tokens, componentes e padrões | `/spec-design-system`; sincronizar com o código é livre |
-| `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança, até ser executado | o `/spec-lead` escreve, o usuário aprova, o lead executa e apaga |
+| `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança, até ser executado | o `/spec-lead` escreve, o usuário aprova, o lead executa e apaga; o de correção de segurança (`*-spec-security-audit.md`), a `/spec-security-audit` escreve já aprovado, e a `/spec-semantic-commit` nunca o commita |
 | `.temp/references/` | material de consulta temporário do usuário: marca, prints, prompts | o usuário |
 | `.temp/design-system-formulario.md` | a especificação de entrada do design system, até ser preenchida e consumida | `/spec-design-system` cria, o usuário (ou um agente) preenche, a skill lê |
 | `.temp/design-system-modelo-formulario.md` | o retrato de um design system que já existe, até virar modelo | `/spec-design-system` cria em branco, o usuário preenche, a skill o salva em `modelos/` |
@@ -142,7 +142,9 @@ chega a todos os projetos na atualização seguinte.
 Plano não vira documentação: ele é executado e **apagado pelo `/spec-lead`** no fechamento, e a
 remoção fica em stage junto com o código, no mesmo commit. Existe um tipo só: o plano da
 mudança, `AAAA-MM-DD-<slug>.md`, que nasce `rascunho` e vira `aprovado` com a aprovação do
-usuário — a única do fluxo. Mudança grande é um plano com mais passos, não vários planos.
+usuário — a única do fluxo. A exceção é o plano de correção da `/spec-security-audit`: o
+usuário aprova a proposta dela antes de o plano existir, e por isso ele já nasce `aprovado`.
+Mudança grande é um plano com mais passos, não vários planos.
 
 **Só é apagado o plano cumprido:** todo checkbox `[x]`, a revisão final aprovada e a suíte, o
 build e o lint inteiros verdes, sem teste pulado. Com passo pendente, o plano fica — com os

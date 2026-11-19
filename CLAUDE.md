@@ -58,6 +58,7 @@ Skills **utilitárias**:
 | CLAUDE.md do projeto | `spec-claude` |
 | Windows-MCP: agente vê e opera a tela (só Windows) | `spec-windows-mcp` |
 | Playwright MCP: agente vê e opera páginas web | `spec-playwright-mcp` |
+| Levantamento de segurança de um módulo: pesquisa atual, achados com ataque concreto, correção proposta e, aprovada, o plano para a `spec-lead` | `spec-security-audit` |
 | Ambiente depois de um clone: levanta o que falta, relata e, aprovado, instala, configura e prova | `spec-setup` |
 | Atualizar o SpecFlow no projeto a partir do GitHub | `spec-upgrade` |
 

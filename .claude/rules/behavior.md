@@ -147,8 +147,9 @@ o teste como prova (regra 3).
 ## 7. Pedido de mudança entra pela `spec-lead`, mesmo sem o comando
 
 Pedido que muda o projeto (código, teste, spec, ADR, plano) é trabalho da skill `spec-lead`.
-Só ela escolhe entre o caminho direto e o plano, só ela escreve plano, e só ela chama o
-`spec-executor` e o `spec-reviewer`. Pedido desses chegou sem a skill carregada, porque o
+Só ela escolhe entre o caminho direto e o plano, só ela escreve plano (a exceção é o plano de
+correção que a `/spec-security-audit` escreve com a aprovação do usuário, e que só a `spec-lead`
+executa), e só ela chama o `spec-executor` e o `spec-reviewer`. Pedido desses chegou sem a skill carregada, porque o
 usuário não a chamou ou errou o nome (`/sepc-lead`, `/spec-led`)? Então **carregue a `spec-lead`
 pela ferramenta Skill**, com o pedido do usuário como argumento, e siga-a. Não comece pela
 edição nem por um plano seu: implementar direto pula a decisão de caminho, o executor e a
@@ -158,7 +159,8 @@ Isto não é parada nem pergunta: o usuário pediu a mudança, e a `spec-lead` �
 `--autonomo` só vai no argumento quando o usuário o escreveu.
 
 Ficam de fora: pergunta, explicação ou leitura que não muda nada; a skill do framework que o
-usuário chamou para o que ela faz (`/spec-semantic-commit`, `/spec-claude`, `/spec-adr`…); e quem
+usuário chamou para o que ela faz (`/spec-semantic-commit`, `/spec-claude`, `/spec-adr`,
+`/spec-security-audit`…); e quem
 já está no fluxo, ou seja, a própria `spec-lead` e os agents que ela chama.
 
 ## 8. Teste roda pelo `spec-check`
