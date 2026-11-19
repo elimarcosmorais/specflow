@@ -4,6 +4,12 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [2.6.0] - 2026-11-19
+
+### Adicionado
+
+- **spec-security-audit:** adiciona o levantamento de segurança de um módulo (89112e2)
+
 ## [2.5.0] - 2026-11-15
 
 ### Adicionado
@@ -196,6 +202,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[2.6.0]: https://github.com/elimarcosmorais/specflow/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/elimarcosmorais/specflow/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/elimarcosmorais/specflow/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/elimarcosmorais/specflow/compare/v2.2.1...v2.3.0
