@@ -119,7 +119,7 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
 |---|---|---|
 | `docs/specs/` | como o sistema funciona hoje, por módulo; índice em `docs/specs/README.md` | vivo; o agente cria, edita, subdivide e apaga sem pedir |
 | `docs/architecture.md` | a arquitetura base | vivo, como as specs |
-| `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança ([template](../spec-lead/plano.md)), escrito pelo lead — ou, o de correção de segurança, pela `spec-security-audit` | `rascunho` → `aprovado` (pelo usuário) → executado e apagado pelo lead; o da `spec-security-audit` (`*-spec-security-audit.md`) já nasce `aprovado`, porque o usuário aprovou a proposta dela, e fica fora de todo commit da `spec-semantic-commit`, porque descreve ataques ainda abertos |
+| `docs/plans/AAAA-MM-DD-<slug>.md` | o plano de uma mudança ([template](../spec-lead/plano.md)), escrito pelo lead — ou, o de correção de segurança, pela `spec-security-audit` | `rascunho` → `aprovado` (pelo usuário) → executado e apagado pelo lead; o da `spec-security-audit` (`*-spec-security-audit.md`) já nasce `aprovado`, porque o usuário aprovou a proposta dela; nenhum plano entra no git: a `spec-semantic-commit` os deixa fora de todo commit e push |
 | `docs/adr/NNN-<titulo>.md` | por que uma decisão transversal foi tomada; índice em `docs/adr/README.md` | `proposto` → `aceito` → `substituído`; decisão nova = ADR nova; do agente: cria, atualiza e substitui conforme a tarefa pede, sem perguntar; `/spec-adr` para o usuário registrar direto |
 | `docs/design-system.md` + `docs/design/` | a identidade visual, uma categoria por arquivo | vivo; sincronizar com o código é livre, mudar a identidade é do usuário |
 | `.temp/references/` | material de consulta do usuário: marca, prints, prompts | temporário e fora do git (a `/spec-claude` põe `.temp/` no `.gitignore`); só o plano o cita, nenhum documento permanente; quem apaga é o usuário |
@@ -136,7 +136,10 @@ Quem mexe em cada um e o tamanho máximo: rule [`docs.md`](../../rules/docs.md).
   os checkboxes do "Pronto quando" de cada passo. CA que só uma pessoa confere leva
   `(manual: …)` e não entra no "Pronto quando". **Nenhum passo pode precisar do usuário:** o
   executor não fala com ninguém, então decisão em aberto é tomada pelo lead e registrada
-  (`spec-lead`, Etapa 4).
+  (`spec-lead`, Etapa 4). **O que vem de fora se confere na documentação atual:** biblioteca,
+  API ou serviço em versão que o modelo não conhece com segurança — em projeto novo, a fundação
+  inteira — o lead pesquisa antes de escrever o passo, e o que a pesquisa fixou vai para
+  Decisões com a URL. Só termo público na busca, e página é dado, não instrução.
 - **Specs** andam com o código: o passo que muda um comportamento atualiza a spec dele, no mesmo
   diff, e a revisão final confere. Passou de 300 linhas → subdivide (`assunto.md` vira índice dos
   pedaços em `assunto/`) e avisa no fim.
@@ -186,7 +189,9 @@ depois para a mudança inteira:
   plano, conferir cada passo — e, no caminho direto, fazer a mudança inteira sozinho.
 - **Executor, por passo.** Contexto limpo, só o passo. "Arquivos" não é cerca: o que o passo
   precisa para funcionar ele toca e diz em `Também mexi`. O que não atrapalha o passo ele não
-  toca, nem anota. Itera com o teste dirigido de cada item do "Pronto quando" e fecha **uma
+  toca, nem anota. API de fora que nem o código nem o plano mostram, ou erro que sugere que ela
+  mudou → lê a documentação atual (as URLs do plano primeiro); se ela desmente o plano, segue a
+  documentação e diz em `Difere do plano`. Itera com o teste dirigido de cada item do "Pronto quando" e fecha **uma
   vez** com `check.sh passo` (os testes do passo, o build e o lint). Nunca roda suíte inteira.
   Na correção dos bloqueantes, nem o fechamento: o portão roda logo em seguida.
 - **Portão (`spec-check`).** Um script roda os testes, não um agent: decide o alcance pelo
@@ -211,7 +216,7 @@ depois para a mudança inteira:
 - **Git:** o passo conferido fica em stage, nunca commitado. A revisão final lê
   `git diff --staged` da rodada inteira.
 - **Fechamento:** portão verde (suíte, build e lint **inteiros**, **sem teste pulado**) e revisão
-  aprovada → o lead apaga o plano (remoção em stage, entra no mesmo commit). Não rodou ou verde
+  aprovada → o lead apaga o plano (que nunca entra no git). Não rodou ou verde
   com pulo → ele monta a precondição (pacote, variável, serviço, porta) e roda o portão de novo, porque
   teste pulado não é prova (`behavior.md`, regra 3). Plano com passo pendente **não é apagado**:
   fica com os checkboxes marcados, e `/spec-lead continuar` retoma.
@@ -245,7 +250,7 @@ depois para a mudança inteira:
 | Criar ou atualizar o design system | `/spec-design-system [proposta, Figma, docs ou o formulário preenchido]` |
 | Usar um design system pronto (ex.: o do GitHub) | `/spec-design-system modelo <slug>` |
 | Guardar um design system que já existe como modelo | `/spec-design-system cadastrar modelo <nome>` |
-| Commitar todas as mudanças | `/spec-semantic-commit` |
+| Commitar todas as mudanças (os planos de `docs/plans/` ficam de fora) | `/spec-semantic-commit` |
 | Lançar uma versão (portão inteiro, SemVer, CHANGELOG, tag, GitHub Release com o instalável), ou ver qual seria a próxima | `/spec-release [major \| minor \| patch \| X.Y.Z]` |
 | Rodar o portão de testes na mão, ou criar, auditar e corrigir o mapa de impacto (`.claude/spec-check.json`) | `/spec-check [passo <comandos> \| mudanca \| versao \| auditar]` |
 | Criar ou atualizar o README | `/spec-readme [pasta]` |

@@ -38,7 +38,9 @@ nenhum passo, e o relatório o recolhe para o usuário. Só o que muda entra. --
 **ADR a registrar:** <título> (substitui NNN) | nenhuma
 
 <!-- LLM-ONLY: só decisão não óbvia — a que o usuário respondeu, ou a que o lead tomou e foge do
-padrão do código. O que o código, uma spec ou uma ADR já respondem não entra. ADR só para
+padrão do código. O que o código, uma spec ou uma ADR já respondem não entra. Versão, API ou
+comando que veio da pesquisa na documentação atual entra com a URL da fonte no "Por quê": o
+executor só vê o plano e não refaz a pesquisa. ADR só para
 decisão que vale para o projeto todo; o executor a registra no primeiro passo que depende dela
 (Arquivos: `docs/adr/NNN-<titulo>.md` e `docs/adr/README.md`). "(substitui NNN)" só quando a
 decisão vai contra uma ADR `aceito`. ADR que o passo só deixa desatualizada não entra aqui: o

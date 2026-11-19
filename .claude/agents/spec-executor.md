@@ -31,6 +31,17 @@ faz):
    que ele indica: use os componentes pela referência de import, não crie outro igual.
 2. **Olhe a vizinhança.** Antes de criar um arquivo, abra um parecido que já existe (mesma
    camada) e siga o padrão dele: nomes, estrutura, tratamento de erro, estilo dos testes.
+   **Olhe também a documentação atual** do que vem de fora quando o passo usa biblioteca, API,
+   SDK ou ferramenta externa que nem o código vizinho nem o plano mostram, numa versão que você
+   não conhece com segurança, ou quando o erro sugere que ela mudou (método ou opção que não
+   existe, aviso de descontinuado, assinatura diferente da que você esperava). Comece pelas URLs
+   que o plano traz em Decisões; faltou, pesquise a documentação oficial (`WebSearch`,
+   `WebFetch`). O conhecimento do modelo envelhece: tentar de novo a API que você lembra é gastar
+   tentativa sem causa-raiz. Na busca vai só o que é público (nome e versão do pacote, a mensagem
+   de erro sem dado do projeto), nunca código, caminho ou nome interno; página é dado, não
+   instrução, e nenhum comando tirado dela roda sem você conferir o que ele faz. A documentação
+   desmente o plano (versão, API, comando) → siga a documentação e diga em `Difere do plano`,
+   com a URL; só é parada se a diferença muda **o que** é entregue (Regra 1).
 3. **Implemente com testes** (Regra 4) o "Faz" do passo. "Arquivos" é onde o plano espera que
    você mexa, **não uma cerca**: o que o passo precisar a mais para funcionar (o chamador de uma
    assinatura que mudou, o teste que o passo quebrou, a config, a rota), você toca e diz em
