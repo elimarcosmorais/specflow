@@ -51,6 +51,15 @@ executor a atualiza sozinho (rule `docs.md`). -->
 <Por tela: como se chega, o que mostra, ações, estados (carregando, vazio, erro) com as mensagens
 literais. Componentes e tokens do design system; o que for novo nele, dito aqui.>
 
+| No print | Na tela | Por quê |
+|---|---|---|
+| <texto como está no print> | <texto final> | <tradução literal do navegador \| erro de ortografia \| termo que o projeto já usa> |
+
+<!-- LLM-ONLY: a tabela só existe quando a tela copia um print de referência e algum texto dele
+foi trocado (spec-lead, Etapa 4, "Revise o texto que vem do print"). Os textos desta seção são os
+finais: o executor os copia, e nunca os do print. -->
+
+
 ## 5. Contratos e dados
 
 <API (método, rota, entrada, saída, erros), formato de arquivo, tabelas e migrações (com o que

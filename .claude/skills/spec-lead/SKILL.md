@@ -129,7 +129,9 @@ Mudança pequena e clara não paga o custo de passar o bastão: você faz o trab
    (`behavior.md`, regra 2): o teste que conferia o valor antigo, a spec que descreve o
    comportamento, o que uma ADR afirma, um fato do `CLAUDE.md`. Correção de bug → acrescente o teste que o reproduz.
    A mudança usa API de fora que você não conhece com segurança → a mesma pesquisa, com os
-   mesmos cuidados, de "Confirme o que vem de fora" (Etapa 4, item 2).
+   mesmos cuidados, de "Confirme o que vem de fora" (Etapa 4, item 2). A mudança copia uma tela
+   de um print → o texto dele passa pela revisão de "Revise o texto que vem do print" (Etapa 4,
+   item 2), e o que você trocou sai na linha **Feito** do relatório.
 2. **Prove na medida da mudança** (`behavior.md`, regra 3) — não a suíte inteira:
    - ache o que cobre o que mudou: `Grep` do texto, símbolo ou rota, **antigo e novo**, nas
      pastas de teste (inclusive as de tela, como `tests/Browser`, `e2e/`);
@@ -192,6 +194,16 @@ Mudança pequena e clara não paga o custo de passar o bastão: você faz o trab
      longa, que encheria o seu contexto → delegue a um agent `general-purpose` com só os termos
      públicos e fique com as conclusões e as URLs. A pesquisa não abre parada: o que ela não
      resolve você decide e registra, como qualquer escolha técnica.
+   - **Revise o texto que vem do print.** O print de referência mostra o layout, mas o texto
+     dele não é confiável: título, coluna, botão, menu, mensagem e placeholder chegam muitas
+     vezes traduzidos pelo navegador, ao pé da letra e sem o assunto ("Save" virando
+     "Economizar", "Sign in" virando "Assinar", "Balance" virando "Equilíbrio"), ou com erro de
+     ortografia, em português ou em inglês. Leia cada texto à luz da funcionalidade que o plano
+     entrega e escreva na seção Telas o texto **final**, no idioma da interface do projeto: o
+     termo que o código e as specs já usam vence; sem ele, o termo corrente do domínio. O que
+     você trocou vai numa tabela curta na própria seção (no print → na tela · por quê): é na
+     aprovação que o usuário a vê e a corrige numa frase, então não é pergunta da rodada. O
+     executor copia o texto do plano, nunca o do print.
    - **Um passo é uma passada:** entregável e testável sozinho, na ordem de execução; o seguinte
      usa o que o anterior entregou. Dois contextos (backend e tela, migração e consumo) são dois
      passos. Mudança grande é um plano com mais passos, nunca vários planos.

@@ -90,7 +90,7 @@ entra em "Precisa de você" como "Decidir (risco)", iguais às da forma completa
 
 ## <pedido em uma frase>
 
-**Feito:** <o que mudou, em 1 linha> · `<arquivo>` (+ `<teste ou spec que mudou junto>`)
+**Feito:** <o que mudou, em 1 linha> · `<arquivo>` (+ `<teste ou spec que mudou junto>`) · textos do print trocados: "<no print>" → "<na tela>", … | omita o trecho
 **Prova:** `<comando>` → <N> passando, 0 pulados | conferência: <o que conferiu e o resultado>
 **Precisa de você:** nada.
 **Estado:** em stage, sem commit — `/spec-semantic-commit`.
