@@ -94,6 +94,8 @@ criar skills e documentos, e atualize-a quando o fluxo mudar.
 - Agents: `.claude/agents/<nome-do-agent>.md`
 - Rules: `.claude/rules/<nome>.md` (`behavior.md`, as regras de comportamento; `docs.md`, onde
   cada documento mora e quem mexe nele)
-- Settings: `.claude/settings.json`, só com as regras `permissions.ask` de que as rules dependem
-  (ex.: segurar o `RunAs` da regra 5). No projeto o arquivo é dele: a `spec-upgrade` só
-  acrescenta as regras que faltam, e o `classificar.sh` o deixa fora da cópia.
+- Settings: o framework não tem `.claude/settings.json`, porque a cópia da instalação o levaria
+  a todo projeto. As regras `permissions.ask` que seguram o `RunAs` (regra 5) ficam em
+  `.claude/skills/spec-upgrade/permissoes-uac.json`, e a `spec-upgrade` as põe no
+  `settings.json` só do projeto de programa desktop Windows (e as tira dos outros). No projeto o
+  arquivo é dele: só essas regras entram ou saem, e o `classificar.sh` o deixa fora da cópia.

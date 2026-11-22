@@ -1,6 +1,6 @@
 ---
 name: spec-upgrade
-description: Utilitário do framework (transversal). Atualiza as skills, os agents e as rules do SpecFlow num projeto que já o usa, a partir da versão mais nova do repositório público no GitHub (ou de uma tag, branch ou commit) - baixa o repositório numa pasta temporária, classifica cada arquivo de .claude/ pelo histórico do framework (novo, desatualizado, personalizado no projeto, removido do framework, do próprio projeto), copia direto o que é novo ou desatualizado, pergunta antes de sobrescrever arquivo personalizado e de apagar o que saiu do framework, junta no .claude/settings.json do projeto as regras de permissão do framework que faltam (só acrescenta), e nunca toca no resto do que é do projeto (skills, agents e rules próprios, settings.local.json, CLAUDE.md, README, docs/). Não commita. Usar quando o usuário pedir para atualizar o SpecFlow, as skills, os agents ou as rules do framework no projeto, ou trazer a versão nova do framework. Não serve para atualizar as specs (docs/specs/), que o agente mantém sozinho, nem para rodar no próprio repositório do SpecFlow.
+description: Utilitário do framework (transversal). Atualiza as skills, os agents e as rules do SpecFlow num projeto que já o usa, a partir da versão mais nova do repositório público no GitHub (ou de uma tag, branch ou commit) - baixa o repositório numa pasta temporária, classifica cada arquivo de .claude/ pelo histórico do framework (novo, desatualizado, personalizado no projeto, removido do framework, do próprio projeto), copia direto o que é novo ou desatualizado, pergunta antes de sobrescrever arquivo personalizado e de apagar o que saiu do framework, põe no .claude/settings.json do projeto as regras que seguram o comando que abre o UAC só quando o repositório é de programa desktop Windows (e as tira dos outros, como site ou projeto que roda no Linux), e nunca toca no resto do que é do projeto (skills, agents e rules próprios, settings.local.json, CLAUDE.md, README, docs/). Não commita. Usar quando o usuário pedir para atualizar o SpecFlow, as skills, os agents ou as rules do framework no projeto, ou trazer a versão nova do framework. Não serve para atualizar as specs (docs/specs/), que o agente mantém sozinho, nem para rodar no próprio repositório do SpecFlow.
 argument-hint: "[tag, branch ou commit do SpecFlow (opcional; padrão: a branch principal)]"
 disable-model-invocation: true
 ---
@@ -25,8 +25,8 @@ framework, e mostrar o que mudou. O commit fica com o usuário (`/spec-semantic-
    classifica é o [`classificar.sh`](classificar.sh); não classifique de cabeça.
 2. **Do projeto, nunca toque.** Skill, agent ou rule que nunca existiu no framework (`do-projeto`),
    `settings.local.json`, `CLAUDE.md`, `README.md` e `docs/` ficam como estão. O
-   `.claude/settings.json` é do projeto e só **recebe** as regras de permissão do framework que
-   faltam nele (Etapa 5): nada nele se sobrescreve nem sai.
+   `.claude/settings.json` é do projeto: só as regras do UAC entram ou saem dele, conforme o
+   tipo do projeto (Etapa 5), e nada mais nele se sobrescreve nem sai.
 3. **Novo e desatualizado: aplique sem perguntar.** Desatualizado é idêntico a uma versão antiga
    do framework, então ninguém o editou e nada se perde. Rodar a skill é a autorização.
 4. **Personalizado e removido: pergunte antes** (regra 4 de `behavior.md`). Personalizado foi
@@ -99,7 +99,7 @@ Cada linha é `<situação> <caminho>`:
 Sem `.claude/` no projeto, tudo sai `novo`: é uma instalação, e segue igual. O
 `.claude/settings.json` não entra na lista (Regra 2). Tudo `igual` → faça só a parte
 **Permissões** da Etapa 5, rode `rm -rf /tmp/specflow-upgrade` e pare: diga que o projeto já
-está na versão nova e se alguma regra de permissão entrou.
+está na versão nova e se alguma regra do UAC entrou ou saiu.
 
 O próprio `spec-upgrade` entra na lista como qualquer outra skill. A versão nova dele vale a
 partir da próxima execução.
@@ -138,16 +138,37 @@ Escreva a pasta do `mkdir -p` por extenso (ex.: `.claude/skills/spec-adr`), não
 Depois de apagar, remova as pastas que ficaram vazias, só nas pastas do framework
 (`find .claude/skills .claude/agents .claude/rules -type d -empty -delete`).
 
-**Permissões.** O `/tmp/specflow-upgrade/.claude/settings.json` traz as regras `permissions.ask`
-de que as rules do framework dependem (ex.: a que segura o comando que abre o UAC, regra 5 de
-`behavior.md`). Leia-o e leia o `.claude/settings.json` do projeto, e junte pelo Read/Edit/Write
-(`behavior.md`, regra 6), sem perguntar: acrescentar uma regra que só segura comando não perde
-edição nenhuma (Regra 3).
+**Permissões.** O `/tmp/specflow-upgrade/.claude/skills/spec-upgrade/permissoes-uac.json` traz
+as regras `permissions.ask` que seguram todo comando com `RunAs` até o usuário aprovar (regra 5
+de `behavior.md`). Elas só servem a **programa desktop Windows**, onde o agente precisa de admin
+para provar o que fez (instalador, serviço, chave em `HKLM`). Em site, API, app mobile ou projeto
+que roda no Linux, nada eleva com `RunAs`, e a regra só interrompe à toa todo comando que cita a
+palavra (um `grep`, uma mensagem de commit). Quem decide é o **repositório**, não a máquina em
+que a skill roda: o `settings.json` vai para o git e protege quem abrir o projeto no Windows.
 
-- Projeto sem o arquivo → copie o do framework.
-- Com o arquivo → acrescente em `permissions.ask` cada regra do framework que não está lá, sem
-  mexer no resto (outras chaves, `allow`, `deny`, ordem, formatação). Regra que o framework
-  deixou de ter fica: só acrescente.
+É desktop Windows quando o repo tem pelo menos um destes sinais (Glob e Grep, sem rodar nada):
+
+| Sinal | Onde |
+|---|---|
+| `<UseWPF>`, `<UseWindowsForms>` ou `<UseWinUI>` com `true`, `<OutputType>WinExe`, `TargetFramework` terminado em `-windows` | `*.csproj`, `*.vbproj`, `*.fsproj`, `Directory.Build.props` |
+| projeto C++ do Visual Studio | `*.vcxproj` |
+| manifesto de app ou pacote do Windows | `app.manifest` com `requestedExecutionLevel`, `Package.appxmanifest`, `*.wapproj` |
+| instalador do Windows | `*.wxs`/`*.wixproj` (WiX), `*.iss` (Inno Setup), `*.nsi` (NSIS) |
+| serviço do Windows | pacote `Microsoft.Extensions.Hosting.WindowsServices`, classe que herda `ServiceBase` |
+| script do projeto que pede admin | `*.ps1` com `#Requires -RunAsAdministrator` |
+| app Electron ou Tauri com alvo Windows | `win`/`nsis` na config do `electron-builder`; `windows`, `nsis` ou `msi` no `tauri.conf.json` |
+| o agente já opera a tela do Windows | `windows-mcp` no `.mcp.json` (`/spec-windows-mcp`) |
+
+Leia o `.claude/settings.json` do projeto e edite pelo Read/Edit/Write (`behavior.md`, regra 6),
+sem perguntar: as regras do UAC são do framework, e mexer nelas não perde edição nenhuma do
+projeto (Regra 3).
+
+- **Desktop Windows**: sem o arquivo, crie-o com o conteúdo do `permissoes-uac.json`. Com ele,
+  acrescente em `permissions.ask` cada regra dessas que falta, sem mexer no resto (outras
+  chaves, `allow`, `deny`, ordem, formatação).
+- **Qualquer outro projeto**: não crie o arquivo. Com ele, tire de `permissions.ask` só as
+  regras **idênticas** às do `permissoes-uac.json` (as que o projeto escreveu diferente são
+  dele e ficam). `ask` vazio sai, `permissions` vazio sai, e o arquivo que ficou `{}` é apagado.
 - O do projeto não é JSON válido → não mexa, e diga a linha do erro no relatório: o Claude Code
   também não o carrega.
 
@@ -167,7 +188,7 @@ Novos: <caminhos> | nenhum
 Atualizados: <caminhos> | nenhum
 Personalizados: <caminho> → mesclado | substituído | mantido
 Apagados: <caminhos> | nenhum · Mantidos a pedido: <caminhos>
-Permissões: <regras acrescentadas ao .claude/settings.json> | já estavam
+Permissões: desktop Windows (<sinal>) | não é desktop Windows → <regras do UAC acrescentadas | tiradas> | já estavam certas
 Do projeto, intocados: <caminhos> | nenhum
 Sem commit: confira com `git diff -- .claude` e rode /spec-semantic-commit
 ```

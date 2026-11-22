@@ -290,8 +290,8 @@ CLAUDE.md, README.md, CHANGELOG.md (só depois da primeira versão)
 ├── agents/spec-executor.md, spec-reviewer.md
 ├── rules/behavior.md, docs.md (sempre) e <tema>.md (só ao tocar os paths dela)
 ├── spec-check.json          do projeto: comandos de teste e mapa de impacto do portão
-└── settings.json            do projeto; o framework só junta nele as regras `ask` (ex.: a que
-                             segura o `RunAs` até o usuário chegar, regra 5) — /spec-upgrade
+└── settings.json            do projeto; no programa desktop Windows, a /spec-upgrade põe nele as
+                             regras `ask` que seguram o `RunAs` até o usuário chegar (regra 5)
 docs/
 ├── adr/README.md            índice; as ADRs NNN-<titulo>.md ao lado
 ├── specs/README.md          índice; os assuntos ao lado, subdivididos em pastas
