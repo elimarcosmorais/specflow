@@ -4,9 +4,10 @@
 #
 # Uso:
 #   sh check.sh passo '<comando de teste>' ['<comando>' ...]   testes do passo, build e lint
-#   sh check.sh mudanca [--arquivos <arquivo> ...]             suíte, build, lint; integração e tela por impacto
+#   sh check.sh mudanca                                        suíte, build, lint; integração e tela por impacto
 #   sh check.sh versao                                         tudo inteiro, sem cache
 #   sh check.sh esperar                                        continua esperando a execução em andamento
+#                                                              (SPEC_CHECK_ESPERA=0: até o fim, em segundo plano)
 #   sh check.sh auditar                                        confere o spec-check.json com o repo
 #
 # Saída: 0 verde · 1 vermelho · 2 verde com teste pulado · 3 ainda rodando · 4 erro de uso ou config
@@ -30,7 +31,7 @@ base=$(git rev-parse --absolute-git-dir)/spec-check
 mkdir -p "$base/cache" "$base/execucoes"
 
 uso() {
-  sed -n '5,10p' "$self" | sed 's/^# *//' >&2
+  sed -n '5,11p' "$self" | sed 's/^# *//' >&2
   exit 4
 }
 
@@ -115,6 +116,7 @@ validar_config() {
     case $chave in
       suite | build | lint | integracao | tela) ;;
       integracao_alvos | tela_alvos | integracao_inteira | tela_inteira) ;;
+      integracao_falhas | tela_falhas) ;;
       integracao_testes | tela_testes) ;;
       integracao_impacto | tela_impacto)
         case $valor in
@@ -142,16 +144,20 @@ validar_config() {
   done < "$dir/config"
 }
 
-# Hash do código como está agora, com o que ainda não está em stage. Documentação não conta: marcar
-# um checkbox no plano não muda o que o teste provou. Usa um índice temporário: o stage fica intacto.
+# O código como está agora, com o que ainda não está em stage: "<hash> <árvore>". O hash é a chave do
+# cache e ignora a documentação (marcar um checkbox no plano não muda o que o teste provou); a
+# árvore é um objeto do git, para saber depois o que mudou desde esta rodada. Usa um índice
+# temporário: o stage fica intacto.
 arvore_atual() {
   idx="$base/index.$$"
   real=$(git rev-parse --git-path index)
   [ -f "$real" ] && cp "$real" "$idx"
   if GIT_INDEX_FILE=$idx git add -A . 2>/dev/null; then
-    GIT_INDEX_FILE=$idx git -c core.quotepath=off ls-files -s \
+    h=$(GIT_INDEX_FILE=$idx git -c core.quotepath=off ls-files -s \
       | grep -Ev '	docs/|\.md$' \
-      | git hash-object --stdin
+      | git hash-object --stdin)
+    t=$(GIT_INDEX_FILE=$idx git write-tree 2>/dev/null)
+    printf '%s %s\n' "$h" "$t"
   fi
   rm -f "$idx" "$idx.lock"
 }
@@ -202,11 +208,11 @@ regex_de() {
     -e 's/\/$/\/.*/'
 }
 
-alvos_do_mapa() { # <tipo>
+alvos_do_mapa() { # <tipo> <arquivo com a lista>
   cfg "$1_mapa" | while IFS= read -r m; do
     re=$(regex_de "${m%% => *}")
     destino=$(printf '%s' "${m#* => }" | sed -e 's/[&#\\]/\\&/g' -e 's/{x}/\\1/g')
-    sed -nE "s#^$re\$#$destino#p" "$dir/arquivos"
+    sed -nE "s#^$re\$#$destino#p" "$2"
   done | sort -u | while IFS= read -r g; do
     for f in $g; do
       [ -e "$f" ] && printf '%s\n' "$f"
@@ -275,7 +281,7 @@ auditar() {
   lista_repo > "$dir/repo"
   problemas="$dir/problemas"
   : > "$problemas"
-  for chave in suite build lint integracao tela integracao_impacto tela_impacto integracao_alvos tela_alvos; do
+  for chave in suite build lint integracao tela integracao_impacto tela_impacto integracao_alvos tela_alvos integracao_falhas tela_falhas; do
     c=$(cfg "$chave")
     [ -n "$c" ] || continue
     prog=$(printf '%s\n' "$c" | awk '{ for (i = 1; i <= NF; i++) if ($i !~ /^[A-Za-z_][A-Za-z0-9_]*=/) { print $i; exit } }')
@@ -314,8 +320,45 @@ auditar() {
   return 0
 }
 
-resolver() { # <tipo> → define cmd_final e alcance
+# Alvos que uma lista de arquivos alcança: o mapa e o *_alvos. Um por linha, em ordem.
+alvos_de() { # <tipo> <arquivo com a lista>
+  {
+    alvos_do_mapa "$1" "$2"
+    comando_alvos=$(cfg "$1_alvos")
+    if [ -n "$comando_alvos" ] && [ -s "$2" ]; then
+      sh -c "$comando_alvos" < "$2"
+    fi
+  } | tr -d '\r' | sed '/^$/d' | LC_ALL=C sort -u
+}
+
+# O primeiro arquivo da lista que pede o comando inteiro, ou nada. O próprio spec-check.json pede:
+# mapa mexido não prova a si mesmo.
+motivo_inteira() { # <tipo> <arquivo com a lista>
+  if grep -qxF "$CONFIG" "$2"; then
+    printf '%s\n' "$CONFIG"
+    return
+  fi
+  cfg "$1_inteira" | while IFS= read -r p; do
+    achou=$(grep -Em1 "^$(regex_de "$p")\$" "$2") && {
+      printf '%s\n' "$achou"
+      break
+    }
+  done
+}
+
+# Estado da última rodada da mudança, por tipo, em $base/estado-<tipo>/: a árvore em que rodou, a
+# cobertura (o que rodou nela, ou INTEIRA) e as falhas (o que falhou, nada, ou INTEIRA quando não
+# se sabe). O que estava na cobertura e não falhou está provado naquela árvore; a rodada seguinte
+# só repete o que falhou e o que o código mudou desde então.
+estado_valido() { # <tipo>
+  e="$base/estado-$1"
+  [ -n "$arvore_obj" ] && [ -s "$e/arvore" ] && [ -f "$e/cobertura" ] && [ -f "$e/falhas" ] \
+    && git cat-file -e "$(cat "$e/arvore")^{tree}" 2>/dev/null
+}
+
+resolver() { # <tipo> → define cmd_final, alcance e usou_estado; os alvos ficam em $dir/alvos-<tipo>
   cmd_final=
+  usou_estado=0
   inteiro=$(cfg "$1")
   impacto=$(cfg "$1_impacto")
   if [ -z "$inteiro" ]; then
@@ -332,70 +375,118 @@ resolver() { # <tipo> → define cmd_final e alcance
     alcance="inteira: sem por impacto"
     return
   fi
-  pendente="$base/pendente-$1"
-  if [ "$dados" = 1 ] && [ -f "$pendente" ] && grep -qx INTEIRA "$pendente"; then
-    cmd_final=$inteiro
-    alcance="inteira: falhou na tentativa anterior"
-    return
+  rm -f "$base/pendente-$1" # formato antigo do estado
+  e="$base/estado-$1"
+  sufixo=
+  motivo=$(motivo_inteira "$1" "$dir/arquivos")
+  if [ -z "$motivo" ]; then
+    alvos_de "$1" "$dir/arquivos" > "$dir/alvos-$1"
+  else
+    : > "$dir/alvos-$1"
   fi
-  if grep -qxF "$CONFIG" "$dir/arquivos"; then
-    cmd_final=$inteiro
-    alcance="inteira: $CONFIG mudou"
-    return
-  fi
-  motivo=$(cfg "$1_inteira" | while IFS= read -r p; do
-    achou=$(grep -Em1 "^$(regex_de "$p")\$" "$dir/arquivos") && {
-      printf '%s\n' "$achou"
-      break
-    }
-  done)
-  if [ -n "$motivo" ]; then
+  if estado_valido "$1"; then
+    usou_estado=1
+    sufixo=" (o resto passou na rodada anterior)"
+    if grep -qx INTEIRA "$e/falhas"; then
+      cmd_final=$inteiro
+      alcance="inteira: falhou na rodada anterior"
+      return
+    fi
+    git -c core.quotepath=off diff --name-only --no-renames "$(cat "$e/arvore")" "$arvore_obj" \
+      | tr -d '\r' | grep -Ev '^docs/|\.md$' | sort -u > "$dir/delta-$1"
+    m=$(motivo_inteira "$1" "$dir/delta-$1")
+    if [ -n "$m" ]; then
+      cmd_final=$inteiro
+      alcance="inteira: $m"
+      return
+    fi
+    if grep -qx INTEIRA "$e/cobertura"; then
+      # Rodou inteiro na árvore anterior: do que o diff alcança, falta o que falhou e o que mudou.
+      : > "$dir/alvos-$1"
+    elif [ -n "$motivo" ]; then
+      cmd_final=$inteiro
+      alcance="inteira: $motivo"
+      return
+    else
+      LC_ALL=C comm -23 "$dir/alvos-$1" "$e/cobertura" > "$dir/alvos-$1.resto"
+      mv "$dir/alvos-$1.resto" "$dir/alvos-$1"
+    fi
+    {
+      cat "$dir/alvos-$1" "$e/falhas"
+      alvos_de "$1" "$dir/delta-$1"
+    } | LC_ALL=C sort -u > "$dir/alvos-$1.todos"
+    mv "$dir/alvos-$1.todos" "$dir/alvos-$1"
+  elif [ -n "$motivo" ]; then
     cmd_final=$inteiro
     alcance="inteira: $motivo"
     return
   fi
-  alvos=$({
-    alvos_do_mapa "$1"
-    comando_alvos=$(cfg "$1_alvos")
-    if [ -n "$comando_alvos" ] && [ -s "$dir/arquivos" ]; then
-      sh -c "$comando_alvos" < "$dir/arquivos"
-    fi
-    if [ "$dados" = 1 ] && [ -f "$pendente" ]; then
-      cat "$pendente"
-    fi
-  } | tr -d '\r' | sort -u | tr '\n' ' ' | sed 's/ *$//')
+  alvos=$(tr '\n' ' ' < "$dir/alvos-$1" | sed 's/ *$//')
   if [ -z "$alvos" ]; then
-    alcance="nenhum alvo"
+    alcance="nenhum alvo$sufixo"
     return
   fi
   cmd_final=${impacto%%\{alvos\}*}$alvos${impacto#*\{alvos\}}
-  alcance="por impacto: $alvos"
+  alcance="por impacto$sufixo: $alvos"
+}
+
+guardar_estado() { # <tipo> <1 se passou>
+  e="$base/estado-$1"
+  novo="$dir/estado-$1"
+  if [ -z "$arvore_obj" ]; then
+    rm -rf "$e"
+    return
+  fi
+  mkdir -p "$novo"
+  printf '%s\n' "$arvore_obj" > "$novo/arvore"
+  case $alcance in
+    inteira*) echo INTEIRA > "$novo/cobertura" ;;
+    *)
+      if [ "$usou_estado" = 1 ] && grep -qx INTEIRA "$e/cobertura"; then
+        echo INTEIRA > "$novo/cobertura"
+      else
+        {
+          [ "$usou_estado" = 1 ] && cat "$e/cobertura"
+          cat "$dir/alvos-$1"
+        } | LC_ALL=C sort -u > "$novo/cobertura"
+      fi
+      ;;
+  esac
+  : > "$novo/falhas"
+  if [ "$2" != 1 ]; then
+    # Só se aproveita o que passou quando se sabe o que falhou; senão repete o alcance todo.
+    c=$(cfg "$1_falhas")
+    if [ -n "$c" ] && [ -f "$dir/$1.log" ]; then
+      sh -c "$c" < "$dir/$1.log" 2> /dev/null | tr -d '\r' | sed '/^$/d' | LC_ALL=C sort -u > "$novo/falhas"
+    fi
+    if [ ! -s "$novo/falhas" ]; then
+      case $alcance in
+        inteira*) echo INTEIRA ;;
+        *) cat "$dir/alvos-$1" ;;
+      esac > "$novo/falhas"
+    fi
+  fi
+  rm -rf "$e"
+  mv "$novo" "$e"
 }
 
 por_impacto() { # <tipo>
   tipo=$1
   resolver "$tipo"
-  pendente="$base/pendente-$tipo"
   if [ -z "$cmd_final" ]; then
     case $alcance in
       n/a) resultado=n/a ;;
-      *)
-        resultado=nenhum_alvo
-        rm -f "$pendente"
-        ;;
+      *) resultado=nenhum_alvo ;;
     esac
     registrar "$tipo" "$resultado" 0 "$alcance" "" ""
     return
   fi
   if etapa "$tipo" "$cmd_final" "$alcance"; then
-    rm -f "$pendente"
-    return
+    passou=1
+  else
+    passou=0
   fi
-  [ "$modo" = versao ] && return
-  case $alcance in
-    inteira*) echo INTEIRA > "$pendente" ;;
-    *) printf '%s\n' "$alvos" | tr ' ' '\n' > "$pendente" ;;
-  esac
+  [ "$modo" = mudanca ] && [ -n "$(cfg "${tipo}_impacto")" ] && guardar_estado "$tipo" "$passou"
 }
 
 fechar() {
@@ -452,10 +543,12 @@ executar() { # <id>
   id=$1
   dir="$base/execucoes/$id"
   modo=$(cat "$dir/modo")
-  dados=$(cat "$dir/dados")
   geral=verde
   usa_cache=1
-  arvore=$(arvore_atual)
+  r=$(arvore_atual)
+  arvore=${r%% *}
+  arvore_obj=${r#* }
+  [ "$arvore_obj" = "$r" ] && arvore_obj=
   [ -n "$arvore" ] || usa_cache=0
   [ "$modo" = versao ] && usa_cache=0
   : > "$dir/etapas"
@@ -517,7 +610,7 @@ aguardar() { # <id>
   alvo="$base/execucoes/$1"
   t=0
   while [ ! -f "$alvo/fim" ]; do
-    if [ "$t" -ge "$ESPERA" ]; then
+    if [ "$ESPERA" -gt 0 ] && [ "$t" -ge "$ESPERA" ]; then
       echo "spec-check: ainda rodando ($1). Sem laço de acompanhamento: rode 'sh $self esperar'."
       exit 3
     fi
@@ -552,12 +645,7 @@ case $comando in
   passo)
     [ $# -ge 1 ] || uso
     ;;
-  mudanca)
-    if [ $# -gt 0 ]; then
-      [ "$1" = --arquivos ] && [ $# -ge 2 ] || uso
-    fi
-    ;;
-  versao | auditar)
+  mudanca | versao | auditar)
     [ $# -eq 0 ] || uso
     ;;
   *)
@@ -590,7 +678,6 @@ id=$(date +%Y%m%d-%H%M%S)-$$
 dir="$base/execucoes/$id"
 mkdir -p "$dir"
 printf '%s\n' "$comando" > "$dir/modo"
-echo 0 > "$dir/dados"
 
 if [ -f "$CONFIG" ]; then
   ler_config > "$dir/config"
@@ -610,16 +697,10 @@ if [ "$comando" = passo ]; then
   done
 fi
 
-if [ "$comando" = mudanca ] && [ $# -gt 0 ]; then
-  shift
-  echo 1 > "$dir/dados"
-  for a in "$@"; do
-    printf '%s\n' "$a"
-  done
-else
+{
   git -c core.quotepath=off diff --name-only --no-renames HEAD 2>/dev/null
   git -c core.quotepath=off ls-files -o --exclude-standard
-fi | tr -d '\r' | grep -Ev '^docs/|\.md$' | sort -u > "$dir/arquivos"
+} | tr -d '\r' | grep -Ev '^docs/|\.md$' | sort -u > "$dir/arquivos"
 
 printf '%s\n' "$id" > "$base/atual"
 nohup sh "$self" _worker "$id" > "$dir/worker.log" 2>&1 < /dev/null &

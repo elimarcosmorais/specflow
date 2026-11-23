@@ -265,7 +265,8 @@ commit que vai virar a tag: é o que pega o que o mapa de impacto não vê (depe
 execução, dado, ambiente, imagem de referência de outra tela).
 
 1. `sh .claude/skills/spec-check/check.sh versao`, na raiz, com timeout de 600000 ms. Saída 3 →
-   `check.sh esperar`, quantas vezes precisar (`behavior.md`, regra 8).
+   `SPEC_CHECK_ESPERA=0 sh .claude/skills/spec-check/check.sh esperar` em segundo plano, que só
+   volta no fim (`behavior.md`, regra 8).
 2. **Pulou** (saída 2) por precondição (pacote, serviço, porta, variável) → monte-a e rode de novo
    (`behavior.md`, regra 3). O que continuar pulado vai para o relatório como `Sem prova`, com o
    teste e o motivo.

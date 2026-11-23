@@ -1,6 +1,6 @@
 ---
 name: spec-check
-description: Utilitário do framework. O portão de testes - um script (check.sh) que decide o que rodar a partir do git diff e do mapa em .claude/spec-check.json, roda fora da sessão do modelo, guarda pelo hash do código o que já passou e grava o resultado. Tem três modos - passo (testes do passo, build e lint), mudanca (suíte padrão, build e lint inteiros, integração e tela só do que mudou) e versao (tudo inteiro) - e o auditar, que confere o spec-check.json com o repo (comando inexistente, linha morta do mapa, teste que nenhuma linha alcança). Chamado pelo spec-executor, pelo spec-lead e pela spec-release, e usado para gerar o spec-check.json de um projeto. Usar para rodar o portão na mão ou para criar ou corrigir o mapa de impacto.
+description: Utilitário do framework. O portão de testes - um script (check.sh) que decide o que rodar a partir do git diff e do mapa em .claude/spec-check.json, roda fora da sessão do modelo, guarda pelo hash do código o que já passou, repete depois de uma falha só o que falhou e o que mudou, e grava o resultado. Tem três modos - passo (testes do passo, build e lint), mudanca (suíte padrão, build e lint inteiros, integração e tela só do que mudou) e versao (tudo inteiro) - e o auditar, que confere o spec-check.json com o repo (comando inexistente, linha morta do mapa, teste que nenhuma linha alcança). Chamado pelo spec-executor, pelo spec-lead e pela spec-release, e usado para gerar o spec-check.json de um projeto. Usar para rodar o portão na mão ou para criar ou corrigir o mapa de impacto.
 argument-hint: "[passo <comandos> | mudanca | versao | esperar]"
 ---
 
@@ -15,7 +15,7 @@ Sempre da raiz do projeto:
 
 ```
 sh .claude/skills/spec-check/check.sh passo '<comando de teste>' ['<comando>' …]
-sh .claude/skills/spec-check/check.sh mudanca [--arquivos <arquivo> …]
+sh .claude/skills/spec-check/check.sh mudanca
 sh .claude/skills/spec-check/check.sh versao
 sh .claude/skills/spec-check/check.sh esperar
 sh .claude/skills/spec-check/check.sh auditar
@@ -28,8 +28,12 @@ sh .claude/skills/spec-check/check.sh auditar
 | `versao` | `/spec-release` | lint, build, suíte, integração e tela **inteiros**, sem cache |
 | `auditar` | quem gera ou edita o `spec-check.json` | confere o arquivo com o repo (abaixo); não roda teste |
 
-`--arquivos` é da tentativa 2 da revisão: integração e tela rodam só o que esses arquivos
-alcançam, mais o que falhou na tentativa anterior.
+**Rodada seguinte.** Cada `mudanca` guarda, para integração e tela, a árvore em que rodou, o que
+rodou e o que falhou (`.git/spec-check/estado-<tipo>/`). A seguinte roda só **o que falhou e o
+que o código mudou desde então**: o resto já passou naquele código. Uma falha entre 2808 testes
+repete 1 spec, não 2808; a correção dos bloqueantes repete só o que ela alcança. O arquivo de
+`*_inteira` que continua no diff não pede outra rodada inteira, só o que mudou de novo desde a
+última. Sem `*_falhas`, não se sabe o que falhou: a rodada inteira que falhou se repete inteira.
 
 | Saída | Significa | O que fazer |
 |---|---|---|
@@ -41,6 +45,9 @@ alcançam, mais o que falhou na tentativa anterior.
 
 O script espera até 9 min por chamada, dentro do limite da ferramenta. Chame-o com timeout de
 600000 ms, sem embrulhar em `timeout`, e sem laço de `grep` ou `sleep` (`behavior.md`, regra 8).
+Na sessão principal, rodada longa (tela inteira, `versao`) se espera em segundo plano:
+`SPEC_CHECK_ESPERA=0 sh .claude/skills/spec-check/check.sh esperar` com `run_in_background`, que
+só volta no fim, e a ferramenta chama você quando ele sair. Um turno, em vez de um a cada 9 min.
 
 **Cache.** Comando que passou sem pulo não roda de novo sobre o mesmo código. O hash vem da
 árvore de trabalho, com o que não está em stage, e ignora `docs/` e `*.md`: marcar um checkbox
@@ -68,7 +75,8 @@ agente o gera e corrige sem perguntar. Só texto e lista de textos; chave descon
     "e2e/{x}.spec.ts => e2e/{x}.spec.ts"
   ],
   "tela_testes": ["e2e/*.spec.ts"],
-  "tela_inteira": ["frontend/src/components/ui/", "frontend/src/styles/", "playwright.config.ts", "e2e/support/", "package.json", "package-lock.json"]
+  "tela_inteira": ["frontend/src/components/ui/", "frontend/src/styles/", "playwright.config.ts", "e2e/support/", "taskfiles/e2e.yml", "package-lock.json"],
+  "tela_falhas": "awk '/^ +[0-9]+ (did not run|interrupted)/ { corte = 1 } /^ +[0-9]+\\) \\[/ { sub(/:[0-9].*/, \"\"); sub(/.* › /, \"\"); f[\"e2e/\" $0] = 1 } END { if (!corte) for (k in f) print k }'"
 }
 ```
 
@@ -80,7 +88,8 @@ agente o gera e corrige sem perguntar. Só texto e lista de textos; chave descon
 | `*_mapa` | `padrão => alvo`. No padrão: `{x}` captura um segmento (um por linha), `*` não cruza `/`, `**` cruza, e `/` no fim é a pasta inteira. No alvo: `{x}` é o capturado e `*` é glob; alvo que não existe é ignorado |
 | `*_testes` | onde ficam os arquivos de teste daquele tipo. É o que permite achar o teste que nenhuma linha do mapa alcança |
 | `*_alvos` | comando que lê os arquivos alterados na entrada e escreve um alvo por linha, para o que o mapa não expressa |
-| `*_inteira` | padrões que pedem o comando inteiro: componente compartilhado, estilos, config do runner, apoio dos testes, manifesto, lockfile |
+| `*_inteira` | padrões que pedem o comando inteiro: o que, mudando, pode quebrar **qualquer** tela ou teste — componente compartilhado, estilos, config do runner, apoio dos testes, lockfile, o arquivo das tasks de teste. Arquivo misto não entra (abaixo) |
+| `*_falhas` | comando que lê o log da rodada que falhou na entrada e escreve os alvos que falharam, um por linha, como o `*_impacto` os aceita. Rodada cortada no meio (teste que não rodou) → não escreve nada. É o que deixa a rodada seguinte repetir só o que falhou |
 
 Arquivo que não casa com nada não tem alvo: backend sem spec de tela não dispara o teste de tela.
 Sem `*_impacto`, o comando inteiro roda na `mudanca`, uma vez. O próprio `spec-check.json` no
@@ -104,6 +113,17 @@ O script, nos dois pontos em que um erro do mapa custaria caro:
 lá), os scripts, o `Taskfile` ou `Makefile`, a config do runner e a pasta dos testes.
 
 - O alvo do mapa são os specs de cada tela, e os próprios specs de tela também entram no mapa.
+- **Arquivo misto não vai para `*_inteira`.** O `*_inteira` compara arquivos, não trechos: o
+  `Taskfile.yml`, o `Makefile` ou o `package.json` que também guardam as tasks de suíte e de
+  integração pediriam a tela inteira a cada teste de integração novo. A dependência entra pelo
+  lockfile; as tasks de tela e de build do frontend vão para um arquivo incluído só delas
+  (`includes:` no Taskfile, `include` no Makefile), e é ele que entra. O que fica no arquivo misto
+  é exercido pelo build inteiro da `mudanca` e pela tela inteira da `versao`. Não há como
+  separar (os scripts do `package.json`) → ele fica de fora.
+- **Playwright:** o `tela_falhas` do exemplo lê o reporter `list`, que escreve cada falha como
+  `  1) [projeto] › arquivo.spec.ts:linha:coluna › título`, com o caminho relativo ao `testDir`
+  (daí o `e2e/` na frente), e não escreve nada com `did not run` ou `interrupted` no resumo.
+  Confira o caminho num log real da tela (`.git/spec-check/execucoes/*/tela.log`).
 - Toda imagem de referência fotografa a moldura (sidebar, cabeçalho)? → o arquivo da moldura vai em
   `tela_inteira` até as imagens serem recortadas. Sem isso, a imagem velha só apareceria na
   release e travaria a versão.

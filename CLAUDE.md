@@ -52,7 +52,7 @@ Skills **utilitárias**:
 | Decisão de arquitetura (ADR) e o índice delas | `spec-adr` |
 | Design system (obrigatório com interface), do zero ou a partir de um modelo salvo | `spec-design-system` |
 | Commit semântico | `spec-semantic-commit` |
-| Portão de testes: o que rodar pelo `git diff`, sem repetir o que já passou | `spec-check` |
+| Portão de testes: o que rodar pelo `git diff`, sem repetir o que já passou; depois de uma falha, só o que falhou e o que mudou | `spec-check` |
 | Versão: portão inteiro, SemVer, CHANGELOG, tag e GitHub Release com os instaláveis | `spec-release` |
 | README do projeto | `spec-readme` |
 | CLAUDE.md do projeto | `spec-claude` |

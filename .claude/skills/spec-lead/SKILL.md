@@ -290,10 +290,11 @@ Na ordem, um de cada vez.
 
 Com todos os passos do plano `[x]`:
 
-1. **Portão.** `sh .claude/skills/spec-check/check.sh mudanca` (saída 3 → `check.sh esperar`). Na
-   tentativa 2, acrescente `--arquivos <os que a correção tocou>`: integração e tela rodam só o
-   que a correção alcança, mais o que falhou antes. Projeto sem testes e sem
-   `.claude/spec-check.json` → pule para o item 2.
+1. **Portão.** `sh .claude/skills/spec-check/check.sh mudanca` (saída 3 → `SPEC_CHECK_ESPERA=0
+   sh .claude/skills/spec-check/check.sh esperar` em segundo plano: ele só volta no fim). Depois
+   de uma falha ou na tentativa 2, a rodada repete sozinha só o que falhou e o que a correção
+   mudou: o comando é o mesmo. Projeto sem testes e sem `.claude/spec-check.json` → pule para o
+   item 2.
 
    | Saída | O que fazer |
    |---|---|
