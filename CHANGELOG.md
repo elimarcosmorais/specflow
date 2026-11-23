@@ -4,6 +4,16 @@ Todas as mudanças relevantes deste projeto ficam neste arquivo.
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e o projeto usa
 [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [2.7.0] - 2026-11-23
+
+### Adicionado
+
+- **spec-check:** repete depois de uma falha só o que falhou e o que mudou (33afafb)
+- **spec-upgrade:** põe as regras do UAC só no programa desktop Windows (bec21f7)
+- **spec-lead:** revisa o texto do print de referência antes da tela (90f04ec)
+- **spec-lead:** confere na documentação atual o que vem de fora (bde8e9d)
+- **spec-semantic-commit:** deixa todo plano de docs/plans/ fora do commit (7756634)
+
 ## [2.6.0] - 2026-11-19
 
 ### Adicionado
@@ -202,6 +212,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 - **claude-md:** distingue servidor de tela declarado de ativo (e5ac775)
 - **mcp:** usa o `.mcp.json` como fonte do MCP de tela no `CLAUDE.md` (36bf744)
 
+[2.7.0]: https://github.com/elimarcosmorais/specflow/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/elimarcosmorais/specflow/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/elimarcosmorais/specflow/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/elimarcosmorais/specflow/compare/v2.3.0...v2.4.0
