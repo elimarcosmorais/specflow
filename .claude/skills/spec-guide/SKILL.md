@@ -210,7 +210,8 @@ depois para a mudança inteira:
   Teste fora do alcance não é pulado (`behavior.md`, regra 3). Vermelho no `mudanca` volta ao
   executor sem gastar a revisão. Quem confere o mapa é o próprio script: o `auditar` aponta
   comando inexistente, linha morta e teste que nenhuma linha alcança, e o `mudanca` fica vermelho
-  com teste do diff fora do mapa; o `spec-check.json` no diff pede integração e tela inteiras. Depois de uma falha, e na
+  com teste do diff fora do mapa; o `spec-check.json` no diff soma o mapa antigo ao novo, e só o
+  comando do tipo mudado pede aquele tipo inteiro. Depois de uma falha, e na
   tentativa 2, o portão repete só o que falhou e o que o código mudou desde a rodada anterior: uma
   falha entre milhares de testes de tela não refaz a tela inteira.
 - **Revisão, uma só.** No fim, sobre o diff inteiro em stage e o portão verde: **não roda

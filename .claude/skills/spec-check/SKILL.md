@@ -92,8 +92,20 @@ agente o gera e corrige sem perguntar. Só texto e lista de textos; chave descon
 | `*_falhas` | comando que lê o log da rodada que falhou na entrada e escreve os alvos que falharam, um por linha, como o `*_impacto` os aceita. Rodada cortada no meio (teste que não rodou) → não escreve nada. É o que deixa a rodada seguinte repetir só o que falhou |
 
 Arquivo que não casa com nada não tem alvo: backend sem spec de tela não dispara o teste de tela.
-Sem `*_impacto`, o comando inteiro roda na `mudanca`, uma vez. O próprio `spec-check.json` no
-diff também pede integração e tela inteiras: mapa mexido não prova a si mesmo.
+Sem `*_impacto`, o comando inteiro roda na `mudanca`, uma vez.
+
+**O próprio `spec-check.json` no diff** se compara, chave por chave, com o do `HEAD` (na rodada
+seguinte, com o da rodada anterior), e cada tipo olha só as chaves dele:
+
+| Mudou | Integração ou tela daquele tipo |
+|---|---|
+| `*_mapa`, `*_alvos`, `*_inteira` | por impacto, com o mapa **antigo e o novo juntos**: a linha apagada ou estreitada não esconde o teste que alcançava, e a linha nova já leva ao dela |
+| o comando do tipo (`integracao`/`tela` ou `*_impacto`) | inteira, como a config do runner |
+| as chaves do outro tipo, `suite`, `build`, `lint`, `*_testes`, `*_falhas` | nada a mais |
+| o arquivo não existe no `HEAD` | inteira: não há o que comparar |
+
+Linha nova no mapa é o caso comum (teste de integração novo, módulo que reaproveita outro), e
+ela não custa mais a tela inteira.
 
 # Quem confere o arquivo
 

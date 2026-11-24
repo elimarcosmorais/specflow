@@ -36,7 +36,8 @@ uso() {
 }
 
 # Lê o JSON plano da config (só texto e lista de textos) e escreve "chave<TAB>valor" por linha.
-ler_config() {
+ler_config() { # [arquivo]
+  arq_json=${1:-$CONFIG}
   awk '
     function erro(m) { print "#ERRO\t" m; exit 1 }
     function ch() { return substr(texto, i, 1) }
@@ -98,11 +99,11 @@ ler_config() {
         }
       }
     }
-  ' "$CONFIG"
+  ' "$arq_json"
 }
 
-cfg() {
-  awk -F'\t' -v k="$1" '$1 == k { print substr($0, length(k) + 2) }' "$dir/config"
+cfg() { # <chave> [config lida]
+  awk -F'\t' -v k="$1" '$1 == k { print substr($0, length(k) + 2) }' "${2:-$dir/config}"
 }
 
 validar_config() {
@@ -208,8 +209,8 @@ regex_de() {
     -e 's/\/$/\/.*/'
 }
 
-alvos_do_mapa() { # <tipo> <arquivo com a lista>
-  cfg "$1_mapa" | while IFS= read -r m; do
+alvos_do_mapa() { # <tipo> <arquivo com a lista> [config lida]
+  cfg "$1_mapa" "${3:-}" | while IFS= read -r m; do
     re=$(regex_de "${m%% => *}")
     destino=$(printf '%s' "${m#* => }" | sed -e 's/[&#\\]/\\&/g' -e 's/{x}/\\1/g')
     sed -nE "s#^$re\$#$destino#p" "$2"
@@ -320,25 +321,66 @@ auditar() {
   return 0
 }
 
-# Alvos que uma lista de arquivos alcança: o mapa e o *_alvos. Um por linha, em ordem.
-alvos_de() { # <tipo> <arquivo com a lista>
+# A config de <ref> (HEAD, ou a árvore da rodada anterior) quando o spec-check.json está na lista,
+# já lida: escreve o caminho dela, nada quando ele não está na lista, ou INTEIRA quando não há versão
+# anterior legível para comparar.
+config_antiga() { # <arquivo com a lista> <ref>
+  grep -qxF "$CONFIG" "$1" || return 0
+  arq="$dir/config-antiga-$(printf '%s' "$2" | tr -c 'A-Za-z0-9' _)"
+  if [ ! -f "$arq" ]; then
+    if git show "$2:$CONFIG" > "$arq.json" 2> /dev/null \
+      && ler_config "$arq.json" > "$arq.tmp" && ! grep -q '^#ERRO' "$arq.tmp"; then
+      mv "$arq.tmp" "$arq"
+    else
+      echo INTEIRA > "$arq"
+    fi
+  fi
+  if grep -qx INTEIRA "$arq"; then echo INTEIRA; else printf '%s\n' "$arq"; fi
+}
+
+# Alvos que uma lista de arquivos alcança: o mapa e o *_alvos. Um por linha, em ordem. Com o
+# spec-check.json mexido desde <ref>, valem o antigo e o novo juntos: a linha apagada ou estreitada
+# não esconde o teste que alcançava, e a linha nova já leva ao teste dela.
+alvos_de() { # <tipo> <arquivo com a lista> [ref]
+  ant=
+  [ -n "${3:-}" ] && ant=$(config_antiga "$2" "$3")
+  [ "$ant" = INTEIRA ] && ant=
   {
     alvos_do_mapa "$1" "$2"
+    [ -n "$ant" ] && alvos_do_mapa "$1" "$2" "$ant"
     comando_alvos=$(cfg "$1_alvos")
     if [ -n "$comando_alvos" ] && [ -s "$2" ]; then
       sh -c "$comando_alvos" < "$2"
     fi
+    if [ -n "$ant" ] && [ -s "$2" ]; then
+      c=$(cfg "$1_alvos" "$ant")
+      [ -n "$c" ] && [ "$c" != "$comando_alvos" ] && sh -c "$c" < "$2"
+    fi
   } | tr -d '\r' | sed '/^$/d' | LC_ALL=C sort -u
 }
 
-# O primeiro arquivo da lista que pede o comando inteiro, ou nada. O próprio spec-check.json pede:
-# mapa mexido não prova a si mesmo.
-motivo_inteira() { # <tipo> <arquivo com a lista>
-  if grep -qxF "$CONFIG" "$2"; then
-    printf '%s\n' "$CONFIG"
+# O primeiro arquivo da lista que pede o comando inteiro, ou nada. O spec-check.json na lista se
+# compara com o de <ref>, chave por chave: só o comando do próprio tipo mudado (o inteiro ou o por
+# impacto) pede a rodada inteira, como a config do runner. Mapa, *_alvos e *_inteira mudados somam
+# o antigo ao novo (alvos_de); as chaves do outro tipo não contam.
+motivo_inteira() { # <tipo> <arquivo com a lista> <ref>
+  ant=$(config_antiga "$2" "$3")
+  if [ "$ant" = INTEIRA ]; then
+    printf '%s (sem versão anterior para comparar)\n' "$CONFIG"
     return
   fi
-  cfg "$1_inteira" | while IFS= read -r p; do
+  if [ -n "$ant" ]; then
+    for k in "$1" "$1_impacto"; do
+      if [ "$(cfg "$k")" != "$(cfg "$k" "$ant")" ]; then
+        printf '%s: %s mudou\n' "$CONFIG" "$k"
+        return
+      fi
+    done
+  fi
+  {
+    cfg "$1_inteira"
+    [ -n "$ant" ] && cfg "$1_inteira" "$ant"
+  } | LC_ALL=C sort -u | while IFS= read -r p; do
     achou=$(grep -Em1 "^$(regex_de "$p")\$" "$2") && {
       printf '%s\n' "$achou"
       break
@@ -378,9 +420,9 @@ resolver() { # <tipo> → define cmd_final, alcance e usou_estado; os alvos fica
   rm -f "$base/pendente-$1" # formato antigo do estado
   e="$base/estado-$1"
   sufixo=
-  motivo=$(motivo_inteira "$1" "$dir/arquivos")
+  motivo=$(motivo_inteira "$1" "$dir/arquivos" HEAD)
   if [ -z "$motivo" ]; then
-    alvos_de "$1" "$dir/arquivos" > "$dir/alvos-$1"
+    alvos_de "$1" "$dir/arquivos" HEAD > "$dir/alvos-$1"
   else
     : > "$dir/alvos-$1"
   fi
@@ -394,7 +436,7 @@ resolver() { # <tipo> → define cmd_final, alcance e usou_estado; os alvos fica
     fi
     git -c core.quotepath=off diff --name-only --no-renames "$(cat "$e/arvore")" "$arvore_obj" \
       | tr -d '\r' | grep -Ev '^docs/|\.md$' | sort -u > "$dir/delta-$1"
-    m=$(motivo_inteira "$1" "$dir/delta-$1")
+    m=$(motivo_inteira "$1" "$dir/delta-$1" "$(cat "$e/arvore")")
     if [ -n "$m" ]; then
       cmd_final=$inteiro
       alcance="inteira: $m"
@@ -413,7 +455,7 @@ resolver() { # <tipo> → define cmd_final, alcance e usou_estado; os alvos fica
     fi
     {
       cat "$dir/alvos-$1" "$e/falhas"
-      alvos_de "$1" "$dir/delta-$1"
+      alvos_de "$1" "$dir/delta-$1" "$(cat "$e/arvore")"
     } | LC_ALL=C sort -u > "$dir/alvos-$1.todos"
     mv "$dir/alvos-$1.todos" "$dir/alvos-$1"
   elif [ -n "$motivo" ]; then
